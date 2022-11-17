@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/logo-32x32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/logo-16x16.ico">
+  <link rel="mask-icon" href="/images/logo.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"guoyongyu.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="关于论文 Cylinder3D: An Effective 3D Framework for Driving-scene LiDAR Semantic Segmentation (CVPR 2021) 的阅读总结。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Cylinder3D">
+<meta property="og:url" content="https://guoyongyu.github.io/papernote/Cylinder3D/index.html">
+<meta property="og:site_name" content="The Blog of Star Rain">
+<meta property="og:description" content="关于论文 Cylinder3D: An Effective 3D Framework for Driving-scene LiDAR Semantic Segmentation (CVPR 2021) 的阅读总结。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://guoyongyu.github.io/papernote/Cylinder3D/1%203D-to-2D.png">
+<meta property="og:image" content="https://guoyongyu.github.io/papernote/Cylinder3D/2%20pipeline.png">
+<meta property="og:image" content="https://guoyongyu.github.io/papernote/Cylinder3D/3%20Cylinder%20Partition.png">
+<meta property="og:image" content="https://guoyongyu.github.io/papernote/Cylinder3D/4%20非对称残差块和DDCM模块.png">
+<meta property="og:image" content="https://guoyongyu.github.io/papernote/Cylinder3D/5%20实验结果.png">
+<meta property="article:published_time" content="2022-07-19T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-11-17T03:36:28.528Z">
+<meta property="article:author" content="Star Rain">
+<meta property="article:tag" content="Deep Learning">
+<meta property="article:tag" content="Paper Note">
+<meta property="article:tag" content="Semantic Segmentation">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://guoyongyu.github.io/papernote/Cylinder3D/1%203D-to-2D.png">
+
+
+<link rel="canonical" href="https://guoyongyu.github.io/papernote/Cylinder3D/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://guoyongyu.github.io/papernote/Cylinder3D/","path":"papernote/Cylinder3D/","title":"Cylinder3D"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Cylinder3D | The Blog of Star Rain</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">The Blog of Star Rain</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AE%BA%E6%96%87%E4%BF%A1%E6%81%AF"><span class="nav-number">1.</span> <span class="nav-text">论文信息</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E4%BB%8B%E7%BB%8D"><span class="nav-number">2.</span> <span class="nav-text">1  介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-Methodology"><span class="nav-number">3.</span> <span class="nav-text">2  Methodology</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-3D-%E7%82%B9%E4%BA%91%E7%9A%84%E5%AD%A6%E4%B9%A0"><span class="nav-number">3.1.</span> <span class="nav-text">2.1  3D 点云的学习</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-%E5%85%B7%E4%BD%93%E6%A1%86%E6%9E%B6"><span class="nav-number">3.2.</span> <span class="nav-text">2.2  具体框架</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-Cylinder-Partition"><span class="nav-number">3.3.</span> <span class="nav-text">2.3  Cylinder Partition</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-%E9%9D%9E%E5%AF%B9%E7%A7%B0%E6%AE%8B%E5%B7%AE%E5%9D%97"><span class="nav-number">3.4.</span> <span class="nav-text">2.4  非对称残差块</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-5-DDCM-%E6%A8%A1%E5%9D%97"><span class="nav-number">3.5.</span> <span class="nav-text">2.5  DDCM 模块</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-6-Point-wise-%E7%BB%86%E5%8C%96%E6%A8%A1%E5%9D%97"><span class="nav-number">3.6.</span> <span class="nav-text">2.6  Point-wise 细化模块</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-7-%E7%BD%91%E7%BB%9C%E4%BC%98%E5%8C%96"><span class="nav-number">3.7.</span> <span class="nav-text">2.7  网络优化</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-%E5%AE%9E%E9%AA%8C"><span class="nav-number">4.</span> <span class="nav-text">3  实验</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-%E6%95%B0%E6%8D%AE%E9%9B%86%E5%92%8C%E8%AF%84%E4%BC%B0"><span class="nav-number">4.1.</span> <span class="nav-text">3.1  数据集和评估</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-%E8%AF%95%E9%AA%8C%E7%BB%93%E6%9E%9C%E5%8F%AF%E8%A7%86%E5%8C%96"><span class="nav-number">4.2.</span> <span class="nav-text">3.2  试验结果可视化</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%BA%90%E7%A0%81"><span class="nav-number">6.</span> <span class="nav-text">源码</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Star Rain</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">14</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://guoyongyu.github.io/papernote/Cylinder3D/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Star Rain">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="The Blog of Star Rain">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Cylinder3D | The Blog of Star Rain">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Cylinder3D
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2022-07-20 00:00:00" itemprop="dateCreated datePublished" datetime="2022-07-20T00:00:00+08:00">2022-07-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2022-11-17 11:36:28" itemprop="dateModified" datetime="2022-11-17T11:36:28+08:00">2022-11-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Paper-Note/" itemprop="url" rel="index"><span itemprop="name">Paper Note</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>关于论文 Cylinder3D: An Effective 3D Framework for Driving-scene LiDAR Semantic Segmentation (CVPR 2021) 的阅读总结。</p>
+<span id="more"></span>
+<center><b><font size="9">Cylinder3D</font></b></center>
+
+<h1 id="论文信息"><a href="#论文信息" class="headerlink" title="论文信息"></a>论文信息</h1><ul>
+<li>题目：Cylinder3D: An Effective 3D Framework for Driving-scene LiDAR Semantic Segmentation</li>
+<li>作者：Hui Zhou, Xinge Zhu, Xiao Song, Yuexin Ma, Zhe Wang, Hongsheng Li,Dahua Lin</li>
+<li>期刊/会议：CVPR 2021</li>
+</ul>
+<h1 id="1-介绍"><a href="#1-介绍" class="headerlink" title="1  介绍"></a>1  介绍</h1><p>Cylinder3D 是一个使用三维激光雷达对 3D 点云进行语义分割的算法，其主要贡献有：</p>
+<ul>
+<li>研究了最先进的网络架构和不同的点特征表示，揭示了直接处理点云而不需要 3D 到 2D 投影是获得卓越分割性能的关键。</li>
+<li>提出了一种柱面分割点云编码方案，该方案更好地遵循了三维驾驶场景点云的固有分布规律，并开发了一种基于三维卷积的框架。其中，设计了非对称残差块作为基本模块，并提出了一种新的维分解块，以循序渐进的方式探索上下文。</li>
+<li>提出的 LiDAR 分割算法在驾驶场景语义分割基准上的性能优于目前最先进的分割算法，有 6% mIoU 的增益。</li>
+</ul>
+<h1 id="2-Methodology"><a href="#2-Methodology" class="headerlink" title="2  Methodology"></a>2  Methodology</h1><h2 id="2-1-3D-点云的学习"><a href="#2-1-3D-点云的学习" class="headerlink" title="2.1  3D 点云的学习"></a>2.1  3D 点云的学习</h2><p>三维点表示研究室外场景点云与室内场景点云有显著差异：</p>
+<ol>
+<li><p>一个驾驶场景点云可能覆盖非常大的区域，可达 100 多米。</p>
+</li>
+<li><p>通常包含较多的点（ &gt; 10 万个点），但比室内场景稀疏很多。</p>
+</li>
+</ol>
+<p>因此，针对稠密点和固定数量点的室内分割方法难以适应点密度变化巨大的驾驶场景。现有的户外激光雷达分割方法主要是通过投影将 3D 点云转化为 2D 表示，包括球面投影和鸟瞰投影，然后采用 2D 卷积处理 2D 网格表示。</p>
+<p>然而，如图-1（右），2D 网格表示中的局部空间格局并不能很好地捕捉三维几何结构。2D 网格中的红色框代表了分布在不同空间位置的点，3D-to- 2D 投影方法可能无法对某些 3D 几何结构进行编码，导致模式提取不准确。</p>
+<p>对 2D、2.5D 和 3D 之间的各种分区和网络进行了广泛的实验，从结果来看，一致的性能增益表明了 3D 分区和 3D 网络的有效性。</p>
+<center>
+    <img src="/papernote/Cylinder3D/1 3D-to-2D.png">
+    <div>
+        图-1  3D-to-2D 方法的结果
+    </div>
+</center>
+
+
+
+<h2 id="2-2-具体框架"><a href="#2-2-具体框架" class="headerlink" title="2.2  具体框架"></a>2.2  具体框架</h2><p>室外点云覆盖了大量不同的城市场景，语义分割的目的是为点云中的每个点分配一个语义标签。通过投影获得的 2D 表示会放弃许多可用的 3D 结构。因此，提出了一种新的基于 3D 表示和神经网络的户外激光雷达分割方法。</p>
+<p>如图-2 所示，该框架由两个组件组成：</p>
+<ul>
+<li>3D 柱面分区（获取 3D 表示）；</li>
+<li>3D U-Net（处理 3D 表示）。</li>
+</ul>
+<p>特别地，设计了两个模块来适应户外点云的特性：</p>
+<ul>
+<li>非对称残块（Asymmetrical Residual Block）：匹配经常出现在驾驶场景中的长方体状的物体（汽车、卡车、摩托车等）；</li>
+<li>基于维度分解的上下文建模模块（Dimension-decomposition based Context Modeling Module，DDCM）：以分解聚合的方式对点云中的高阶上下文信息进行挖掘。</li>
+</ul>
+<center>
+    <img src="/papernote/Cylinder3D/2 pipeline.png">
+    <div>
+        图-2  整体框架
+    </div>
+</center>
+
+
+<h2 id="2-3-Cylinder-Partition"><a href="#2-3-Cylinder-Partition" class="headerlink" title="2.3  Cylinder Partition"></a>2.3  Cylinder Partition</h2><p>室外场景 LiDAR 点云具有区域密度变化巨大的特性，附近区域的密度远大于远区。因此，使用圆柱坐标系来代替笛卡尔网格划分：利用逐渐增大的网格覆盖较远的区域，使点在不同区域的分布更加均匀，与室外点的分布相匹配。</p>
+<p>此外，与基于投影的方法将点投影到 2D 视图不同，圆柱坐标系保留了 3D 网格表示，从而保留了物体的几何结构。</p>
+<p>流程如图-3：</p>
+<ol>
+<li><p>先将直角坐标系上的点变换到柱面坐标系，在柱面坐标系下计算半径 $\rho$ 和方位角 $\theta$，变换点 $(x, y, z)$ 到点 $(\rho, \theta, z)$；</p>
+</li>
+<li><p>柱面分割是为了均匀地分割这三个维度（注意：这种分割表示区域越远，体素越大）。</p>
+</li>
+<li><p>将这些柱面网格表示输入基于 MLP 的 PointNet 以获得柱面 point-wise 特征。</p>
+</li>
+</ol>
+<p>经过这些步骤，可以得到 3D 柱面表示 $R \in C \times H \times W \times L$，其中 $C$ 表示特征维数，$H, W, L$ 表示某一圆柱块。</p>
+<center>
+    <img src="/papernote/Cylinder3D/3 Cylinder Partition.png">
+    <div>
+        图-3  Cylinder Partition 流程
+    </div>
+</center>
+
+
+<h2 id="2-4-非对称残差块"><a href="#2-4-非对称残差块" class="headerlink" title="2.4  非对称残差块"></a>2.4  非对称残差块</h2><center>
+    <img src="/papernote/Cylinder3D/4 非对称残差块和DDCM模块.png">
+    <div>
+        图-4  非对称残差块和 DDCM 模块
+    </div>
+</center>
+
+<p>在自动驾驶场景中，存在大量的长方体物体，包括汽车、卡车、公共汽车和摩托车。通过采用不对称卷积核对矩形目标区域进行匹配，因此设计了非对称残差块来满足这类长方体对象的特性，同时显著降低了传统 3D 卷积核的计算成本。</p>
+<p>具体地，使用内核 $= 3 \times 1 \times 3$ 的卷积后，使用内核 $= 1 \times 3 \times 3$ 的卷积。相当于滑动两层网络，其接受域与内核 $= 3 \times 3 \times 3$ 的卷积相同，但比一个输出相同数量结果的 $3 \times 3 \times 3$ 卷积与减少了 33% 的计算成本。</p>
+<p>非对称残差块是下采样块和上采样块的基本组成部分（如图-2）：</p>
+<ul>
+<li>下采样块由一个非对称残差块和一个 $stride=2$ 的 3D 卷积组成。</li>
+<li>上采样块融合了低阶特征，并用非对称残块对融合特征进行处理。</li>
+</ul>
+<h2 id="2-5-DDCM-模块"><a href="#2-5-DDCM-模块" class="headerlink" title="2.5  DDCM 模块"></a>2.5  DDCM 模块</h2><p>由于上下文的差异较大（对于 3D 空间，其上下文在点云与点云之间存在巨大的差异），因此上下文张量应该是 high-rank（高阶）的，才有足够的容量对上下文信息进行编码。</p>
+<p>为这个上下文特征建模需要巨大的成本，特别是在 3D 空间中（上下文的高阶性）。受高阶矩阵分解理论的启发，可以将高阶上下文分解为几个低阶表示：</p>
+<ul>
+<li>这个高阶上下文可以被划分为三个维度：高度、宽度和深度，而三个片段都是低阶的。</li>
+<li>然后，使用这些片段构建完整的高级上下文。</li>
+</ul>
+<p>通过这种分解-聚合策略处理了基于低阶约束的不同视角的高阶困难。如图-2（下）所示，三个秩为 $1$ 的核（$3 \times 1 \times 1$，$1 \times 3 \times 1$，$1 \times 1 \times 3$）在所有三个维度上生成这些低阶编码。然后 Sigmoid 函数对卷积结果进行调制，生成每个维度的权值，其中基于不同视图的秩 1 张量挖掘共现上下文信息。聚合所有三个低阶上下文的激活结果，获得表示完整上下文特征的整体。</p>
+<h2 id="2-6-Point-wise-细化模块"><a href="#2-6-Point-wise-细化模块" class="headerlink" title="2.6  Point-wise 细化模块"></a>2.6  Point-wise 细化模块</h2><p>区块检测的方法是目前常用的方法，但不管是基于立方体还是基于圆柱体的方法都有一个不可避免的缺点，即不同类别的点可能被划分到同一个 cell（voxel）中，这将导致导致信息的丢失而影响精度。而采用块点结合的方式，能够有效的缓解错误 cell-label 编码的干扰，而提高识别的精度。</p>
+<p><strong>具体的实现方式：</strong>首先，基于 point-voxel 映射表将 voxel-wise 特征投影到 point-wise。然后，point-wise 模块将 3D 卷积网络前后的点特征作为输入，并将它们融合在一起以细化输出。</p>
+<p>在得到 voxel-wise 的 feature 之后，可以映射回 point-wise，然后再使用 MLP 得到 point-wise 的 label。</p>
+<p>获得 voxel 的 label，然后将当前 voxel 中的所有点预测为统一个 label。</p>
+<h2 id="2-7-网络优化"><a href="#2-7-网络优化" class="headerlink" title="2.7  网络优化"></a>2.7  网络优化</h2><p>柱面划分利用具有 BatchNorm 和 ReLU 的 4 层 MLP 网络提取每个点的点特征，并在体素内，做 channel-wise 的 max 提取出体素特征。3D 分割 backbone 来源于 UNet，其中 3D 卷积是改编的稀疏卷积。如上所述，用非对称残块代替传统残块，并在最终预测前插入 DDCM 模块。</p>
+<p>分割主干的输入为 $C \times H \times W \times L$ 张量。分割头采用一个 $3 \times 3 \times 3$ 核的 3D 卷积层作为轻量级的分割头。经过整个 pipeline，得到基于体素的预测，其大小为 $Class \times H \times W \times L$（$Class$ 为类别数量）。</p>
+<p>对于网络优化，使用加权交叉熵损失和 lovasz-softmax 损失，以最大限度地提高类的点精度和交叉-联合得分。两种损失的权重相同。因此，总损失是：</p>
+<script type="math/tex; mode=display">
+\zeta_{total} = \zeta_{iou} + \zeta_{acc}</script><p>在优化器中，使用初始学习率为 $0.001$ 的 Adam。</p>
+<h1 id="3-实验"><a href="#3-实验" class="headerlink" title="3  实验"></a>3  实验</h1><h2 id="3-1-数据集和评估"><a href="#3-1-数据集和评估" class="headerlink" title="3.1  数据集和评估"></a>3.1  数据集和评估</h2><ul>
+<li><p>数据集：SemanticKITTI。</p>
+</li>
+<li><p>评估：在所有语义类别上使用 $mIoU$（平均交并比）度量，其中</p>
+<script type="math/tex; mode=display">
+  IoU_i = \frac{TP_i}{TP_i + FP_i + FN_i}</script><p>  表示在类别 $i$ 上的交并比，$mIoU$ 为所有 $IoU_i$ 的均值。</p>
+</li>
+</ul>
+<h2 id="3-2-试验结果可视化"><a href="#3-2-试验结果可视化" class="headerlink" title="3.2  试验结果可视化"></a>3.2  试验结果可视化</h2><center>
+    <img src="/papernote/Cylinder3D/5 实验结果.png">
+    <div>
+        图-5  实验结构
+    </div>
+</center>
+
+
+
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/500643228">https://zhuanlan.zhihu.com/p/500643228</a></li>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/7069015256495980552">https://juejin.cn/post/7069015256495980552</a></li>
+</ul>
+<h1 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/xinge008/Cylinder3D">https://github.com/xinge008/Cylinder3D</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Deep-Learning/" rel="tag"># Deep Learning</a>
+              <a href="/tags/Paper-Note/" rel="tag"># Paper Note</a>
+              <a href="/tags/Semantic-Segmentation/" rel="tag"># Semantic Segmentation</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/papernote/CT-ICP/" rel="prev" title="CT-ICP">
+                  <i class="fa fa-chevron-left"></i> CT-ICP
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/papernote/CLINS/" rel="next" title="CLINS">
+                  CLINS <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Star Rain</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"cdn":"//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML","tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

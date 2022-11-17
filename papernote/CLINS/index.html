@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/logo-32x32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/logo-16x16.ico">
+  <link rel="mask-icon" href="/images/logo.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"guoyongyu.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="关于论文 CLINS：Continuous-Time Trajectory Estimation for LiDAR-Inertial System (IROS 2021) 的阅读总结。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CLINS">
+<meta property="og:url" content="https://guoyongyu.github.io/papernote/CLINS/index.html">
+<meta property="og:site_name" content="The Blog of Star Rain">
+<meta property="og:description" content="关于论文 CLINS：Continuous-Time Trajectory Estimation for LiDAR-Inertial System (IROS 2021) 的阅读总结。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://guoyongyu.github.io/papernote/CLINS/1%20系统框架.png">
+<meta property="og:image" content="https://guoyongyu.github.io/papernote/CLINS/2%20两阶段修正.png">
+<meta property="og:image" content="https://guoyongyu.github.io/papernote/CLINS/3%20数据集.png">
+<meta property="og:image" content="https://guoyongyu.github.io/papernote/CLINS/4%20RMSE.png">
+<meta property="og:image" content="https://guoyongyu.github.io/papernote/CLINS/5%20模型对比.png">
+<meta property="og:image" content="https://guoyongyu.github.io/papernote/CLINS/6%20可视化.png">
+<meta property="article:published_time" content="2022-08-06T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-11-17T03:31:00.569Z">
+<meta property="article:author" content="Star Rain">
+<meta property="article:tag" content="SLAM">
+<meta property="article:tag" content="Paper Note">
+<meta property="article:tag" content="IO">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://guoyongyu.github.io/papernote/CLINS/1%20系统框架.png">
+
+
+<link rel="canonical" href="https://guoyongyu.github.io/papernote/CLINS/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://guoyongyu.github.io/papernote/CLINS/","path":"papernote/CLINS/","title":"CLINS"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>CLINS | The Blog of Star Rain</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">The Blog of Star Rain</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#0-%E8%AE%BA%E6%96%87%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">0  论文简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E4%BB%8B%E7%BB%8D"><span class="nav-number">2.</span> <span class="nav-text">1  介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E8%BF%9E%E7%BB%AD%E6%97%B6%E9%97%B4%E8%BD%A8%E8%BF%B9%E7%9A%84%E8%A1%A8%E8%BE%BE%E6%96%B9%E5%BC%8F"><span class="nav-number">3.</span> <span class="nav-text">2  连续时间轨迹的表达方式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-%E6%96%B9%E6%B3%95"><span class="nav-number">4.</span> <span class="nav-text">3  方法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">4.1.</span> <span class="nav-text">3.1  初始化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-%E5%B1%80%E9%83%A8%E7%AA%97%E5%8F%A3%E7%9A%84%E9%9D%9E%E7%BD%91%E6%A0%BC%E6%B3%A8%E5%86%8C"><span class="nav-number">4.2.</span> <span class="nav-text">3.2  局部窗口的非网格注册</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-3-%E8%BD%A8%E8%BF%B9%E4%BF%AE%E6%AD%A3"><span class="nav-number">4.3.</span> <span class="nav-text">3.3  轨迹修正</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-%E8%AF%95%E9%AA%8C%E7%BB%93%E6%9E%9C"><span class="nav-number">5.</span> <span class="nav-text">4  试验结果</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#4-1-%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="nav-number">5.1.</span> <span class="nav-text">4.1  数据集</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-2-RMSE"><span class="nav-number">5.2.</span> <span class="nav-text">4.2  RMSE</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-3-%E4%B8%8E%E5%85%B6%E4%BB%96%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%AF%B9%E6%AF%94"><span class="nav-number">5.3.</span> <span class="nav-text">4.3  与其他模型的对比</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-4-%E5%8F%AF%E8%A7%86%E5%8C%96%E7%BB%93%E6%9E%9C"><span class="nav-number">5.4.</span> <span class="nav-text">4.4  可视化结果</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-B-%E6%A0%B7%E6%9D%A1%E6%9B%B2%E7%BA%BF"><span class="nav-number">6.</span> <span class="nav-text">5  B 样条曲线</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#5-1-%E5%8F%82%E8%80%83"><span class="nav-number">6.1.</span> <span class="nav-text">5.1  参考</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Star Rain</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">14</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://guoyongyu.github.io/papernote/CLINS/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Star Rain">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="The Blog of Star Rain">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="CLINS | The Blog of Star Rain">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          CLINS
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2022-08-07 00:00:00" itemprop="dateCreated datePublished" datetime="2022-08-07T00:00:00+08:00">2022-08-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2022-11-17 11:31:00" itemprop="dateModified" datetime="2022-11-17T11:31:00+08:00">2022-11-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Paper-Note/" itemprop="url" rel="index"><span itemprop="name">Paper Note</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>关于论文 CLINS：Continuous-Time Trajectory Estimation for LiDAR-Inertial System (IROS 2021) 的阅读总结。</p>
+<span id="more"></span>
+<center><b><font size="9">CLINS</font></b></center>
+
+<h1 id="0-论文简介"><a href="#0-论文简介" class="headerlink" title="0  论文简介"></a>0  论文简介</h1><ul>
+<li>标题：CLINS：Continuous-Time Trajectory Estimation for LiDAR-Inertial System</li>
+<li>作者：Jiajun Lv，Kewei Hu，Jinhong Xu，Yong Liu，Xiushui Ma，Xingxing Zuo</li>
+<li>会议：IROS 2021</li>
+<li>源码：<a target="_blank" rel="noopener" href="https://github.com/APRIL-ZJU/clins">https://github.com/APRIL-ZJU/clins</a></li>
+</ul>
+<h1 id="1-介绍"><a href="#1-介绍" class="headerlink" title="1  介绍"></a>1  介绍</h1><p>基于 discrete-time 的方法通过差值的方法将 LiDAR 点去畸变为扫描的起始时刻。IMU 数据被差值和融合来形成两个离散 scan 的相对位姿约束。但是这种方法存在一下的缺陷：</p>
+<ul>
+<li>在实际中，传感器之间不是以相同的频率获取测量数据，这将产生不可忽视的误差。</li>
+<li>直接使用原始 LiDAR 测量数据和 IMU 数据是困难的。原始 LiDAR 点数据需要被去畸变至特定时刻以产生 LiDAR scan，而原始 IMU 数据则用于生成相对位姿。</li>
+</ul>
+<p>这些问题是由于难以处理高频传感器产生的原始数据而形成的，直接使用这些数据需要大量的位姿变量。上述问题可被归纳为离散的位姿表达无法满足系统的高分辨率要求。</p>
+<p>目前出现了 continuous-time 的方法，通过将轨迹建模为时间的函数并支持查询任何时间戳下的位姿，解决了集成异步和高频数据的问题。CLINS 提出了一种 LiDAR 惯性系统的完全基于 continuous-time 轨迹估计框架，主要贡献如下：</p>
+<ul>
+<li>提出了 continuous-time 轨迹估计子（estimator），可以支持 3D LiDAR 点和惯性数据的融合，并且能容易地拓展以融合其他不同频率的异步传感器产生的数据。</li>
+<li>提出了一种两阶段的 continuous-time 轨迹修正方法来高效解决回环检测问题。</li>
+</ul>
+<h1 id="2-连续时间轨迹的表达方式"><a href="#2-连续时间轨迹的表达方式" class="headerlink" title="2  连续时间轨迹的表达方式"></a>2  连续时间轨迹的表达方式</h1><p>定义 6-DoF 刚性变换 ${}_A^B \pmb{T} \in SE(3) \in \mathbb{R}^{4 \times 4}$，将帧 $\{ A\}$ 中的点 ${}^A \pmb{p} \in \mathbb{R}^3$ 变换到帧 $\{ B\}$ 中。变换矩阵为：</p>
+<script type="math/tex; mode=display">
+{}_A^B \pmb{T} = 
+\left[
+\begin{matrix}
+{}_A^B \pmb{R} &{}^B \pmb{p}_A \\
+{}^A \pmb{0} &1
+\end{matrix}
+\right]</script><p>其中旋转部分 ${}_A^B \pmb{R} \in SO(3)$，平移部分 ${}^B \pmb{p}_A \in \mathbb{R}^3$。为简化，将变换过程写为其次方程：</p>
+<script type="math/tex; mode=display">
+{}^B \pmb{p} = {}_A^B \pmb{T} {}^A \pmb{p}</script><p>$Exp(\cdot)$ 函数将 $\mathbb{R}^3$ 中的向量映射到李群 $SO(3)$，$Log(\cdot)$ 为此映射的反过程，$(\cdot)_{\vee}$ 将李代数中的元素映射到向量。</p>
+<p>B 样条曲线（B-spline）是光滑且局部连续的，其具有封闭形式的解析导数，使得很容易与 IMU 测量数据匹配。为此，CLINS 使用了两个分离的 B-spline 群来参数化 3D 平移和 3D 旋转，$\pmb{p}(t) \in \mathbb{R}^3$ 和 $\pmb{R}(t) \in SO(3)$。均匀 B 样条曲线的总结如下表：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Uniform B-Spline Basics</th>
+<th style="text-align:center"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">Order</td>
+<td style="text-align:center">$k$</td>
+</tr>
+<tr>
+<td style="text-align:center">Knot distance</td>
+<td style="text-align:center">$\Delta t$</td>
+</tr>
+<tr>
+<td style="text-align:center">Coeff. Vec. (1)</td>
+<td style="text-align:center">$\phi(u) = \pmb{M}^{(k)} \pmb{u}$</td>
+</tr>
+<tr>
+<td style="text-align:center">Cumul. Coeff. Vec. (1,2)</td>
+<td style="text-align:center">$\pmb{\lambda}(u) = \tilde{\pmb{M}}^{(k)} \pmb{u}$</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>Position in Cumulative Form</strong></td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">Control point</td>
+<td style="text-align:center">$\pmb{\Phi}_p = {\pmb{p}_i} \in \mathbb{R}^3,\ i \in [0,n]$</td>
+</tr>
+<tr>
+<td style="text-align:center">Distance</td>
+<td style="text-align:center">$d_j^i = \pmb{p}_{i+j} - \pmb{p}_{i + j - 1} \in \mathbb{R}^3$</td>
+</tr>
+<tr>
+<td style="text-align:center">Position</td>
+<td style="text-align:center">$\pmb{p}(u) = \pmb{p}_i + \sum_{j=1}^{k-1} \lambda_j \cdot \pmb{d}_j^i$</td>
+</tr>
+<tr>
+<td style="text-align:center">Velocity</td>
+<td style="text-align:center">$\pmb{v}(u) = \sum_{j=1}^{k-1} \dot{\lambda}_j(u) \cdot \pmb{d}_j^i$</td>
+</tr>
+<tr>
+<td style="text-align:center">Acceleration</td>
+<td style="text-align:center">$\pmb{a}(u) = \sum_{j=1}^{k-1} \ddot{\lambda}_j(u) \cdot \pmb{d}_j^i$</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>Orientation in Cumulative Form</strong></td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">Control point</td>
+<td style="text-align:center">$\pmb{\Phi}_R = {\pmb{R}_i} \in SO(3),\ i \in [0,n]$</td>
+</tr>
+<tr>
+<td style="text-align:center">Distance</td>
+<td style="text-align:center">$d_j^i = Log(\pmb{R}_{i+j-1}^{-1} \pmb{R}_{i+j}) \in \mathbb{R}^3$</td>
+</tr>
+<tr>
+<td style="text-align:center">Position</td>
+<td style="text-align:center">$\pmb{R}(u) = \pmb{R}_i \cdot \prod_{j=1}^{k-1} Exp(\lambda_j(u) \cdot \pmb{d}_j^i)$</td>
+</tr>
+<tr>
+<td style="text-align:center">Velocity</td>
+<td style="text-align:center">$\pmb{\omega}(u) = (\pmb{R}^\top \dot{\pmb{R}})_{\vee}$</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>其中：</p>
+<ul>
+<li>(1) $t \in [t_i, t_{i+1}),\ u(t) = s(t) - i, s(t) = (t - t_0) / \Delta t$</li>
+<li>(2) 注意 $\lambda_0(u) \equiv 1$</li>
+</ul>
+<p>特别的，样条矩阵 $M^{(k)}$ 和累积矩阵 $\tilde{M}^{(k)}$ 对于 B 样条曲线来说是常量。对于 $\mathbb{R}^n$ 中的平移轨迹，B 样条曲线的基本形式和累积形式是等价可相互转换的，而在非欧氏空间 $SO(3)$ 中这是不成立的。旋转轨迹可以使用累积形式表示，上表列出了 $\mathbb{R}^3$ 和 $SO(3)$ 中的累积形式。取样条曲线对时间的倒数，可以得到速度和加速度。上表中的线速度 $\pmb{v}(t)$ 和线加速度 $\pmb{a}(t)$ 是在全局坐标系中的，而角速度 $\pmb{\omega}(t)$ 则在局部坐标系。</p>
+<p>全局坐标系 $\{G\}$ 下 IMU 的 continuous-time 轨迹变换为：</p>
+<script type="math/tex; mode=display">
+{}_I^G \pmb{T}(t) = 
+\left[
+\begin{matrix}
+\pmb{R}(t) &\pmb{p}(t) \\
+\pmb{0} &1
+\end{matrix}
+\right]</script><p>由于已知 IMU 和 LiDAR 之间的变换（外参）${}_L^I \pmb{T}$，因此 LiDAR 的轨迹变换为：</p>
+<script type="math/tex; mode=display">
+{}_L^G \pmb{T}(t) = {}_I^G \pmb{T}(t) {}_L^I \pmb{T}</script><p>由于 B 样条曲线的局部性，对于 $t \in [t_i, t_{i+1})$，${}_I^G \pmb{T}$ 只受到 $\{ t_i, t_{i+1}, \cdots, t_{i+k-1} \}$ 的 knots 及与其相关的 control points 集 $\pmb{\Phi}(t_i, t_{i+1})$ 的控制，其中：</p>
+<script type="math/tex; mode=display">
+\begin{aligned}
+\pmb{\Phi}(t_i, t_{i+1}) 
+&= \pmb{\Phi}_R (t_i, t_{i+1}) \cup \pmb{\Phi}_p (t_i, t_{i+1}) \\
+&= \{ \pmb{R}_i, \cdots, \pmb{R}_{i+k-1} \} \cup \{ \pmb{p}_i, \cdots, \pmb{p}_{i+k-1} \}
+\end{aligned}</script><h1 id="3-方法"><a href="#3-方法" class="headerlink" title="3  方法"></a>3  方法</h1><p>如图是所提出的 LiDAR 惯性系统 continuous-time 轨迹估计所涉及的定义。根据当前 LiDAR 扫描数据的采集时间间隔来定义 active segments。Active segments 对应的控制点序列 $\pmb{\Phi}_{active}$ 记为活动控制点（active control points，蓝点和红点）。对应于 $\pmb{\Phi}_{active}$ 的基函数子集表示为活动基函数（蓝色曲线和红色曲线）。Active 轨迹（蓝色和红色）是由局部区域的活动控制点决定。此外，除了 active segments 的时间，与活动基函数有关的时间段被标记为 static segments。据此定义了静态控制点 $\pmb{\Phi}_{static}$（static control points，绿色点）和静态基函数（绿色曲线）。</p>
+<center>
+    <img src="/papernote/CLINS/1 系统框架.png">
+    <div>
+        图-1  系统框架
+    </div>
+</center>
+
+<p>该系统在一次新的 LiDAR 扫描后，在状态向量中加入新的控制点（红点），对扩展轨迹进行参数化。利用集成的 IMU 姿态来初始化这些新的控制点。随后，从当前扫描帧中提取边缘点和平面点等 LOAM 特征与局部子地图进行数据关联。最后，给定原始 IMU 测量在局部窗口和相关的 LiDAR 特征，使用批量优化的方式估计 continuous-time 轨迹。状态估计问题可以表述为最大后验概率（MAP）问题。基于传感器测量数据存在独立高斯噪声的假设，可以通过求解非线性最小二乘（NLLS）问题来估计 continuous-time 轨迹。</p>
+<h2 id="3-1-初始化"><a href="#3-1-初始化" class="headerlink" title="3.1  初始化"></a>3.1  初始化</h2><p>当新的 LiDAR 帧到达后，新的 control points 被加入以扩展现有的轨迹。融合离散的 IMU 数据来获取时间 $t_m$ 的高频的旋转 $\pmb{R}_{I_m}$、平移 $\pmb{p}_{I_m}$ 和线速度 $\pmb{v}_{I_m}$ 估计。可以最小化一下损失函数来初始化新加入的 control points $\pmb{\Phi}_{new}$：</p>
+<script type="math/tex; mode=display">
+\underset{\pmb{\Phi}_{new}}{\operatorname{argmin}} \sum (|| Log(\pmb{R}_{I_m}^{\top}) \pmb{R}(t_m) || + || \pmb{p}(t_m) - \pmb{p}_{I_m} || + || \pmb{v}(t_m) - \pmb{v}_{I_m} ||)</script><h2 id="3-2-局部窗口的非网格注册"><a href="#3-2-局部窗口的非网格注册" class="headerlink" title="3.2  局部窗口的非网格注册"></a>3.2  局部窗口的非网格注册</h2><p>对于新到来的帧 $S_k$，其在时间间隔 $[t_k, t_k + \Delta T]$（$t_k$ 为 $S_k$ 中第一个点的时间戳，$\Delta T$ 为完成一次 LiDAR 扫描的周期）收集得到，如果在扫描过程中传感器存在外部移动，那么 $S_k$ 中的非网格点云就十分重要。因此传统计算两个网格点云的相对变换的注册算法，将不适用于这种点云。为解决这个问题，此处提出了一个非网格注册的方法。</p>
+<p>特别地，$S_k$ 中的每一个点变换到一个统一的坐标系 $\{ L_k \}$ 中：</p>
+<script type="math/tex; mode=display">
+{}^{L_k} \pmb{x}_{kj} = {}^G_L T(t_k)^\top {}^G_LT(t_k + \tau_j) {}^{L_{kj}} \pmb{x}_{kj}</script><p>$\tau_j$ 为点 ${}^{L_{kj}} \pmb{x}_{kj}$ 相对当前帧起始时间点时间戳。为使计算易处理，通过计算曲率从原始点云中提取出面特征（planar features）和边特征（edge features）。</p>
+<p>考虑到 LiDAR 数据在一些非结构化的环境中会退化，同时高频的 IMU 数据不受影响，因此将 IMU 测量同 LiDAR 特征紧耦合以约束轨迹。于是非网格注册问题可以被定义为：给定当前帧 active segment 和 static segment 对应的 LiDAR 特征和惯性数据，估计轨迹的活动控制点 $\pmb{\Phi} (t_k, t_k + \Delta T)$ 和 IMU 的偏差。具体地，可以通过求解下目标函数来解决这个问题：</p>
+<script type="math/tex; mode=display">
+\underset{\mathcal{X}}{\operatorname{argname}} \sum ||\pmb{r}_{\mathcal{L}}||_{\pmb{\Sigma}_{\mathcal{L}}} + ||\pmb{r}_a||_{\pmb{\Sigma}_{\mathcal{a}}} + ||\pmb{r}_w||_{\pmb{\Sigma}_{\mathcal{w}}}</script><p>其中 $\mathcal{X} = \{ \pmb{\Phi}(t_k, t_k + \Delta T), \pmb{b}_a, \pmb{b}_g \}$，$\pmb{b}_a,\pmb{b}_{g}$ 分别表示加速度计和陀螺仪的偏差，$\pmb{r}_{\mathcal{L}}, \pmb{r}_a, \pmb{r}_w$ 表示 LiDAR 特征和 IMU 测量的残差，$\pmb{\Sigma}_{\mathcal{L}}, \pmb{\Sigma}_a, \pmb{\Sigma}_w$ 为响应的协方差矩阵。残差的定义如下：</p>
+<script type="math/tex; mode=display">
+\begin{aligned}
+\pmb{r}_{\mathcal{L}} &= \pi ({}^G_L T(t_k + \tau_j) {}^{L_{kj}}\pmb{x}_{kj}) \\
+\pmb{r}_a &= {}_L^G \pmb{R}^\top (t_m) (\pmb{a}(t_m) - {}^G \pmb{g}) - \pmb{a}_m + \pmb{b}_a \\
+\pmb{r}_w &= \pmb{\omega} (t_m) - \pmb{\omega}_m + \pmb{b}_w
+\end{aligned}</script><p>其中投影函数 $\pi(\cdot)$ 对面特征进行点到平面投影，对边特征进行点到线投影。$\pmb{a}_m,\pmb{\omega}_m$ 为时间 $t_m$ 的惯性测量数据。注意到静态控制点被包含在优化过程中，但在优化过程中保持不变。使用 Ceres 中的 LM 法求解上述非线性最小二乘问题。</p>
+<h2 id="3-3-轨迹修正"><a href="#3-3-轨迹修正" class="headerlink" title="3.3  轨迹修正"></a>3.3  轨迹修正</h2><p>里程系统的累积漂移误差是无法避免的，本文在出现回环时进行修正以减缓累积误差。考虑到在有许多 knot 的连续轨迹上使用全局优化是费时的，因此此处提出了一个两阶段的轨迹优化方法降低时间复杂度和计算开销：</p>
+<ul>
+<li>第一阶段，当检测到回环时，在关键帧的离散位姿上进行位姿图优化来限制累积误差。</li>
+<li>第二阶段，使用更新过的关键帧的位姿尝试更新控制点。这个过程可以被理解为将连续的轨迹投影到某些锚位姿上并保留轨迹的局部形状。</li>
+</ul>
+<p>一般来说，局部的惯导估计是准确的，因此在某一确切时刻的原始 continuous-time 轨迹上计算局部线速度和角速度。因此，第二阶段的问题可以被形式化为求解如下函数：</p>
+<script type="math/tex; mode=display">
+\underset{\pmb{\Phi}_{update}}{\operatorname{argname}} \sum (||Log(\hat{\pmb{R}}_k^\top \pmb{R}(t_k))|| + ||\pmb{p}(t_k) - \hat{\pmb{p}}_k||) + \sum (||\pmb{R}(t_j)^\top \pmb{v}(t_j) - \hat{\pmb{v}}_j|| + ||\pmb{\omega}(t_j) - \hat{\pmb{\omega}}_j||)</script><p>其中 $\hat{\pmb{R}}_k, \hat{\pmb{p}}_k$ 表示位姿优化后时间 $t_k$ 更新后的关键帧的位姿，$\hat{\pmb{v}}_j, \hat{\pmb{\omega}}_j$ 为修正前时间 $t_j$ 的线速度和角速度。下Í图为两阶段方法的示意图：</p>
+<center>
+    <img src="/papernote/CLINS/2 两阶段修正.png">
+    <div>
+        图-2  两阶段修正
+    </div>
+</center>
+
+
+
+<h1 id="4-试验结果"><a href="#4-试验结果" class="headerlink" title="4  试验结果"></a>4  试验结果</h1><h2 id="4-1-数据集"><a href="#4-1-数据集" class="headerlink" title="4.1  数据集"></a>4.1  数据集</h2><center>
+    <img src="/papernote/CLINS/3 数据集.png">
+    <div>
+        图-3  数据集
+    </div>
+</center>
+
+
+
+<h2 id="4-2-RMSE"><a href="#4-2-RMSE" class="headerlink" title="4.2  RMSE"></a>4.2  RMSE</h2><center>
+    <img src="/papernote/CLINS/4 RMSE.png">
+    <div>
+        图-4  平移和旋转的 RMSE
+    </div>
+</center>
+
+
+
+<h2 id="4-3-与其他模型的对比"><a href="#4-3-与其他模型的对比" class="headerlink" title="4.3  与其他模型的对比"></a>4.3  与其他模型的对比</h2><p>其中 LIO-SAM(odom) 和 CLINS(odom) 表示去除回环修正：</p>
+<center>
+    <img src="/papernote/CLINS/5 模型对比.png">
+    <div>
+        图-5  与其他模型的对比
+    </div>
+</center>
+
+
+
+<h2 id="4-4-可视化结果"><a href="#4-4-可视化结果" class="headerlink" title="4.4  可视化结果"></a>4.4  可视化结果</h2><center>
+    <img src="/papernote/CLINS/6 可视化.png">
+    <div>
+        图-6  结果可视化
+    </div>
+</center>
+
+
+
+<h1 id="5-B-样条曲线"><a href="#5-B-样条曲线" class="headerlink" title="5  B 样条曲线"></a>5  B 样条曲线</h1><h2 id="5-1-参考"><a href="#5-1-参考" class="headerlink" title="5.1  参考"></a>5.1  参考</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/144042470">https://zhuanlan.zhihu.com/p/144042470</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_40597317/article/details/81155571">https://blog.csdn.net/qq_40597317/article/details/81155571</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/49aff913104c">https://www.jianshu.com/p/49aff913104c</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/SLAM/" rel="tag"># SLAM</a>
+              <a href="/tags/Paper-Note/" rel="tag"># Paper Note</a>
+              <a href="/tags/IO/" rel="tag"># IO</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/papernote/Cylinder3D/" rel="prev" title="Cylinder3D">
+                  <i class="fa fa-chevron-left"></i> Cylinder3D
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/summary/Bundle%20Adjustment/" rel="next" title="Bundle Adjustment">
+                  Bundle Adjustment <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Star Rain</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"cdn":"//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML","tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
