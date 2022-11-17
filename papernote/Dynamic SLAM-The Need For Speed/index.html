@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/logo-32x32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/logo-16x16.ico">
+  <link rel="mask-icon" href="/images/logo.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"guoyongyu.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="关于论文 Dynamic SLAM: The Need For Speed (ICRA, 202) 的阅读总结。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CT-ICP">
+<meta property="og:url" content="https://guoyongyu.github.io/papernote/Dynamic%20SLAM-The%20Need%20For%20Speed/index.html">
+<meta property="og:site_name" content="The Blog of Star Rain">
+<meta property="og:description" content="关于论文 Dynamic SLAM: The Need For Speed (ICRA, 202) 的阅读总结。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://guoyongyu.github.io/papernote/Dynamic%20SLAM-The%20Need%20For%20Speed/Figure-1.png">
+<meta property="og:image" content="https://guoyongyu.github.io/papernote/Dynamic%20SLAM-The%20Need%20For%20Speed/Figure-2.png">
+<meta property="og:image" content="https://guoyongyu.github.io/papernote/Dynamic%20SLAM-The%20Need%20For%20Speed/Figure-3.png">
+<meta property="og:image" content="https://guoyongyu.github.io/papernote/Dynamic%20SLAM-The%20Need%20For%20Speed/Figure-4.png">
+<meta property="og:image" content="https://guoyongyu.github.io/papernote/Dynamic%20SLAM-The%20Need%20For%20Speed/Figure-5.png">
+<meta property="og:image" content="https://guoyongyu.github.io/papernote/Dynamic%20SLAM-The%20Need%20For%20Speed/Figure-6.png">
+<meta property="og:image" content="https://guoyongyu.github.io/papernote/Dynamic%20SLAM-The%20Need%20For%20Speed/Table-2.png">
+<meta property="article:published_time" content="2022-10-26T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-11-17T08:01:09.886Z">
+<meta property="article:author" content="Star Rain">
+<meta property="article:tag" content="Semantic SLAM">
+<meta property="article:tag" content="Paper Note">
+<meta property="article:tag" content="Dynamic Environmet">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://guoyongyu.github.io/papernote/Dynamic%20SLAM-The%20Need%20For%20Speed/Figure-1.png">
+
+
+<link rel="canonical" href="https://guoyongyu.github.io/papernote/Dynamic%20SLAM-The%20Need%20For%20Speed/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://guoyongyu.github.io/papernote/Dynamic%20SLAM-The%20Need%20For%20Speed/","path":"papernote/Dynamic SLAM-The Need For Speed/","title":"CT-ICP"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>CT-ICP | The Blog of Star Rain</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">The Blog of Star Rain</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AE%BA%E6%96%87%E6%83%85%E5%86%B5"><span class="nav-number">1.</span> <span class="nav-text">论文情况</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-Introduction"><span class="nav-number">2.</span> <span class="nav-text">1  Introduction</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-Accounting-for-Dynamic-Obects-in-SLAM"><span class="nav-number">3.</span> <span class="nav-text">2  Accounting for Dynamic Obects in SLAM</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-Problem-Formulation"><span class="nav-number">3.1.</span> <span class="nav-text">2.1  Problem Formulation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-Motion-Model-of-a-Point-on-a-Rigid-Body"><span class="nav-number">3.2.</span> <span class="nav-text">2.2  Motion Model of a Point on a Rigid Body</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-1-%E7%AC%A6%E5%8F%B7%E8%AE%BE%E5%AE%9A"><span class="nav-number">3.2.1.</span> <span class="nav-text">2.2.1  符号设定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-2-%E5%9D%90%E6%A0%87%E7%B3%BB%E5%8F%98%E5%8C%96%E4%B9%8B%E9%97%B4%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="nav-number">3.2.2.</span> <span class="nav-text">2.2.2  坐标系变化之间的关系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-3-%E7%BA%BF%E9%80%9F%E5%BA%A6%E6%8F%90%E5%8F%96"><span class="nav-number">3.2.3.</span> <span class="nav-text">2.2.3  线速度提取</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-Motion-Factors-in-Dynamic-SLAM"><span class="nav-number">3.3.</span> <span class="nav-text">2.3  Motion Factors in Dynamic SLAM</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-The-Fractor-Graph"><span class="nav-number">3.4.</span> <span class="nav-text">2.4  The Fractor Graph</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-System-Overview"><span class="nav-number">4.</span> <span class="nav-text">3  System Overview</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-Experiments-and-Results"><span class="nav-number">5.</span> <span class="nav-text">4  Experiments and Results</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%99%84%E5%BD%95"><span class="nav-number">6.</span> <span class="nav-text">附录</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">7.</span> <span class="nav-text">参考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Star Rain</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://guoyongyu.github.io/papernote/Dynamic%20SLAM-The%20Need%20For%20Speed/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Star Rain">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="The Blog of Star Rain">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="CT-ICP | The Blog of Star Rain">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          CT-ICP
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2022-10-27 00:00:00" itemprop="dateCreated datePublished" datetime="2022-10-27T00:00:00+08:00">2022-10-27</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2022-11-17 16:01:09" itemprop="dateModified" datetime="2022-11-17T16:01:09+08:00">2022-11-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Paper-Note/" itemprop="url" rel="index"><span itemprop="name">Paper Note</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>关于论文 Dynamic SLAM: The Need For Speed (ICRA, 202) 的阅读总结。</p>
+<span id="more"></span>
+<center><b><font size="9">Dynamic SLAM: The Need For Speed</font></b></center>
+
+<h1 id="论文情况"><a href="#论文情况" class="headerlink" title="论文情况"></a>论文情况</h1><ul>
+<li>标题：Dynamic SLAM: The Need For Speed</li>
+<li>作者：Mina Henein, Jun Zhang, Robert Mahony and Viorela Ila</li>
+<li>期刊：ICRA 2020</li>
+<li>源码：<a target="_blank" rel="noopener" href="https://github.com/halajun/VDO_SLAM（与">https://github.com/halajun/VDO_SLAM（与</a> VDO-SLAM 出自同一个组）</li>
+</ul>
+<h1 id="1-Introduction"><a href="#1-Introduction" class="headerlink" title="1  Introduction"></a>1  Introduction</h1><p>大量 SLAM 问题基于静态世界假设，这限制了现存算法在包含动态物体的真实世界的精确度。</p>
+<p>DL 的发展提供了几乎实时目标检测和分割的可靠算法：</p>
+<ul>
+<li>将 DL 融入几何 SLAM，除了检测和分割，还需要 3D 模型是可用的，或者前段显示提供对象的位姿。对 3D 模型的精确度要求限制了潜在的应用领域。</li>
+<li>同时，多目标跟踪和 3D 位姿仍然是一大挑战。需要一种算法，可以利用现有 DL 强大的检测和分割能力，而不依赖额外的位姿估计或运动模型先验。</li>
+</ul>
+<p>本文提出来一个无模型、目标感知的基于点的动态 SLAM 模型：</p>
+<ul>
+<li>利用基于图像的语义信息进行机器人定位、绘制静态结构、估计动态物体的完整 $SE(3)$ 位姿变换、构建世界的动态表示。</li>
+<li>利用物体的刚体运动来提取场景中物体的速度信息，如 Fig.1。</li>
+</ul>
+<center>
+    <img src="/papernote/Dynamic%20SLAM-The%20Need%20For%20Speed/Figure-1.png">
+</center>
+
+<p>本文关键创新：</p>
+<ul>
+<li>一种新颖的姿态变化表示，用于对给定刚体上点集合的运动进行建模，并将模型集成到 SLAM 优化框架。只要对象的语义检测和分割可以被跟踪，生成的模型与对象的底层 3D 模型无关。</li>
+<li>本文是第一个能够估计相机位姿、静态和动态结构、场景中每个刚性物体的完整 $SE(3)$ 位姿变化的工作。</li>
+</ul>
+<h1 id="2-Accounting-for-Dynamic-Obects-in-SLAM"><a href="#2-Accounting-for-Dynamic-Obects-in-SLAM" class="headerlink" title="2  Accounting for Dynamic Obects in SLAM"></a>2  Accounting for Dynamic Obects in SLAM</h1><p>问题描述：SLAM 下机器人的感知范围内存在相对较大的动态刚体。SLAM 前端能在不同时刻识别并提取同一物体上的点，这些点共享在一个潜在运动约束上，用于提高 SLAM 性能。</p>
+<h2 id="2-1-Problem-Formulation"><a href="#2-1-Problem-Formulation" class="headerlink" title="2.1  Problem Formulation"></a>2.1  Problem Formulation</h2><p>动态物体 SLAM：</p>
+<ul>
+<li>使用因子图，获取静态和动态 3D 结构、位姿变换约束。</li>
+</ul>
+<p>考虑高斯噪声，问题变为非线性最小二乘问题：</p>
+<ul>
+<li>机器人位姿 $\pmb{x} = \{ x_0, …, x_{n_x} \}, x_k \in SE(3), k \in \{ 0, …, n_x \}$，其中 $n_x$ 为时间步数量；</li>
+<li>不同时间步环境中的 3D 点特征 $\pmb{l} = \{ l_0^1, …, l_{n_x}^{n_l} \}, l_k^i \in \mathbb{R}^3$，其中$i \in \{ 1, …, n_l \}$ 为 landmark 的唯一索引，$n_l$ 为检测到的 landmark 的总数。$\pmb{l} = \pmb{l_s} \cup \pmb{l_d}$ 包含静态 landmark 集合 $\pmb{l_s}$ 和动态 landmark 集合 $\pmb{l_d}$。</li>
+<li>一个运动目标在不同时间的同一个点用不同的变量表示，即 $l_{k-1}^i$ 和 $l_k^i$，即不同时间步的第 $i$ 个特征点。</li>
+</ul>
+<h2 id="2-2-Motion-Model-of-a-Point-on-a-Rigid-Body"><a href="#2-2-Motion-Model-of-a-Point-on-a-Rigid-Body" class="headerlink" title="2.2  Motion Model of a Point on a Rigid Body"></a>2.2  Motion Model of a Point on a Rigid Body</h2><h3 id="2-2-1-符号设定"><a href="#2-2-1-符号设定" class="headerlink" title="2.2.1  符号设定"></a>2.2.1  符号设定</h3><p>符号：</p>
+<ul>
+<li><p>设 $\{ 0 \}$ 为参考坐标系（世界坐标系），$\{ L \}$ 为运动刚体的坐标系。</p>
+</li>
+<li><p>${}^0 L_k \in SE(3)$ 为刚体相对坐标系 $\{ 0 \}$ 的位姿。</p>
+</li>
+<li><p>对于物体上的特征点，${}^L l^i \in \mathbb{R}^3$ 表示点在该物体坐标系的坐标。记 ${}^0 l_k^i$ 为同一个特征点在时间步 $k$ 相对于坐标系 $\{0\}$ 的坐标。</p>
+</li>
+<li><p>注意，对运动中对刚体来说，${}^L l^i$ 是常量，${}^0 L_k, {}^0 l_k^i$ 则是随时间变化的。存在关系：</p>
+<script type="math/tex; mode=display">
+  {}^L \bar{l}^i = {}^0 L_k^{-1} {}^0\bar{l}_k^i
+  \tag{1}</script><p>  其中 $\bar{l}$ 为齐次坐标。</p>
+</li>
+</ul>
+<h3 id="2-2-2-坐标系变化之间的关系"><a href="#2-2-2-坐标系变化之间的关系" class="headerlink" title="2.2.2  坐标系变化之间的关系"></a>2.2.2  坐标系变化之间的关系</h3><p>物体 $L$ 从 $k-1$ 到 $k$ 到相对变换表示为 ${}^{L_{k-1}}_{k-1} H_k \in SE(3)$，成为 body-fixed 坐标位姿系变换，且存在关系：</p>
+<script type="math/tex; mode=display">
+{}_{k-1}^{L_{k-1}} H_k = {}^0 L_{k-1}^{-1} {}^0 L_k
+\tag{2}</script><p>Fig.2a 表示了三个连续位姿的上述关系：</p>
+<center>
+    <img src="/papernote/Dynamic%20SLAM-The%20Need%20For%20Speed/Figure-2.png">
+</center>
+
+<p>由 (2) 可以得到心得刚体坐标可以写为增量形式：</p>
+<script type="math/tex; mode=display">
+{}^0 L_k = {}^0 L_{k-1} {}_{k-1}^{L_{k-1}} H_k
+\tag{3}</script><p>考虑物体坐标系 $\{ L \}$ 中的点 ${}^L l^i$，联合 (1) (3) 可以得到：</p>
+<script type="math/tex; mode=display">
+{}^0 \bar{l}_k^i = {}^0 L_{k-1} {}_{k-1}^{L_{k-1}} H_k {}^0 L_{k-1}^{-1} {}^0\bar{l}_{k-1}^i
+\tag{4}</script><p>由 (4) 可以得到 ${}^0_{k-1}H_k = {}^0 L_{k-1} {}_{k-1}^{L_{k-1}} H_k {}^0 L_{k-1}^{-1} \in SE(3)$，表示了位姿变换的坐标系变化，并说明了 (2) 中 body-fixed 坐标系的坐标系变化与参考坐标系的坐标系变化之间的关系。从而有：</p>
+<script type="math/tex; mode=display">
+{}^0 \bar{l}_k^i = {}^0_{k-1}H_k {}^0\bar{l}_{k-1}^i
+\tag{5}</script><p>(5) 是本文方法的关键点，其限制了对物体位姿 ${}^0 L_k$ 估计的必要性，允许直接使用参考坐标系中的点 $\bar{l}_k^i$。</p>
+<h3 id="2-2-3-线速度提取"><a href="#2-2-3-线速度提取" class="headerlink" title="2.2.3  线速度提取"></a>2.2.3  线速度提取</h3><p>给定刚体在惯性坐标系下的位姿变换 ${}_{k-1}^0 H_k$，刚体的线速度向量为：</p>
+<script type="math/tex; mode=display">
+v = {}_{k-1}^0 t_k - (I_3 - {}_{k-1}^0 R_k) c_{k-1}
+\tag{6}</script><p>其中 ${}_{k-1}^0 R_k \in SO(3)$ 和 ${}_{k-1}^0 t_k \in \mathbb{R}^3$ 表示刚体位姿变换 ${}_{k-1}^0 H_k$ 的旋转和平移，$I_3$ 为单位矩阵，$c_{k-1}$ 为刚体在 $k-1$ 时的质心坐标。</p>
+<p>由于算法设计，并没有直接获取物体的质心，而是近似为物体上检测到的特征点的 3D 质心。(6) 的详细推导参考 [1]。</p>
+<h2 id="2-3-Motion-Factors-in-Dynamic-SLAM"><a href="#2-3-Motion-Factors-in-Dynamic-SLAM" class="headerlink" title="2.3  Motion Factors in Dynamic SLAM"></a>2.3  Motion Factors in Dynamic SLAM</h2><p>为了估计了相机位姿、静态和动态结构、动态结构的运动，运动因子和从机器人本体传感器获得的里程数，以及 landmark 观测被联合优化：</p>
+<script type="math/tex; mode=display">
+\begin{aligned}
+\boldsymbol{\theta}^*&=\underset{\boldsymbol{\theta}}{\operatorname{argmin}}\left\{\sum_{k=1}^{m_k} \rho_h\left(\left(h\left(x_k, l_k^i\right)-z_k^i\right)^{\top} \Sigma_{w_k}^{-1}\left(h\left(x_k, l_k^i\right)-z_k^i\right)\right)+\right. \\
+&\sum_{i=1}^{m_i} \rho_h\left(\left(f\left(x_{k-1}, x_k\right)-o_k\right)^{\top} \Sigma_{v_k}^{-1}\left(f\left(x_{k-1}, x_k\right)-o_k\right)\right)+ \\
+&\sum_{i, j}^{m_s} \rho_h\left(\left(g\left(l_{k-1}^i, l_k^i,{ }_{k-1}^0 H_k^j\right)\right)^{\top} \Sigma_q^{-1}\left(g\left(l_{k-1}^i, l_k^i,{ }_{k-1}^0 H_k^j\right)\right)\right\} \\
+\pmb{\theta} &= \pmb{x} \cup \pmb{l} \cup \pmb{H}
+\end{aligned}</script><p>$\pmb{H}$ 表示描述物体运动的变量集合。</p>
+<p>其中（参考 Fig.2b 中红线）：</p>
+<ul>
+<li><p>$\rho_h$ 为 Huber 函数；</p>
+</li>
+<li><p>$h(x_k, l_k^i)$ 为 3D 点测量模型，$\Sigma_{w_k}$ 为点测量协方差，$\pmb{z} = \{ z_1, …, z_{m_k} \}, z_k \in \mathbb{R}^3$ 表示所有的时间步下的 $m_k$ 个 3D 点测量；</p>
+</li>
+<li><p>$f(x_{k-1}, x_k)$ 为惯导模型，$\Sigma_{v_k}$ 为惯导协方差，$\pmb{o} = \{ o_1, …, o_{m_i} \}$ 表示 $m_i$ 个惯导测量；</p>
+</li>
+<li><p>$g\left(l_{k-1}^i, l_k^i,{ }_{k-1}^0 H_k^j\right)$ 表示动态物体上的点点运动模型，$\Sigma_q$ 为运动协方差，$m_s$ 为所有的运动因子的数量。被检测到的刚体 $j$ 上的任意点的运动可以使用 (5) 表述为：</p>
+<script type="math/tex; mode=display">
+  g\left(l_{k-1}^i, l_k^i,{ }_{k-1}^0 H_k^j\right)={ }^0 l_{k-1}^i-{ }_{k-1}^0 R_k^{j 0} l_{k-1}^i-{ }_{k-1}^0 t_k^j+q_{s_j}
+  \tag{8}</script><p>  其中 $q_s \sim \mathcal{N}(0, \Sigma_q)$ 为高斯噪声</p>
+</li>
+</ul>
+<p>(8) 中的因子为三元因子（Fig.3 中橙色因子），成为刚体上点的运动模型。</p>
+<center>
+    <img src="/papernote/Dynamic%20SLAM-The%20Need%20For%20Speed/Figure-3.png">
+</center>
+
+
+
+<h2 id="2-4-The-Fractor-Graph"><a href="#2-4-The-Fractor-Graph" class="headerlink" title="2.4  The Fractor Graph"></a>2.4  The Fractor Graph</h2><p>本文评估了使用/没使用恒定运动（constant motion）模型的场景：</p>
+<ul>
+<li>城市场景：当物体的运动受到变化（加速、减速等）的影响时，运动建模是具有挑战性的。因此，允许在每个时间步上估计一个新的位姿变化。Fig.3a 为这种情况的因子图，途中使用两个运动顶点对两个不同的时间过渡估计同一物体的运动。一种约束是最小化这些运动估计之间的变化。</li>
+<li>高速公路：每个物体（车辆）保持恒定运动，如 Fig.3b。</li>
+</ul>
+<p>进一步，如果 body-fixed 坐标系的位姿变化是恒定的，那么参考坐标系的位姿变化也是恒定的。对于任意 $k-1$ 和 $k’-1$，则：</p>
+<script type="math/tex; mode=display">
+{}_{k-1}^{L_{k-1}} H_k = C ={}_{k'-1}^{L_{k'-1}} H_{k'} \in SE(3) 
+\tag{9}</script><p>用 (9) 替换 (3) 得到 ${}^0 L_k = {}^0 L_{k-1} C$，且有 ${}^0_{k-1}H_k = {}^0 L_{k-1} C {}^0 L_{k-1}^{-1}$，则：</p>
+<script type="math/tex; mode=display">
+{}^0_{k-1}H_k = {}^0 L_{k} C {}^0 L_{k}^{-1} = {}^0_k H_{k+1}
+\tag{10}</script><p>这说明对于物体 $j$ 和任意时间 $k, k’$，有 ${}^0_{k-1}H_k^j = {}^0 H^j = {}^0_{k’} H^j_{k’+1} \in SE(3)$。</p>
+<h1 id="3-System-Overview"><a href="#3-System-Overview" class="headerlink" title="3  System Overview"></a>3  System Overview</h1><center>
+    <img src="/papernote/Dynamic%20SLAM-The%20Need%20For%20Speed/Figure-4.png">
+</center>
+
+<p>Fig.4 中设机器人携带 RGB-D 相机以及惯性传感器（里程计，IMU）。</p>
+<p>为了保证运动物体上的特征被检测到，使用一个实例级的物体分割算法来产生物体掩码。前端利用物体掩码来检测潜在移动物体和静态背景上的特征。SLAM 前端通过目标分割和特征跟踪，识别和关联同一刚体对象上不同时间步的点。这些点共享一个基本的运动模型，利用这个模型来实现同步定位、映射和移动对象跟踪。</p>
+<p>静态和动态三维测量以及本体感知传感器的测量被集成到后端，以同时估计摄像机运动、静态和动态结构以及场景中被检测对象的 SE(3) 位姿转换。</p>
+<h1 id="4-Experiments-and-Results"><a href="#4-Experiments-and-Results" class="headerlink" title="4  Experiments and Results"></a>4  Experiments and Results</h1><ul>
+<li>误差度量：<ul>
+<li>相对平移误差 RTE；</li>
+<li>相对旋转误差 RRE；</li>
+<li>相对结构误差 RSE（所有静态和动态结构 landmark 在预测和 GT 中的位置误差）；</li>
+<li>物体运动平移误差 OMTE，物体运动旋转误差 OMRE，物体运动速度误差 OMSE。</li>
+</ul>
+</li>
+<li>数据集 KITTI 上的评估：只对分割掩码达到一定比例的目标进行估计，确保排除了远处和部分观察到的进入/离开相机视野的物体。对于 vKITTI，阈值设置为 6%，对于 KITTI  设置为2%。</li>
+</ul>
+<p>特征跟踪误差如 Fig.5，使用 PWC-Net 和特征描述子匹配，评价标准为 end-point error（EPE）：</p>
+<center>
+    <img src="/papernote/Dynamic%20SLAM-The%20Need%20For%20Speed/Figure-5.png">
+</center>
+
+<p>在观测的每个轴上分别添加 0 均值，标准差 $\sigma_1 = 0.02, \sigma_2 = 0.04, \sigma_3 = 0.06m$ 的高斯噪声，不同前端组件对相机位姿变换的预测准确率如 Fig.6：</p>
+<center>
+    <img src="/papernote/Dynamic%20SLAM-The%20Need%20For%20Speed/Figure-6.png">
+</center>
+
+<p>在 KITTI 上的实验结果如 Table II，Static Only 表示不考虑场景中的动态物体：</p>
+<center>
+    <img src="/papernote/Dynamic%20SLAM-The%20Need%20For%20Speed/Table-2.png">
+</center>
+
+
+
+<h1 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h1><p>为证明 (6) 等价于在 $\{ 0 \}$ 处观测到的从时间 $k-1$ 到 $k$ 物体位姿原点到平移，先进性如下的变换：</p>
+<script type="math/tex; mode=display">
+{}^0_{k-1}H_k = {}^0 L_{k-1} {}_{k-1}^{L_{k-1}} H_k {}^0 L_{k-1}^{-1} = {}^0 L_k {}^0 L_{k-1}^{-1}
+\tag{11}</script><p>设 ${}^0 R_{L_{k-1}} \in SO(3)$ 和 ${}^0 t_{L_{k-1}} \in \mathbb{R}^3$ 为 ${}^0 L_{k-1}$ 中的旋转和平移，则 ${}^0_{k-1}H_k$ 的平移和旋转可以表示为 ${}^0 t_{L_{k}} - {}^0 R_{L_{k}}{}^0 R_{L_{k-1}}^\top {}^0 t_{L_{k-1}}$ 和 $R_{L_{k}}{}^0 R_{L_{k-1}}^\top$。将这两个式子带入 (6) 得到：</p>
+<script type="math/tex; mode=display">
+v = {}^0 t_{L_{k}} - {}^0 R_{L_{k}}{}^0 R_{L_{k-1}}^\top {}^0 t_{L_{k-1}} - (I_3 - {}^0 R_{L_{k}}{}^0 R_{L_{k-1}}^\top) {}^0 t_{L_{k-1}}
+\tag{12}</script><p>最后化简得 $v = {}^0 t_{L_{k}} - {}^0 t_{L_{k-1}}$。</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ul>
+<li>[1] G. S. Chirikjian, R. Mahony, S. Ruan, and J. Trumpf, “Pose changes from a different point of view,” in <em>Proceedings of the ASME International Design Engineering Technical Conferences (IDETC) 2017</em>. ASME, 2017.</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Semantic-SLAM/" rel="tag"># Semantic SLAM</a>
+              <a href="/tags/Paper-Note/" rel="tag"># Paper Note</a>
+              <a href="/tags/Dynamic-Environmet/" rel="tag"># Dynamic Environmet</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/papernote/Data-Driven%20Navigation%20Bluetooth%20Indoor%20Localization/" rel="prev" title="Data-Driven Navigation/Bluetooth Indoor Localization">
+                  <i class="fa fa-chevron-left"></i> Data-Driven Navigation/Bluetooth Indoor Localization
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/collection/Awesome%20Semantic%20SLAM/" rel="next" title="Awesome Semantic SLAM">
+                  Awesome Semantic SLAM <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Star Rain</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+  <script class="next-config" data-name="pdf" type="application/json">{"object_url":{"url":"https://cdn.jsdelivr.net/npm/pdfobject@2.2.7/pdfobject.min.js","integrity":"sha256-ph3Dk89VmuTVXG6x/RDzk53SU9LPdAh1tpv0UvnDZ2I="},"url":"/lib/pdf/web/viewer.html"}</script>
+  <script src="/js/third-party/tags/pdf.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"cdn":"//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML","tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/logo-32x32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/logo-16x16.ico">
+  <link rel="mask-icon" href="/images/logo.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"guoyongyu.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="可变形卷积网络（DCN）和 RepPoints 的介绍，结合网络计算整理总结。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DCP and RepPoints">
+<meta property="og:url" content="https://guoyongyu.github.io/summary/DCN%20and%20RepPoints/index.html">
+<meta property="og:site_name" content="The Blog of Star Rain">
+<meta property="og:description" content="可变形卷积网络（DCN）和 RepPoints 的介绍，结合网络计算整理总结。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://guoyongyu.github.io/summary/DCN%20and%20RepPoints/1%20普通卷积和可变形卷积的采样方式.png">
+<meta property="og:image" content="https://guoyongyu.github.io/summary/DCN%20and%20RepPoints/2%20可变形卷积示意.jpg">
+<meta property="og:image" content="https://guoyongyu.github.io/summary/DCN%20and%20RepPoints/3%20普通卷积与可变形卷积对比.jpg">
+<meta property="og:image" content="https://guoyongyu.github.io/summary/DCN%20and%20RepPoints/4%20可变形卷积对图像的处理.jpg">
+<meta property="og:image" content="https://guoyongyu.github.io/summary/DCN%20and%20RepPoints/5%20可变形RoI%20Pooling.jpg">
+<meta property="og:image" content="https://guoyongyu.github.io/summary/DCN%20and%20RepPoints/6%20普通卷积和可变形卷积v1的特征提取.jpg">
+<meta property="og:image" content="https://guoyongyu.github.io/summary/DCN%20and%20RepPoints/7%20增加可变形卷积的效果.jpg">
+<meta property="og:image" content="https://guoyongyu.github.io/summary/DCN%20and%20RepPoints/8%20模拟R-CNN的feature.jpg">
+<meta property="og:image" content="https://guoyongyu.github.io/summary/DCN%20and%20RepPoints/9%20目标检测的两种方法.jpg">
+<meta property="og:image" content="https://guoyongyu.github.io/summary/DCN%20and%20RepPoints/10%20RepPoints和box.jpg">
+<meta property="og:image" content="https://guoyongyu.github.io/summary/DCN%20and%20RepPoints/11%20RPDet的主要框架.jpg">
+<meta property="og:image" content="https://guoyongyu.github.io/summary/DCN%20and%20RepPoints/12%20RPDet的头的结构.png">
+<meta property="og:image" content="https://guoyongyu.github.io/summary/DCN%20and%20RepPoints/附1%20空洞卷积示意.gif">
+<meta property="article:published_time" content="2022-06-06T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-11-17T07:51:30.390Z">
+<meta property="article:author" content="Star Rain">
+<meta property="article:tag" content="Summary">
+<meta property="article:tag" content="Deep Learning">
+<meta property="article:tag" content="Object Detection">
+<meta property="article:tag" content="CNN">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://guoyongyu.github.io/summary/DCN%20and%20RepPoints/1%20普通卷积和可变形卷积的采样方式.png">
+
+
+<link rel="canonical" href="https://guoyongyu.github.io/summary/DCN%20and%20RepPoints/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://guoyongyu.github.io/summary/DCN%20and%20RepPoints/","path":"summary/DCN and RepPoints/","title":"DCP and RepPoints"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>DCP and RepPoints | The Blog of Star Rain</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">The Blog of Star Rain</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-DCN-Deformable-Convolution-Network"><span class="nav-number">1.</span> <span class="nav-text">1  DCN (Deformable Convolution Network)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3-%E5%8F%AF%E5%8F%98%E5%BD%A2%E6%B1%A0%E5%8C%96"><span class="nav-number">1.1.</span> <span class="nav-text">1.3  可变形池化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-4-Deformable-Network"><span class="nav-number">1.2.</span> <span class="nav-text">1.4  Deformable Network</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-DCN-v2"><span class="nav-number">2.</span> <span class="nav-text">2  DCN v2</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-More-Deformable-Conv-Layers"><span class="nav-number">2.1.</span> <span class="nav-text">2.1  More Deformable Conv Layers</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-Modulated-Deformable-Modules"><span class="nav-number">2.2.</span> <span class="nav-text">2.2  Modulated Deformable Modules</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-R-CNN-Feature-Mimicking"><span class="nav-number">2.3.</span> <span class="nav-text">2.3  R-CNN Feature Mimicking</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-RepPoints"><span class="nav-number">3.</span> <span class="nav-text">3  RepPoints</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-RepPoints"><span class="nav-number">3.1.</span> <span class="nav-text">3.1  RepPoints</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-1-RepPoints-Refinement"><span class="nav-number">3.1.1.</span> <span class="nav-text">3.1.1  RepPoints Refinement</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-2-Converting-RepPoints-to-Bounding-Box"><span class="nav-number">3.1.2.</span> <span class="nav-text">3.1.2  Converting RepPoints to Bounding Box</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-RPDet-an-Anchor-Free-Detector"><span class="nav-number">3.2.</span> <span class="nav-text">3.2  RPDet: an Anchor Free Detector</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-1-Center-Point-Based-Initial-Object-Representation"><span class="nav-number">3.2.1.</span> <span class="nav-text">3.2.1  Center Point Based Initial Object Representation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-2-Utilization-of-RepPoints"><span class="nav-number">3.2.2.</span> <span class="nav-text">3.2.2  Utilization of RepPoints</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-3-Backbone-and-Head-Architectures"><span class="nav-number">3.2.3.</span> <span class="nav-text">3.2.3  Backbone and Head Architectures</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-4-Localization-Class-Target-Assignment"><span class="nav-number">3.2.4.</span> <span class="nav-text">3.2.4  Localization&#x2F;Class Target Assignment</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%99%84-%E7%A9%BA%E6%B4%9E%E5%8D%B7%E7%A7%AF%EF%BC%88Dilated-Convolution%EF%BC%89"><span class="nav-number">4.</span> <span class="nav-text">附  空洞卷积（Dilated Convolution）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Appendix-1-%E7%A9%BA%E6%B4%9E%E5%8D%B7%E7%A7%AF"><span class="nav-number">4.1.</span> <span class="nav-text">Appendix.1  空洞卷积</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Appendix-2-%E7%A9%BA%E6%B4%9E%E5%8D%B7%E7%A7%AF%E7%9A%84%E6%84%9F%E5%8F%97%E9%87%8E"><span class="nav-number">4.2.</span> <span class="nav-text">Appendix.2  空洞卷积的感受野</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#References-1-RepPoints"><span class="nav-number">5.1.</span> <span class="nav-text">References.1  RepPoints</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#References-2-DCN"><span class="nav-number">5.2.</span> <span class="nav-text">References.2  DCN</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#References-3-Dilated-Convolution"><span class="nav-number">5.3.</span> <span class="nav-text">References.3  Dilated Convolution</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%BA%90%E7%A0%81"><span class="nav-number">6.</span> <span class="nav-text">源码</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Star Rain</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://guoyongyu.github.io/summary/DCN%20and%20RepPoints/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Star Rain">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="The Blog of Star Rain">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="DCP and RepPoints | The Blog of Star Rain">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          DCP and RepPoints
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2022-06-07 00:00:00" itemprop="dateCreated datePublished" datetime="2022-06-07T00:00:00+08:00">2022-06-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2022-11-17 15:51:30" itemprop="dateModified" datetime="2022-11-17T15:51:30+08:00">2022-11-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Summary/" itemprop="url" rel="index"><span itemprop="name">Summary</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>可变形卷积网络（DCN）和 RepPoints 的介绍，结合网络计算整理总结。</p>
+<span id="more"></span>
+<center><b><font size="9">DCN and RepPoints</font></b></center>
+
+<h1 id="1-DCN-Deformable-Convolution-Network"><a href="#1-DCN-Deformable-Convolution-Network" class="headerlink" title="1  DCN (Deformable Convolution Network)"></a>1  DCN (Deformable Convolution Network)</h1><p>在计算机视觉领域，同一物体在不同场景、角度中未知的几何变换是检测/识别的一大挑战，通常来说有两种做法:</p>
+<ol>
+<li><p>通过充足的数据增强，扩充足够多的样本去增强模型适应尺度变换的能力。</p>
+</li>
+<li><p>设置一些针对几何变换不变的特征或者算法，如 SIFT 和 sliding windows。</p>
+</li>
+</ol>
+<p>两种方法都有缺陷，第一种方法因为样本的局限性使得模型的泛化能力比较低；第二种方法则因为手工设计的不变特征和算法对于过于复杂的变换是很难的而无法设计。所以提出了Deformable Conv（可变形卷积）和 Deformable Pooling（可变形池化）来解决这个问题。</p>
+<p>图-1 展示了卷积核大小为 $3\times3$ 的普通卷积和可变形卷积的采样方式。(a) 表示按照正常的卷积规律采样 9 个点（绿点），(b)(c)(d) 为可变形卷积，再正常的采样坐标上加了一个位移量（蓝色箭头），其中 (c)(d) 为 (b) 的特殊情况，展示了可变形卷积可以作为尺度变换、比例变换和旋转变换的特殊情况。</p>
+<center>
+    <img src="/summary/DCN%20and%20RepPoints/1 普通卷积和可变形卷积的采样方式.png">
+    <div>
+        图-1 普通卷积和可变形卷积的采样方式
+    </div>
+</center>
+对于普通卷积，每个输出 $y(p_0)$ 都要从 $x$ 上采样 9 个点，这 9 个点以中心位置 $x(p_0)$ 向四周扩散，$(-1,-1)$ 代表 $x(p_0)$ 的左上角，$(1,1)$ 代表 $x(p_0)$ 的右下角：
+$$
+\mathcal{R}=\{(-1,-1),(-1,0),...,(0,1),(1,1)\}
+$$
+传统卷积的输出则可以表示为：
+$$
+y(p_0)=\sum_{p_n \in \mathcal{R}} w(p_n) \cdot x(p_0 + p_n)
+$$
+可变形卷积就是在传统的卷积操作上加入了一个偏移量，正是这个偏移量让卷积变形为不规则的卷积，这里要注意这个偏移量可以是小数，所以下面的式子的特征值需要通过**双线性插值**的方法来计算：
+$$
+y(p_0)=\sum_{p_n \in \mathcal{R}} w(p_n) \cdot x(p_0 + p_n + \Delta p_n)
+$$
+对于偏移量如何计算，将在下面的部分解释。
+
+
+
+
+## 1.1  可变形卷积
+
+<center>
+    <img src="/summary/DCN%20and%20RepPoints/2 可变形卷积示意.jpg">
+    <div>
+        图-2 可变形卷积示意图
+    </div>
+</center>
+假设输入 feature map 大小为 $W\times H$，将要进行的可变形卷积为 $kernel\_size=3\times3,\ stride=1,\ dialated=1$，那么首先用一个具有与当前可变性卷积层相同的空间分辨率和扩张率的卷积（$k=3\times3,\ s=1,\ dial=1$）进行学习 offset。此卷积会输出一个 $W\times H\times 2N$ 的 offset filed （$N$ 是可变性卷积的 $3\times3=9$ 个点，$2N$ 是每个点有 x 和 y 两个方向的偏移分量）。后面的可变形卷积可以看作先基于上面那部分生成的 offset 做了一个插值操作，然后再执行普通的卷积。
+
+
+
+## 1.2  可变形卷积的可视化
+
+<center>
+    <img src="/summary/DCN%20and%20RepPoints/3 普通卷积与可变形卷积对比.jpg">
+    <div>
+        图-3 普通卷积与可变形卷积的对比
+    </div>
+</center>
+
+<center>
+    <img src="/summary/DCN%20and%20RepPoints/4 可变形卷积对图像的处理.jpg">
+    <div>
+        图-4 可变形卷积对图像的处理
+    </div>
+</center>
+
+<p>可以从图-4 看到，当绿色点在目标上时，红色点所在区域也集中在目标位置，并且基本能够覆盖不同尺寸的目标，因此经过可变形卷积，可以更好地提取出感兴趣物体的完整特征。</p>
+<h2 id="1-3-可变形池化"><a href="#1-3-可变形池化" class="headerlink" title="1.3  可变形池化"></a>1.3  可变形池化</h2><p>原始的 RoI Pooling 在操作过程中是将 RoI 划分为 $k\times k$ 个子区域（bin），最终得到 $k\times k$ 的 feature map，对于第 $(i,j)\ (0\le i,j &lt; k)$ 个 bin，有：</p>
+<script type="math/tex; mode=display">
+y(i,j)=\frac{1}{n_{ij}}\sum_{p\in bin(i,j)} x(p_0+p)</script><p>$n_{ij}$ 为 bin 中像素点的个数，对于第 $(i,j)$ 个 bin，有：</p>
+<script type="math/tex; mode=display">
+\lfloor i\frac{w}{k} \rfloor \le p_x \le \lceil (i+1)\frac{w}{k} \rceil \\
+\lfloor j\frac{h}{k} \rfloor \le p_y \le \lceil (j+1)\frac{h}{k} \rceil</script><p>新的 RoI Pooling 可以计算规则为：</p>
+<script type="math/tex; mode=display">
+y(i,j)=\sum_{p\in bin(i,j)} x(p_0+p+\Delta p_{ij})/n_{ij}</script><p>可变形池化的偏移量其实就是子区域的偏移。每一个子区域都有一个偏移，偏移量对应子区域有 $k\times k$ 个。与可变形卷积不同的是，可变形池化的偏移量是通过全连接层得到的。对于可变形池化的偏移量，计算式子如下：</p>
+<script type="math/tex; mode=display">
+\Delta p_{ij}=\gamma\cdot\Delta\hat{p}_{ij}\circ(w,h)</script><p>首先 RoI Pooling 产生 pooled feature map（图-2 中绿色部分），然后用 FC（Fully Connected）去学习归一化后的偏移值（归一化的目的是使偏移量学习不受 RoI 大小的影响），这个偏移量会与 $(w,h)$ 做点乘，然后再乘以尺度因子 $\gamma$，其中 $w,\ h$ 是 RoI 的宽和高，$\gamma$ 为 0.1。用该位移作用在可变形 RoI Pooling 上（蓝色区域），以获得不局限于 RoI 固定网格的特征。</p>
+<center>
+    <img src="/summary/DCN%20and%20RepPoints/5 可变形RoI Pooling.jpg">
+    <div>
+        图-5 可变形 RoI Pooling
+    </div>
+</center>
+
+<p>调整后的 RoI bin 如红色框所示，此时并不是规则的将黄色框 RoI 等分为 $3\times3$ 的 bins。</p>
+<h2 id="1-4-Deformable-Network"><a href="#1-4-Deformable-Network" class="headerlink" title="1.4  Deformable Network"></a>1.4  Deformable Network</h2><p>网络设置方面：</p>
+<ol>
+<li>学习 offset 的参数采用的是0初始化，然后按照网络其它参数学习率的 $\beta$ 倍来学习，$\beta$ 默认是 1，但在某些情况下，比如 Faster R-CNN 中的 fc 是 0.01。</li>
+<li>并不是所有的卷积都换成可变形卷积就是好的，在提取到一些语义特征后使用可变形卷积效果会更好，一般来说是网络靠后的几层。</li>
+</ol>
+<h1 id="2-DCN-v2"><a href="#2-DCN-v2" class="headerlink" title="2  DCN v2"></a>2  DCN v2</h1><p>图-6 为普通卷积核 DCN v1 再三张图片上的展示结果，每一列代表检测不同的物体，从左向右，物体面积增大；每一行代表不同的表现形式，第一行为物体周围的感受野分布，第二行为有效的采样位置，第三行为得到能相同的响应的最小区域。从第三行可以很明显的看出，DCN v1 会增加无关信息。为了提高网络适应几何变化的能力，减少无关因素的影响，DCN v2 提出了改进以提高其建模能力并帮助它利用这种增强的功能。</p>
+<center>
+    <img src="/summary/DCN%20and%20RepPoints/6 普通卷积和可变形卷积v1的特征提取.jpg">
+    <div>
+        图-6 普通卷积和 DCN v1 的特征提取
+    </div>
+</center>
+
+<p>DCN v2 提出了三种解决方法：</p>
+<ol>
+<li>More Deformable Conv Layers（使用更多的可变形卷积）。</li>
+<li>Modulated Deformable Modules（在 DCN v1 基础（添加 offset）上添加每个采样点的权重）</li>
+<li>R-CNN Feature Mimicking（模拟 R-CNN 的 feature）。</li>
+</ol>
+<h2 id="2-1-More-Deformable-Conv-Layers"><a href="#2-1-More-Deformable-Conv-Layers" class="headerlink" title="2.1  More Deformable Conv Layers"></a>2.1  More Deformable Conv Layers</h2><p>DCN v1 只在 ResNet-50 的 conv5 中使用了三个可变形卷积，而 DCN v2 在 conv3、conv4 和 conv5 的 $3\times3$ 卷积层中都使用了可变形卷积，得到如图-7 中的结果。</p>
+<center>
+    <img src="/summary/DCN%20and%20RepPoints/7 增加可变形卷积的效果.jpg">
+    <div>
+        图-7 增加可变形卷积的效果
+    </div>
+</center>
+
+
+
+<h2 id="2-2-Modulated-Deformable-Modules"><a href="#2-2-Modulated-Deformable-Modules" class="headerlink" title="2.2  Modulated Deformable Modules"></a>2.2  Modulated Deformable Modules</h2><p>在 DCN v1 中，卷积只是添加了 offset 参数 $\Delta p_{n}$：</p>
+<script type="math/tex; mode=display">
+y(p_0)=\sum_{p_n \in \mathcal{R}} w(p_n) \cdot x(p_0 + p_n + \Delta p_n)</script><p>或记 $K$ 为卷积核的采样点个数，$w_k,\ p_k$ 为第 $k$ 个采样点的卷积核权重和偏移，则上式可以写为：</p>
+<script type="math/tex; mode=display">
+y(p)=\sum_{k=1}^K w_k \cdot x(p + p_k + \Delta p_k)</script><p>为解决引入了一些无关区域的问题，DCN v2 中不只添加每一个采样点的偏移，还添加了一个权重系数 $\Delta m_k\ (\in [0,1])$，用于区分所引入的区域是否为感兴趣的区域。加入权重系数后，上式变为：</p>
+<script type="math/tex; mode=display">
+y(p)=\sum_{k=1}^K w_k \cdot x(p + p_k + \Delta p_k) \cdot \Delta m_k</script><p>$\Delta p_k$ 和 $\Delta m_k$ 是学习到的 offset 和权重，这样的好处是增加了更大的自由度，对于不需要的采样点则设置权重为 0 即可（权重学习为 0）。</p>
+<p>$\Delta p_k$ 和 $\Delta m_k$ 都是通过在相同的输入 feature map $x$ 上应用单独的卷积层获取，该卷积层具有与当前卷积层相同的空间分辨率，输出为 $3K$ 通道，其中前 $2K$ 对应于学习的偏移，剩余 $K$ 进一步进入 Sigmoid 层用于获得权重，此卷积的卷积核初始为 0，$\Delta p_k$ 和 $\Delta m_k$ 的初始值为 0 和 0.5，学习率为其他现有卷积层的 0.1 倍。</p>
+<p>Modulated Deformable RoI Pooling 的式子也因权重的加入相应变为：</p>
+<script type="math/tex; mode=display">
+y(k)=\frac{1}{n_k} \sum_{j=1}^{n_k} x(p_{kj} + \Delta p_k) \cdot \Delta m_k</script><p>$\Delta p_k$ 和 $\Delta m_k$ 由输入特征图上的分支产生。在这个分支中，RoI Pooling 在 RoI 上生成特征，然后输入两个 1024-D 的 FC 层。然后在这些后面有一个额外的 FC 层，产生 $3K$ 的通道输出，前 $2K$ 是可学习的归一化偏移 $\Delta p_k$，后 $K$ 是经 Sigmoid 标准化后产生的 $\Delta m_k$，额外的 FC 层的学习率和其他层相同。</p>
+<h2 id="2-3-R-CNN-Feature-Mimicking"><a href="#2-3-R-CNN-Feature-Mimicking" class="headerlink" title="2.3  R-CNN Feature Mimicking"></a>2.3  R-CNN Feature Mimicking</h2><p>把 R-CNN 和 Faster R-CNN 的 classification score 结合起来可以提升 performance，说明 R-CNN 学到的 focus 在物体上的 feature 可以解决 redundant context 的问题。但是增加额外的 R-CNN 会使 inference 速度变慢很多。DCN v2 里的解决方法是把 R-CNN 当做 teacher network，让 DCN v2 的 RoI Pooling 之后的 feature 去模拟 R-CNN 的 feature。</p>
+<center>
+    <img src="/summary/DCN%20and%20RepPoints/8 模拟R-CNN的feature.jpg">
+    <div>
+        图-8 模拟 R-CNN 的 feature
+    </div>
+</center>
+
+<p>左边的网络为主网络（Faster R-CNN），右边的网络为子网络（R-CNN）。实现上大致是用主网络训练过程中得到的 RoI 去裁剪原图，然后将裁剪到的图 resize 到 $224\times224$ 大小作为子网络的输入，将裁剪的 RoI 区域记为 $b$。在 R-CNN 分支中，骨干网络在调整大小的图像块上操作并产生 $14\times14$ 的特征图。可变形 RoI Pooling 层应用于特征图，其中输入 RoI 覆盖整个调整大小的图像块（左上角为 $(0,0)$，高度和宽度为 224 像素）。之后，应用 2 个 1024-D 层，产生输入图像的 R-CNN feature vector，表示为 $f_{RCNN}(b)$。用 Softmax 分类器进行分类，其中 $C$ 表示前景类别的数量，加上一个用于背景。在 R-CNN 特征表示 $f_{RCNN}(b)$ 和 Faster R-CNN 中的对应物 $f_{FRCNN}(b)$ 之间执行 feature mimic loss，其也是 $f_{RCNN}(b)$ 和 $f_{FRCNN}(b)$ 的余弦相似度，计算方法如下：</p>
+<script type="math/tex; mode=display">
+L_{mimic}=\sum_{b\in\Omega} [1-\cos(f_{RCNN}(b),f_{FRCNN}(b))]</script><p>因为 R-CNN 这个子网络的输入就是 RoI 在原输入图像上裁剪出来的图像，因此不存在 RoI 以外区域信息的干扰，这就使得 R-CNN 这个网络训练得到的分类结果更加可靠，以此通过一个损失函数监督主网络 Faster R-CNN 的分类支路训练就能够使网络提取到更多 RoI 内部特征，而不是自己引入的外部特征。</p>
+<p>总的 loss 由三部分组成：mimic loss + R-CNN classification loss + Faster-RCNN loss</p>
+<p>在训练时，主干网络、Deformable RoIPooling和 2 个 FC 共享参数。inference 阶段，只用 Faster R-CNN 来测试。</p>
+<h1 id="3-RepPoints"><a href="#3-RepPoints" class="headerlink" title="3  RepPoints"></a>3  RepPoints</h1><p>在典型 anchor-based 的算法中，模型的效果往往受限于 anchor 的配置参数，如 anchor 大小、正负样本采样、anchor 的宽高比等。anchor-free 的算法无需配置 anchor 参数，即可训练得到一个好的检测模型，减少了训练前对数据复杂的分析过程。</p>
+<p>anchor-free 算法又可分为基于 anchor-point 的算法和基于 key-point 的算法：</p>
+<ul>
+<li>anchor-point 算法本质上和 anchor-based 算法相似，通过预测目标中心点 $(x,y)$ 及边框距中心点的距离 $(w,h)$ 来检测目标，典型的此类算法有 FSAF、FCOS 等。</li>
+<li>key-point 方法是通过检测目标的边界点（如：角点），再将边界点配对组合成目标的检测框，此类算法包括 CornerNet、RepPoints 等。</li>
+</ul>
+<p>经典的 bounding box 虽然有利于计算，但没有考虑目标的形状和姿态，而且从矩形区域得到的特征可能会受背景内容或其它的目标的严重影响，低质量的特征会进一步影响目标检测的性能。为了解决 bounding box 存在的问题，RepPoints 的提出能够进行更细粒度的定位能力以及更好的分类效果。</p>
+<p>RepPoints 提出使用点集的方式来表示目标，该方法在不使用 anchor 的基础上取得了非常好的效果。如图-9 ，(a) 表示一般目标检测算法使用水平包围框来表示目标位置信息，(b) 则表示 RepPoints 使用点集来表示目标位置的方法。RepPoints 系列工作其实就是以点集表示为核心，从不同的角度去进一步提升该算法精度而做出改进：</p>
+<ul>
+<li>将验证（即分割）的过程融入 RepPoints，进一步提升结果，得到 RepPoints V2；</li>
+<li>将点集的监督方式进行改进，并扩充点集的点数，实现了目标实力分割任务的统一范式，即 Dense RepPoints。</li>
+</ul>
+<center>
+    <img src="/summary/DCN%20and%20RepPoints/9 目标检测的两种方法.jpg">
+    <div>
+        图-9 目标检测的两种方法
+    </div>
+</center>
+
+
+
+<h2 id="3-1-RepPoints"><a href="#3-1-RepPoints" class="headerlink" title="3.1  RepPoints"></a>3.1  RepPoints</h2><p>bounding box 只是粗粒度的目标位置表示方法，只考虑了目标的矩形空间，没有考虑形状、姿态以及语义丰富的局部区域，而语义丰富的局部区域能够帮助网络更好的定位以及特征提取。为了解决上述的缺点，RepPoints 使用一组自适应的采样点表示目标：</p>
+<script type="math/tex; mode=display">
+\mathcal{R}=\{ (x_k,y_k) \}_{k=1}^n</script><p>$n$ 表示目标的采样点数，RepPoints 原始论文中设为 9。</p>
+<h3 id="3-1-1-RepPoints-Refinement"><a href="#3-1-1-RepPoints-Refinement" class="headerlink" title="3.1.1  RepPoints Refinement"></a>3.1.1  RepPoints Refinement</h3><p>逐步调整 bounding box 定位和特征提取是 multi-stage 检测器成功的重要手段，对于 RepPoints，调整可简单地表示为：</p>
+<script type="math/tex; mode=display">
+\mathcal{R}_r = \{ (x_k + \Delta x_k, y_k + \Delta y_k) \}_{k=1}^n</script><p>$\{ (\Delta x_k,\Delta y_k) \}_{k=1}^n$ 为预测的新采样点相对与旧采样点的偏移值，采样点调整的尺寸都是一样的，不会像 bouning box 那样需要解决中心点坐标和边框长度的尺寸不一致问题。</p>
+<h3 id="3-1-2-Converting-RepPoints-to-Bounding-Box"><a href="#3-1-2-Converting-RepPoints-to-Bounding-Box" class="headerlink" title="3.1.2  Converting RepPoints to Bounding Box"></a>3.1.2  Converting RepPoints to Bounding Box</h3><p>为了利用 bounding box 的标注信息进行训练以及验证 RepPoint-based 检测算法的性能，使用预设的转化方法 $\mathcal{T}:\mathcal{R}_P\to \mathcal{B}_P$ 将 RepPoints 转化成伪预测框（$\mathcal{R}_P$ 表示物体 $P$ 的 RepPoints，$\mathcal{B}_P = \mathcal{T}(\mathcal{R}_P)$ 表示相应的 pseudo box），共有三种转化方法：</p>
+<ul>
+<li>$\mathcal{T}=\mathcal{T}_1$： Min-max function，对所有的 RepPoints 进行 min-max 操作来获取预测框 $\mathcal{B}_p$</li>
+<li>$\mathcal{T}=\mathcal{T}_2$：Partial min-max function，对部分的 RepPoints 进行 min-max 操作获取预测框 $\mathcal{B}_p$</li>
+<li>$\mathcal{T}=\mathcal{T}_3$：Moment-based function，通过 RepPoints 的均值和标准差计算中心点位置以及预测框尺寸得到预测框 $\mathcal{B}_p$，尺寸通过全局共享的可学习参数 $\lambda_x$ 和 $\lambda_y$ 相乘得到</li>
+</ul>
+<p>这些函数都是可微的，可加入检测器中进行 end-to-end 的训练。通过实验验证，这 3 个转化方法效果都不错。</p>
+<center>
+    <img src="/summary/DCN%20and%20RepPoints/10 RepPoints和box.jpg">
+    <div>
+        图-10 RepPoints 和 bounding box 的关系
+    </div>
+</center>
+
+
+
+<h2 id="3-2-RPDet-an-Anchor-Free-Detector"><a href="#3-2-RPDet-an-Anchor-Free-Detector" class="headerlink" title="3.2  RPDet: an Anchor Free Detector"></a>3.2  RPDet: an Anchor Free Detector</h2><p>anchor-free 的目标检测算法 RPDet 是基于 RepPoints 设计，包含两个识别阶段。因为可变形卷积可采样多个不规则分布的点进行卷积输出，所以可变形卷积十分适合 RepPoints 场景，能够根据识别结果的反馈进行采样点的引导。图-11 为 RPDet 的主要框架：</p>
+<center>
+    <img src="/summary/DCN%20and%20RepPoints/11 RPDet的主要框架.jpg">
+    <div>
+        图-11 RPDet的主要框架
+    </div>
+</center>
+
+
+
+<h3 id="3-2-1-Center-Point-Based-Initial-Object-Representation"><a href="#3-2-1-Center-Point-Based-Initial-Object-Representation" class="headerlink" title="3.2.1  Center Point Based Initial Object Representation"></a>3.2.1  Center Point Based Initial Object Representation</h3><p>RPDet 将中心点作为初始的目标表示，然后逐步调整出最终的 RepPoints，中心点也可认为是特殊的 RepPoints。当两个目标存在于特征图同一位置时，这种基于中心点的方法通常会出现识别目标歧义的问题。此前的方法在同一位置设置多个预设的 anchor 来解决此问题，而 RPDet 则利用 FPN 来解决此问题：</p>
+<ul>
+<li>不同大小的目标由不同 level 的特征负责识别</li>
+<li>小物体对应 level 的特征图一般较大，减少了同一物体存在同一位置的可能性</li>
+</ul>
+<h3 id="3-2-2-Utilization-of-RepPoints"><a href="#3-2-2-Utilization-of-RepPoints" class="headerlink" title="3.2.2  Utilization of RepPoints"></a>3.2.2  Utilization of RepPoints</h3><p>如图-11 所示，RepPoints 是 RPDet 的基础目标表示方法，从中心点开始，第一组 RepPoints 通过回归中心点的偏移值获得。第二组 RepPoints 代表最终的目标位置，由第一组 RepPoints 优化调整得到。RepPoints 的学习主要由两个目标驱动：</p>
+<ul>
+<li>伪预测框和 GT 框的左上角点和右上角点的距离损失</li>
+<li>后续的目标分类损失</li>
+</ul>
+<p>第一组 RepPoints 由距离损失和分类损失引导，第二组 RepPoints 仅使用距离损失进行引导，主要为了学习到更精准的目标定位。</p>
+<h3 id="3-2-3-Backbone-and-Head-Architectures"><a href="#3-2-3-Backbone-and-Head-Architectures" class="headerlink" title="3.2.3  Backbone and Head Architectures"></a>3.2.3  Backbone and Head Architectures</h3><center>
+    <img src="/summary/DCN%20and%20RepPoints/12 RPDet的头的结构.png">
+    <div>
+        图-12 RPDet的头的结构
+    </div>
+</center>
+
+<p>FPN 主干网络包含5层特征金字塔 level，从 stage3（下采样 8 倍）到 stage7（下采样 128 倍）。Head 的结构如图-12，Head 在不同的 level 中是共享的，包含两个独立的子网，分别负责定位（RepPoints 的生成）和分类：</p>
+<ul>
+<li>定位子网首先使用 3 个 256-d $3\times 3$ 卷积提取特征，每个卷积都接 group normalization 层，然后连续接两个小网络计算两组 RepPoints 的偏移值。</li>
+<li>分类子网首先使用 3 个 256-d $3\times 3$ 卷积提取特征，每个卷积都接 group normalization 层，然后将定位子网输出的第一组 RepPoints 的偏移值输入到 256-d $3\times 3$ 可变形卷积中进一步提取特征，最后输出分类结果。</li>
+</ul>
+<p>尽管 RPDet 采用了两阶段定位，但其性能甚至比单阶段的 RetinaNet 要高，主要是 anchor-free 的设计使得分类层的计算减少了，覆盖了额外的定位阶段带来的少量消耗。</p>
+<h3 id="3-2-4-Localization-Class-Target-Assignment"><a href="#3-2-4-Localization-Class-Target-Assignment" class="headerlink" title="3.2.4  Localization/Class Target Assignment"></a>3.2.4  Localization/Class Target Assignment</h3><p>如图-12，定位包含两个阶段，第一阶段从中心点得到第一组 RepPoints，第二阶段则从第一组 RepPoints 调整得到第二组 RepPoints，不同的阶段的正样本定义不同：</p>
+<ul>
+<li>对于第一阶段，特征点被认为是正样本需满足：1) 该特征点所在的特征金字塔 level 等于 $s(B)=\lfloor \log_2 (\sqrt{w_Bh_B}/4)\rfloor$。2) 目标的中心点在特征图上映射位置对应该特征点。</li>
+<li>对于第二阶段，只有特征点对应的第一阶段产生的伪预测框与目标的 IoU 大于 0.5 才被认为是正样本。与当前的 anchor-based 方法有点类似，将第一阶段的输出当作 anchor。</li>
+</ul>
+<p>由于目标的分类只考虑第一组 RepPoints，所以，特征点对应的第一组 RepPoints 产生的伪预测框于目标的 IoU 大于 0.5 即认为是正样本，小于 0.4 则认为是背景类，其它则忽略。</p>
+<h1 id="附-空洞卷积（Dilated-Convolution）"><a href="#附-空洞卷积（Dilated-Convolution）" class="headerlink" title="附  空洞卷积（Dilated Convolution）"></a>附  空洞卷积（Dilated Convolution）</h1><h2 id="Appendix-1-空洞卷积"><a href="#Appendix-1-空洞卷积" class="headerlink" title="Appendix.1  空洞卷积"></a>Appendix.1  空洞卷积</h2><p>如图.附-1 所示就是空洞卷积，这里 $stride=1,\ padding=0$。空洞卷积有两种理解：</p>
+<ol>
+<li>理解为将卷积核扩展，如图卷积核为 $3\times3$ 但是这里将卷积核变为 $5\times5$，即在卷积核每行每列中间加0 。</li>
+<li>理解为在特征图上每隔 1 行或 1 列取数与 $3\times3$ 卷积核进行卷积。</li>
+</ol>
+<p>改变 stride 和 padding，空洞卷积就会和图.附-1 有区别。</p>
+<center>
+    <img src="/summary/DCN%20and%20RepPoints/附1 空洞卷积示意.gif">
+    <div>
+        图.附-1 空洞卷积示意图
+    </div>
+</center>
+
+
+
+<h2 id="Appendix-2-空洞卷积的感受野"><a href="#Appendix-2-空洞卷积的感受野" class="headerlink" title="Appendix.2  空洞卷积的感受野"></a>Appendix.2  空洞卷积的感受野</h2><p>CNN 的感受野为：</p>
+<script type="math/tex; mode=display">
+r_n = r_{n-1} + (k-1) \times \prod_{i=1}^{n-1} s_i</script><p>$r_n$ 为本层感受野，$r_{n-1}$ 为上层感受野，$s_i$ 是第 $i$ 层卷积或池化的步长，$k$ 为卷积核的大小，例（初始感受野为 1）：</p>
+<ul>
+<li>第一层 $3\times3$ 卷积（$stride=1$）：$r=1+(3-1)=3$，感受野为 $3\times3$</li>
+<li>第二层 $2\times2$ 池化（$stride=2$）：$r=3+(2-1)\times1=4$，感受野为 $4\times4$</li>
+<li>第三层 $3\times3$ 卷积（$stride=3$）：$r=4+(3-1)\times2\times1=8$，感受野为 $8\times8$</li>
+<li>第四层 $3\times3$ 卷积（$stride=2$）：$r=8+(3-1)\times3\times2\times1=20$，感受野为 $20\times20$</li>
+</ul>
+<p>空洞卷积的感受野计算方法和上面相同，空洞可以理解为扩大了卷积核的大小，空洞卷积的感受野变化（卷积核大小为 $3\times3$，$stride=1$)：</p>
+<ul>
+<li>第一层 1-dilated conv：$dilated=1$ 的空洞卷积为普通的 $3\times3$ 卷积，因此 $r=1+(3-1)=3\ (=2^{\log_2 1+2}-1)$，感受野为 $3\times3$</li>
+<li>第二层 2-dilated conv：$dilated=2$ 的空洞卷积可以理解为卷积核变为了 $5\times5$，因此 $r=3+(5-1)\times1=7\ (=2^{\log_2 2+2}-1)$，感受野为 $7\times7$</li>
+<li>第三层 4-dilated conv：$dilated=4$ 的空洞卷积可以理解为卷积核变味了 $9\times9$，因此 $r=7+(9-1)\times1\times1=15\ (=2^{\log_2 4+2}-1)$，感受野为 $15\times15$</li>
+</ul>
+<p>可以看到将卷积以上面的过程叠加，感受野变化会指数增长，感受野公式为 </p>
+<script type="math/tex; mode=display">
+r=2^{\log_2 dilated+2}-1</script><p>上文所述该计算公式是基于叠加的顺序，如果单用三个 $3\times3$ 的 2-dilated 卷积则感受野使用卷积感受野计算公式计算：</p>
+<ul>
+<li>第一层 $3\times3$ 的 2-dilated 卷积： $r=1+(5-1)=5$</li>
+<li>第二层 $3\times3$ 的 2-dilated 卷积： $r=5+(5-1)\times1=9$</li>
+<li>第三层 $3\times3$ 的 2-dilated 卷积： $r=9+(5-1)\times1\times1=13$</li>
+</ul>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><h2 id="References-1-RepPoints"><a href="#References-1-RepPoints" class="headerlink" title="References.1  RepPoints"></a>References.1  RepPoints</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/64522910">https://zhuanlan.zhihu.com/p/64522910</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/260656201">https://zhuanlan.zhihu.com/p/260656201</a></li>
+<li><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000040265117">https://segmentfault.com/a/1190000040265117</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_43711554/article/details/104983391">https://blog.csdn.net/weixin_43711554/article/details/104983391</a></li>
+</ul>
+<h2 id="References-2-DCN"><a href="#References-2-DCN" class="headerlink" title="References.2  DCN"></a>References.2  DCN</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_41917697/article/details/116193042">https://blog.csdn.net/qq_41917697/article/details/116193042</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/180075757">https://zhuanlan.zhihu.com/p/180075757</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/339660219">https://zhuanlan.zhihu.com/p/339660219</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/52578771">https://zhuanlan.zhihu.com/p/52578771</a></li>
+</ul>
+<h2 id="References-3-Dilated-Convolution"><a href="#References-3-Dilated-Convolution" class="headerlink" title="References.3  Dilated Convolution"></a>References.3  Dilated Convolution</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/43784441">https://zhuanlan.zhihu.com/p/43784441</a></li>
+</ul>
+<h1 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h1><ul>
+<li><p>DCN：<a href="https://link.zhihu.com/?target=https%3A//github.com/msracver/Deformable-ConvNets">https://link.zhihu.com/?target=https%3A//github.com/msracver/Deformable-ConvNets</a></p>
+</li>
+<li><p>RepPoints：<a target="_blank" rel="noopener" href="https://github.com/microsoft/RepPoints">https://github.com/microsoft/RepPoints</a></p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Summary/" rel="tag"># Summary</a>
+              <a href="/tags/Deep-Learning/" rel="tag"># Deep Learning</a>
+              <a href="/tags/Object-Detection/" rel="tag"># Object Detection</a>
+              <a href="/tags/CNN/" rel="tag"># CNN</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/summary/Anchor/" rel="prev" title="Anchor">
+                  <i class="fa fa-chevron-left"></i> Anchor
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/summary/Convex%20Hull/" rel="next" title="CLINS">
+                  CLINS <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Star Rain</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+  <script class="next-config" data-name="pdf" type="application/json">{"object_url":{"url":"https://cdn.jsdelivr.net/npm/pdfobject@2.2.7/pdfobject.min.js","integrity":"sha256-ph3Dk89VmuTVXG6x/RDzk53SU9LPdAh1tpv0UvnDZ2I="},"url":"/lib/pdf/web/viewer.html"}</script>
+  <script src="/js/third-party/tags/pdf.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"cdn":"//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML","tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

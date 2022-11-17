@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/logo-32x32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/logo-16x16.ico">
+  <link rel="mask-icon" href="/images/logo.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"guoyongyu.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="论文 A Data-Driven Inertial Navigation&#x2F;Bluetooth Fusion Algorithm for Indoor Localization (IEEE Sensors Journal, 2022) 阅读笔记。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Data-Driven Navigation&#x2F;Bluetooth Indoor Localization">
+<meta property="og:url" content="https://guoyongyu.github.io/papernote/Data-Driven%20Navigation%20Bluetooth%20Indoor%20Localization/index.html">
+<meta property="og:site_name" content="The Blog of Star Rain">
+<meta property="og:description" content="论文 A Data-Driven Inertial Navigation&#x2F;Bluetooth Fusion Algorithm for Indoor Localization (IEEE Sensors Journal, 2022) 阅读笔记。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://guoyongyu.github.io/papernote/Data-Driven%20Navigation%20Bluetooth%20Indoor%20Localization/Figure-1.png">
+<meta property="og:image" content="https://guoyongyu.github.io/papernote/Data-Driven%20Navigation%20Bluetooth%20Indoor%20Localization/Figure-2.png">
+<meta property="og:image" content="https://guoyongyu.github.io/papernote/Data-Driven%20Navigation%20Bluetooth%20Indoor%20Localization/Figure-3.png">
+<meta property="og:image" content="https://guoyongyu.github.io/papernote/Data-Driven%20Navigation%20Bluetooth%20Indoor%20Localization/Figure-4.png">
+<meta property="og:image" content="https://guoyongyu.github.io/papernote/Data-Driven%20Navigation%20Bluetooth%20Indoor%20Localization/Figure-5.png">
+<meta property="og:image" content="https://guoyongyu.github.io/papernote/Data-Driven%20Navigation%20Bluetooth%20Indoor%20Localization/Figure-6.png">
+<meta property="og:image" content="https://guoyongyu.github.io/papernote/Data-Driven%20Navigation%20Bluetooth%20Indoor%20Localization/Figure-7.png">
+<meta property="og:image" content="https://guoyongyu.github.io/papernote/Data-Driven%20Navigation%20Bluetooth%20Indoor%20Localization/Table-1.png">
+<meta property="og:image" content="https://guoyongyu.github.io/papernote/Data-Driven%20Navigation%20Bluetooth%20Indoor%20Localization/Table-2.png">
+<meta property="og:image" content="https://guoyongyu.github.io/papernote/Data-Driven%20Navigation%20Bluetooth%20Indoor%20Localization/Figure-8.png">
+<meta property="og:image" content="https://guoyongyu.github.io/papernote/Data-Driven%20Navigation%20Bluetooth%20Indoor%20Localization/Figure-10.png">
+<meta property="og:image" content="https://guoyongyu.github.io/papernote/Data-Driven%20Navigation%20Bluetooth%20Indoor%20Localization/Table-3.png">
+<meta property="og:image" content="https://guoyongyu.github.io/papernote/Data-Driven%20Navigation%20Bluetooth%20Indoor%20Localization/Figure-11.png">
+<meta property="og:image" content="https://guoyongyu.github.io/papernote/Data-Driven%20Navigation%20Bluetooth%20Indoor%20Localization/Figure-12.png">
+<meta property="article:published_time" content="2022-10-22T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-11-17T07:47:19.714Z">
+<meta property="article:author" content="Star Rain">
+<meta property="article:tag" content="SLAM">
+<meta property="article:tag" content="Paper Note">
+<meta property="article:tag" content="Indoor Localization">
+<meta property="article:tag" content="Indoor Navigation">
+<meta property="article:tag" content="Bluetooth">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://guoyongyu.github.io/papernote/Data-Driven%20Navigation%20Bluetooth%20Indoor%20Localization/Figure-1.png">
+
+
+<link rel="canonical" href="https://guoyongyu.github.io/papernote/Data-Driven%20Navigation%20Bluetooth%20Indoor%20Localization/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://guoyongyu.github.io/papernote/Data-Driven%20Navigation%20Bluetooth%20Indoor%20Localization/","path":"papernote/Data-Driven Navigation Bluetooth Indoor Localization/","title":"Data-Driven Navigation/Bluetooth Indoor Localization"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Data-Driven Navigation/Bluetooth Indoor Localization | The Blog of Star Rain</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">The Blog of Star Rain</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AE%BA%E6%96%87%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text">论文介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-Introductio"><span class="nav-number">2.</span> <span class="nav-text">1  Introductio</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-Methodology"><span class="nav-number">3.</span> <span class="nav-text">2  Methodology</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-Data-Driven-Inertial-Navigation"><span class="nav-number">3.1.</span> <span class="nav-text">2.1  Data-Driven Inertial Navigation</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-1-Data-Acquisition"><span class="nav-number">3.1.1.</span> <span class="nav-text">2.1.1  Data Acquisition</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-2-Coordinate-Frame-Alignment"><span class="nav-number">3.1.2.</span> <span class="nav-text">2.1.2  Coordinate Frame Alignment</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-3-Distance-and-Heading-Regression"><span class="nav-number">3.1.3.</span> <span class="nav-text">2.1.3  Distance and Heading Regression</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-BLE-Based-Localization"><span class="nav-number">3.2.</span> <span class="nav-text">2.2  BLE-Based Localization</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-Particle-Filter"><span class="nav-number">3.3.</span> <span class="nav-text">2.3  Particle Filter</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-1-Initialization"><span class="nav-number">3.3.1.</span> <span class="nav-text">2.3.1  Initialization</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-2-Particle-Movement"><span class="nav-number">3.3.2.</span> <span class="nav-text">2.3.2  Particle Movement</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-3-Particle-Weight-Update-and-Resampling"><span class="nav-number">3.3.3.</span> <span class="nav-text">2.3.3  Particle Weight Update and Resampling</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-4-Target-Location-Estimation"><span class="nav-number">3.3.4.</span> <span class="nav-text">2.3.4  Target Location Estimation</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-Experiment-and-Results"><span class="nav-number">4.</span> <span class="nav-text">3  Experiment and Results</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-%E5%AE%9E%E9%AA%8C%E8%AE%BE%E7%BD%AE"><span class="nav-number">4.1.</span> <span class="nav-text">3.1  实验设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-%E5%AE%9E%E9%AA%8C%E7%BB%93%E6%9E%9C"><span class="nav-number">4.2.</span> <span class="nav-text">3.2  实验结果</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Star Rain</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://guoyongyu.github.io/papernote/Data-Driven%20Navigation%20Bluetooth%20Indoor%20Localization/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Star Rain">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="The Blog of Star Rain">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Data-Driven Navigation/Bluetooth Indoor Localization | The Blog of Star Rain">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Data-Driven Navigation/Bluetooth Indoor Localization
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2022-10-23 00:00:00" itemprop="dateCreated datePublished" datetime="2022-10-23T00:00:00+08:00">2022-10-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2022-11-17 15:47:19" itemprop="dateModified" datetime="2022-11-17T15:47:19+08:00">2022-11-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Paper-Note/" itemprop="url" rel="index"><span itemprop="name">Paper Note</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>论文 A Data-Driven Inertial Navigation/Bluetooth Fusion Algorithm for Indoor Localization (IEEE Sensors Journal, 2022) 阅读笔记。</p>
+<span id="more"></span>
+<center><b><font size="9">Data-Driven Navigation/Bluetooth Indoor Localization</font></b></center>
+
+<h1 id="论文介绍"><a href="#论文介绍" class="headerlink" title="论文介绍"></a>论文介绍</h1><ul>
+<li>标题：A Data-Driven Inertial Navigation/Bluetooth Fusion Algorithm for Indoor Localization</li>
+<li>作者：Jianfan Chen, Baoding Zhou, Shaoqian Bao, et al.</li>
+<li>期刊：IEEE Sensors Journal 2022</li>
+<li>源码：未开源</li>
+</ul>
+<h1 id="1-Introductio"><a href="#1-Introductio" class="headerlink" title="1  Introductio"></a>1  Introductio</h1><p>室内 Location-based Services（LBS）的传统方法存在的问题：</p>
+<ul>
+<li>目前手机上都配备了小型、廉价而高效的 IMU，但是这些 IMU 存在着噪声和偏置，使得惯导受到影响。</li>
+<li>传感器+相机结合的方法，但是相机会造成额外的计算成本和电池消耗。</li>
+<li>基于步数的行人航迹推算（PDR，step-based pedestrian dead reckoning）使用惯性测量进行步长计算、步长分割、步长估计和步向估计。通过步长更新，虽然系统能解决惯性偏移问题，但行走习惯会影响计算结果。此外，步长检测中的周期性假设是不成立的，如果手机放在推车上，则无法检测到步数。</li>
+</ul>
+<p>数据驱动的定位方法：</p>
+<ul>
+<li>定义：使用短时间内的 IMU 数据和 GT 运动轨迹回归运动参数（如速度和方向），Vicon、Apple ARKit、Google Tango 等用于获取 GT 数据进行训练。</li>
+<li>效果较好的方法：Robust IMU double integration（RIDI）[1]、IONet[2]、AI-IMU[3]、Backdrop Kalman Filter[4]。</li>
+<li>缺点：<ul>
+<li>当起点未知时，惯导只能获取全局坐标系的相对坐标而不是绝对坐标；</li>
+<li>惯性追踪的不断进行，系统不可避免的会产生漂移。</li>
+</ul>
+</li>
+<li>改进方法：使用 Wi-Fi、BLE 进行定位，BLE 相对更加精准。</li>
+</ul>
+<p>BLE-based 定位：</p>
+<ul>
+<li>ranging-based：三角化。</li>
+<li>non-ranging-based：指纹算法。</li>
+<li>缺点：障碍物会影响定位精度。</li>
+</ul>
+<p>融合 sensor-based 和 BLE-based 的解决方法：</p>
+<ul>
+<li>可用方法：EKF、UKF、Particle Filter。</li>
+<li>对 BLE 的校准：使用 Channel State Information（CSI），但仍然面对着较大的误差。</li>
+</ul>
+<p>本文聚焦在探索数据驱动的惯导和 BLE-based 定位融合，使用如下贡献达到更好的室内定位效果：</p>
+<ul>
+<li>提出了一种利用粒子滤波融合数据驱动的惯导和 BLE-based 定位进行室内定位的方法。</li>
+<li>有效地结合了利用重力稳定 IMU 数据的方法（坐标系对齐），使网络对行人运动特征的回归更具鲁棒性。</li>
+<li>给出了基于 GT 和 IMU 传感器测量跨多个设备的视觉惯性里程计数据集。</li>
+</ul>
+<h1 id="2-Methodology"><a href="#2-Methodology" class="headerlink" title="2  Methodology"></a>2  Methodology</h1><center>
+    <img src="/papernote/Data-Driven%20Navigation%20Bluetooth%20Indoor%20Localization/Figure-1.png">
+</center>
+
+<p>如 Fig.1 为本文方法的主要框架，由 3 个关键部分组成：</p>
+<ul>
+<li>数据驱动的惯性导航：使用 IMU 和训练好的 DNN 预测行人运动的距离和方向（得到运动向量）。</li>
+<li>基于 BLE 的定位：将 RSS（Received Signal Strength）和阈值比较，选择稳定的方法进行 BLE-based 定位。</li>
+<li>粒子滤波：融合运动向量和 BLE 定位结果，产生最终定位输出。</li>
+</ul>
+<h2 id="2-1-Data-Driven-Inertial-Navigation"><a href="#2-1-Data-Driven-Inertial-Navigation" class="headerlink" title="2.1  Data-Driven Inertial Navigation"></a>2.1  Data-Driven Inertial Navigation</h2><p>本文提出的数据驱动惯性导航方法包含三个关键步骤：</p>
+<ol>
+<li>获取序列学习所需的训练数据；</li>
+<li>通过坐标对齐方法提取与手机携带方式无关的数据；</li>
+<li>利用深度神经网络学习数据特征与运动特征之间的关系进行距离和航向回归。</li>
+</ol>
+<h3 id="2-1-1-Data-Acquisition"><a href="#2-1-1-Data-Acquisition" class="headerlink" title="2.1.1  Data Acquisition"></a>2.1.1  Data Acquisition</h3><ul>
+<li>使用监督学习的方法：利用 GT 运动轨迹和 IMU 数据回归运动参数。</li>
+</ul>
+<p>假设用户在平面上运动，则运动参数的回归是在 2D 平面上进行的。文章考虑 4 种用户携带手机的方式：翻看（texting）、手持（swinging）、打电话（calling）、放包中（pocket）。用户一只手持 Tango 拍摄运动轨迹的 GT，另一只手携带 Samsung Galaxy S8 来获取 IMU 数据。</p>
+<center>
+    <img src="/papernote/Data-Driven%20Navigation%20Bluetooth%20Indoor%20Localization/Figure-2.png">
+</center>
+
+<ul>
+<li>对于 GT 运动轨迹，从 Tango 上的 VIO 利用 RIDI 中的方法[5]得到 3D 相机位姿。Tango 可以提供低漂移的运动轨迹，这可以作为伪 GT。</li>
+<li>对于 IMU 数据，实际的数据获取实验发现惯性数据会被附上时间戳。</li>
+<li>TangoIMURecorder 产生位姿的频率为 200Hz，因此将 IMU 数据通过线性插值与 Tango 位姿进行同步。</li>
+</ul>
+<h3 id="2-1-2-Coordinate-Frame-Alignment"><a href="#2-1-2-Coordinate-Frame-Alignment" class="headerlink" title="2.1.2  Coordinate Frame Alignment"></a>2.1.2  Coordinate Frame Alignment</h3><p>加速度计和陀螺仪数据用于提取运动数据，但是由于携带手机的方式很多样（如 Fig.2），使得手机内部的 IMU 坐标系很不稳定。这种手机携带方法的任意性导致了仅依靠 IMU 难以获取准确的运动向量。因此，RIDI 提出了一种稳定的坐标框架，从 IMU 传感器数据中提取与手机方向无关的数据。</p>
+<center>
+    <img src="/papernote/Data-Driven%20Navigation%20Bluetooth%20Indoor%20Localization/Figure-3.png">
+</center>
+
+<p>通过 Android API 记录原始加速度计、陀螺仪和重力测量结果。将手机的 y 轴与负重力方向对齐，加速度计和陀螺仪的数据可以在固定的坐标系中表示，如 Fig.3。</p>
+<p>为了抑制高频噪声，将对齐的加速度计和陀螺仪数据应用 $\sigma = 2.0$ 的高斯平滑。此外，由于 Tango 从 Android API 中提供全局坐标系下的位姿，因此要将速度矢量转换到稳定的坐标系下：</p>
+<ul>
+<li>假设用户和智能手机对齐到同一个坐标系。当用户在平坦的地面上行走，即垂直位移为零时，可以将位姿数据转换为稳定的航向和位移。</li>
+</ul>
+<p>这些对准的加速度计和陀螺仪数据与运动特征相结合，构成 DNN 的训练数据。</p>
+<h3 id="2-1-3-Distance-and-Heading-Regression"><a href="#2-1-3-Distance-and-Heading-Regression" class="headerlink" title="2.1.3  Distance and Heading Regression"></a>2.1.3  Distance and Heading Regression</h3><p>DNN 的结构如下：</p>
+<center>
+    <img src="/papernote/Data-Driven%20Navigation%20Bluetooth%20Indoor%20Localization/Figure-4.png">
+</center>
+
+<p>网络的输入为数秒内的 IMU 数据特征（对齐后的加速度计和陀螺仪数据），输出为运动特征（距离和方向）。</p>
+<p>使用加速度计、陀螺仪、重力和 3D 相机在坐标系对齐模块。在大小为 $n$ 的时间窗口上执行回归任务，使网络学习定位距离 $\Delta l$ 和方向 $\Delta \psi$：</p>
+<script type="math/tex; mode=display">
+(\Delta l, \Delta \psi) = RNN (\{ (a_i, \omega_i) \}_{i=1}^n)</script><p>使用两层双向 LSTM，每层 LSTM 有 256 个隐藏状态。为避免过拟合，在每个 LSTM 后面接概率为 0.5 的 dropout 层，随机将输入元素变为 0。最后连接一个全连接层，执行对位置距离变化和方向变化的回归。预测和 GT 的均方误差（mean square error）用于作为损失函数。选择 Adam 优化器和 TensorFlow 进行网络搭建。</p>
+<center>
+    <img src="/papernote/Data-Driven%20Navigation%20Bluetooth%20Indoor%20Localization/Figure-5.png">
+</center>
+
+<p>如 Fig.5，实验室验证了窗口大小为 200、400、600 帧的实验结果，发现窗口大小为 400 时可以快速下降损失（因此选择 $n = 400$，即向网络输入大小为 2400 的来自加速度计和陀螺仪的特征数据）。在通过网络获得 $\Delta l$ 和 $\Delta \psi$ 后，运动的下一个位置则可以描述为</p>
+<script type="math/tex; mode=display">
+\begin{cases}
+x = x_0 + \Delta l \times \cos (\psi_0 + \Delta \psi) \\
+y = y_0 + \Delta l \times \sin (\psi_0 + \Delta \psi)
+\end{cases}</script><p>其中 $(x_0, y_0)$ 表示前一次的位置，$\psi_0$ 表示前一次的方向。</p>
+<h2 id="2-2-BLE-Based-Localization"><a href="#2-2-BLE-Based-Localization" class="headerlink" title="2.2  BLE-Based Localization"></a>2.2  BLE-Based Localization</h2><p>通过三边测量（trilateration）使用 RSS 进行定位。且离 BLE beacon 越近，RSS 值越大：</p>
+<script type="math/tex; mode=display">
+RSS(\lambda) = RSS(\lambda_0) - 10 \eta \log (\frac{\lambda}{\lambda_0}) + X_{\sigma}</script><p>其中 $\lambda$ 为 beacon 到设备的距离，$RSS(\lambda)$ 为 beacon 的 RSS，$RSS(\lambda_0)$ 为在参考距离 $\lambda_0$ 处的 RSS，$\eta$ 为路径损耗指数，$X_{\sigma}$ 为均值为 0，方差为 $\sigma^2$ 的高斯噪声。</p>
+<center>
+    <img src="/papernote/Data-Driven%20Navigation%20Bluetooth%20Indoor%20Localization/Figure-6.png">
+</center>
+
+<p>通过将数个（三个或以上）的 RSS 转换为设备到 beacon 的距离，三边测量使用圆形几何计算设备的位置，如 Fig.6。具体地，假设已知 BLE beacons 的位置，记设备位置 $(x,y)$ 和 beacon 位置 $(x_i, y_i)$，则可以得到 $N$ 个等式：</p>
+<script type="math/tex; mode=display">
+(x - x_i)^2 + (y - y_i)^2 = \lambda_i^2,\ i = 1, 2, \dots, N</script><p>求解上述 $N$ 个式子可以得到设备的位置：</p>
+<ul>
+<li>理想条件下（Fig.6a)，三个圆交于一个公共点，则可以求得唯一解。</li>
+<li>现实条件下（Fig.6b 和 Fig.6c），三个圆无公共交点或均不相交。使用 Line Intersection-based Trilateration[6] 来寻找近似解。</li>
+</ul>
+<p>对于 Fig.6c 中的情况，三边测量结果并不准确，因此使用 RSS 与 radio map 进行对比，显示地将 RSS 转换为距离，即 location fingerprinting。</p>
+<p>BLE fingerprinting-based positioning：</p>
+<ul>
+<li>offline training phases：选择一系列确定点为参考点 RP，在每个 RP 处手机所有检测到的 BLE beacon 的 RSS。这些在 RP 处收集的 RSS 则称为指纹（fingerprint），这些指纹形成了 radio map。</li>
+<li>online positioning phases：将采样到的 RSS 与 radio map 中的指纹进行匹配，得到当前位置的估计。</li>
+</ul>
+<p>设置 RSS 阈值（-50dBm）来选择 BLE-based 定位的方法：</p>
+<ul>
+<li>如果所有观测到的 BLE beacon 的 RSS 小于阈值，则使用基于指纹的定位方法，否则使用三角化的定位方法。</li>
+</ul>
+<p>但是仅依靠 BLE 进行定位，精度可能仍然不够，因此本文采用了数据驱动和基于 BLE 的融合方法。</p>
+<h2 id="2-3-Particle-Filter"><a href="#2-3-Particle-Filter" class="headerlink" title="2.3  Particle Filter"></a>2.3  Particle Filter</h2><p>使用粒子滤波融合数据驱动的惯导方法和 BLE-based 的定位方法：BLE-based 的定位提供设备位置的观测值，数据驱动的惯导用于建模用户的移动。</p>
+<h3 id="2-3-1-Initialization"><a href="#2-3-1-Initialization" class="headerlink" title="2.3.1  Initialization"></a>2.3.1  Initialization</h3><p>假设粒子集合为 $H = \{ X^i | i = 1, 2, …, N \}$，每个粒子有 3 维联合概率分布，即 $X^i = (x^i, y^i, \theta^i)$。在时间 $t=0$，利用高斯分布，随机从 BLE-based 定位得到的初始点 $(x_0^i, y_0^i)$ 周围选取粒子的位置。每个粒子的初始权重为 $\omega_0^i = \frac{1}{N}$。</p>
+<h3 id="2-3-2-Particle-Movement"><a href="#2-3-2-Particle-Movement" class="headerlink" title="2.3.2  Particle Movement"></a>2.3.2  Particle Movement</h3><p>利用数据驱动的惯导来建模用户的移动：</p>
+<script type="math/tex; mode=display">
+\begin{cases}
+x_t^i = x_{t-1}^i + l_t \times \cos \psi_t \\
+y_t^i = y_{t-1}^i + l_t \times \sin \psi_t
+\end{cases}</script><p>$l_t$ 和 $\psi_t$ 为数据驱动的惯导的结果。</p>
+<h3 id="2-3-3-Particle-Weight-Update-and-Resampling"><a href="#2-3-3-Particle-Weight-Update-and-Resampling" class="headerlink" title="2.3.3  Particle Weight Update and Resampling"></a>2.3.3  Particle Weight Update and Resampling</h3><p>在时间 $t$，当从 BLE-based 定位获得一个新的观测数据（位置），基于粒子的位置相距 BLE 定位的结果的距离，所有粒子的权重发生更新。</p>
+<p>同时，采用重采样，保留权重大的粒子，丢弃权重小的粒子。</p>
+<h3 id="2-3-4-Target-Location-Estimation"><a href="#2-3-4-Target-Location-Estimation" class="headerlink" title="2.3.4  Target Location Estimation"></a>2.3.4  Target Location Estimation</h3><p>最终的定位结果为加权和：</p>
+<script type="math/tex; mode=display">
+\begin{cases}
+x_t = \sum_{i=0}^N x_t^i \omega_t^i \\\
+y_t = \sum_{i=0}^N y_t^i \omega_t^i
+\end{cases}</script><h1 id="3-Experiment-and-Results"><a href="#3-Experiment-and-Results" class="headerlink" title="3  Experiment and Results"></a>3  Experiment and Results</h1><h2 id="3-1-实验设置"><a href="#3-1-实验设置" class="headerlink" title="3.1  实验设置"></a>3.1  实验设置</h2><p>实验环境：所有的 beacon 离地面 2.5m 高且为相同规格，beacon 间的水平距离约为 3m。选择了 Fig.7 中的 3 条行走路径。</p>
+<center>
+    <img src="/papernote/Data-Driven%20Navigation%20Bluetooth%20Indoor%20Localization/Figure-7.png">
+</center>
+
+<p>数据：使用 Galaxy S8 和 Tango 手机了 116 个数据序列，考虑 Tango 的精度，每个序列长度小于 200m。每 100 个 IMU 采样产生一个训练采样。</p>
+<center>
+    <img src="/papernote/Data-Driven%20Navigation%20Bluetooth%20Indoor%20Localization/Table-1.png">
+</center>
+
+
+
+<h2 id="3-2-实验结果"><a href="#3-2-实验结果" class="headerlink" title="3.2  实验结果"></a>3.2  实验结果</h2><p>数据驱动方法的短距离实验误差：</p>
+<center>
+    <img src="/papernote/Data-Driven%20Navigation%20Bluetooth%20Indoor%20Localization/Table-2.png">
+</center>
+
+<p>轨迹重建结果：</p>
+<center>
+    <img src="/papernote/Data-Driven%20Navigation%20Bluetooth%20Indoor%20Localization/Figure-8.png">
+</center>
+
+<p>粒子数量对算法融合的影响：</p>
+<center>
+    <img src="/papernote/Data-Driven%20Navigation%20Bluetooth%20Indoor%20Localization/Figure-10.png">
+</center>
+
+<p>融合算法的定位结果：</p>
+<center>
+    <img src="/papernote/Data-Driven%20Navigation%20Bluetooth%20Indoor%20Localization/Table-3.png">
+</center>
+
+<p>融合算法的轨迹重建结果：</p>
+<center>
+    <img src="/papernote/Data-Driven%20Navigation%20Bluetooth%20Indoor%20Localization/Figure-11.png">
+</center>
+
+<p>与现有方法的对比：</p>
+<center>
+    <img src="/papernote/Data-Driven%20Navigation%20Bluetooth%20Indoor%20Localization/Figure-12.png">
+</center>
+
+
+
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ul>
+<li>[1] H. Yan, Q. Shan, and Y. Furukawa, “RIDI: Robust IMU double integra- tion,” in <em>Proc. Eur. Conf. Comput. Vis. (ECCV)</em>, Sep. 2018, pp. 621–636.</li>
+<li>[2] C. Chen, X. Lu, A. Markham, and N. Trigoni, “IONet: Learning to cure the curse of drift in inertial odometry,” in <em>Proc. AAAI Conf. Artif. Intell.</em>, Apr. 2018, vol. 32, no. 1, pp. 6468-6476.</li>
+<li>[3] M. Brossard, A. Barrau, and S. Bonnabel, “AI-IMU dead-reckoning,” <em>IEEE Trans. Intell. Vehicles</em>, vol. 5, no. 4, pp. 585–595, Dec. 2020.</li>
+<li>[4] T. Haarnoja, A. Ajay, S. Levine, and P. Abbeel, “Backprop KF: Learning discriminative deterministic state estimators,” in <em>Proc. 30th Conf. Neural Inf. Process. Syst.</em>, 2016, pp. 1–11. [Online]. Available: <a target="_blank" rel="noopener" href="http://arxiv.org/abs/1605.07148">http://arxiv.org/abs/1605.07148</a></li>
+<li>[5] <a target="_blank" rel="noopener" href="https://github.com/higerra/TangoIMURecorder">https://github.com/higerra/TangoIMURecorder</a></li>
+<li>[6] S. Pradhan, Y. Bae, J.-Y. Pyun, N. Y. Ko, and S.-S. Hwang, “Hybrid TOA trilateration algorithm based on line intersection and comparison approach of intersection distances,” <em>Energies</em>, vol. 12, no. 9, p. 1668, May 2019.</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/SLAM/" rel="tag"># SLAM</a>
+              <a href="/tags/Paper-Note/" rel="tag"># Paper Note</a>
+              <a href="/tags/Indoor-Localization/" rel="tag"># Indoor Localization</a>
+              <a href="/tags/Indoor-Navigation/" rel="tag"># Indoor Navigation</a>
+              <a href="/tags/Bluetooth/" rel="tag"># Bluetooth</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/papernote/Corridor-Walker/" rel="prev" title="Corridor-Walker">
+                  <i class="fa fa-chevron-left"></i> Corridor-Walker
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/papernote/Dynamic%20SLAM-The%20Need%20For%20Speed/" rel="next" title="CT-ICP">
+                  CT-ICP <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Star Rain</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+  <script class="next-config" data-name="pdf" type="application/json">{"object_url":{"url":"https://cdn.jsdelivr.net/npm/pdfobject@2.2.7/pdfobject.min.js","integrity":"sha256-ph3Dk89VmuTVXG6x/RDzk53SU9LPdAh1tpv0UvnDZ2I="},"url":"/lib/pdf/web/viewer.html"}</script>
+  <script src="/js/third-party/tags/pdf.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"cdn":"//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML","tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
