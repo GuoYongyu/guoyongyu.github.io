@@ -124,7 +124,7 @@
 Source=<x_1,x_2,...,x_m>\\
 Target=<y_1,y_2,...,y_n></script><p>编码器 Encoder 通过对句子 $Source$ 进行编码，将输入的句子通过非线性变换转化为中间语义编码</p>
 <script type="math/tex; mode=display">
-C=\mathcal{F}(x_1,x_2,...,x_m)</script><p>解码器 Decoder 将中间语义编码 $C$ 和之前已经产生的历史输出单词序列 $y<em>1,y_2,…,y</em>{i-1}$ 来生成第 $i$ 步的单词</p>
+C=\mathcal{F}(x_1,x_2,...,x_m)</script><p>解码器 Decoder 将中间语义编码 $C$ 和之前已经产生的历史输出单词序列 $y_1,y_2,…,y_{i-1}$ 来生成第 $i$ 步的单词</p>
 <script type="math/tex; mode=display">
 y_i=\mathcal{G}(C,y_1,y_2,...,y_{i-1})</script><p>若 $Source$ 和 $Target$ 是不同语言的句子，那么是机器翻译 Encoder-Decoder 框架；若 $Source$ 是一篇文章，而 $Target$ 是文章的概括性描述，那么是文本摘要 Encoder-Decoder 框架；若 $Source$ 是一句问句，而 $Target$ 是问句的回答，那么是问答系统或对话机器人 Encoder-Decoder 框架。</p>
 <p>除 NLP 领域外，Encoder-Decoder 框架在其他领域也被广泛应用，如语音识别领域，Encoder 的输入是语音流，而 Decoder 的输出为语音所对应的文本；在 CV 领域，Encoder 的输入是一帧图片，Decoder 的输出是描述图片语义特征的描述语。通常 NLP 和语音识别时 Encoder 采用 RNN，而 CV 则采用 CNN。</p>
@@ -165,7 +165,7 @@ C_{\mathrm{追逐}} &= \mathcal{g}(0.2*\mathcal{f}(\mathrm{Tom}),\ 0.7*\mathcal{
 C_{\mathrm{杰瑞}} &= \mathcal{g}(0.3*\mathcal{f}(\mathrm{Tom}),\ 0.2*\mathcal{f}(\mathrm{Chase}),\ 0.5*\mathcal{f}(\mathrm{Jerry}))
 \end{aligned}</script><p>其中，$\mathcal{f}$ 表示 Encoder 对输入英文单词的某种变换函数，例如：如果 Encoder 使用 RNN 模型，那么 $\mathcal{f}$ 的函数结果往往是某时刻输入 $x_i$ 后隐藏节点的状态值；$\mathcal{g}$ 表示 Encoder 根据单词的中间编码合成整个句子中间语义编码的变换函数，一般，$\mathcal{g}$ 函数是对构成元素的加权求和，即下式：</p>
 <script type="math/tex; mode=display">
-C_i = \sum_{j=1}^{L_x} a_{ij}h_j</script><p>其中：$L<em>x$ 表示句子 $Source$ 的长度；$a</em>{ij}$ 表示在 $Target$ 输出第 $i$ 个单词时 $Source$ 句子中第 $j$ 个单词的注意力系数分配；$h<em>j$ 表示 $Source$ 句子中第 $j$ 个单词的语义编码。以前面的例子为例，则有 $L_x = 3$，$h_1 = \mathcal{f}(\mathrm{Tom})$，$h_2 = \mathcal{f}(\mathrm{Chase})$，$h_3 = \mathcal{f}(\mathrm{Jerry})$ 分别是 $Source$ 中每个单词的语义编码，对于编码 $C_1$ 而言，权重为 $a</em>{11} = 0.6$，$a<em>{12}=0.2$，$a</em>{13}=0.2$，其形成过程如下图：</p>
+C_i = \sum_{j=1}^{L_x} a_{ij}h_j</script><p>其中：$L_x$ 表示句子 $Source$ 的长度；$a_{ij}$ 表示在 $Target$ 输出第 $i$ 个单词时 $Source$ 句子中第 $j$ 个单词的注意力系数分配；$h_j$ 表示 $Source$ 句子中第 $j$ 个单词的语义编码。以前面的例子为例，则有 $L_x = 3$，$h_1 = \mathcal{f}(\mathrm{Tom})$，$h_2 = \mathcal{f}(\mathrm{Chase})$，$h_3 = \mathcal{f}(\mathrm{Jerry})$ 分别是 $Source$ 中每个单词的语义编码，对于编码 $C_1$ 而言，权重为 $a_{11} = 0.6$，$a_{12}=0.2$，$a_{13}=0.2$，其形成过程如下图：</p>
 <center>
     <img src="/summary/Attention%20Mechanism/3 Attention在翻译时的形成过程示例.png" weight="400" height="400">
     <br>
@@ -193,7 +193,7 @@ C_i = \sum_{j=1}^{L_x} a_{ij}h_j</script><p>其中：$L<em>x$ 表示句子 $Sour
     </div>
 </center>
 
-<p>对于使用 RNN 的 Decoder 而言，在时刻 $i$ 若要生成单词 $y<em>i$，由于可以得知时刻 $i-1$ 的隐藏层节点 $H</em>{i-1}$ 的值，那么可以把 $H<em>{i-1}$ 和 $Source$ 中每个单词对应的隐藏层节点 $h_j$ 分别计算，即通过函数 $F(h_j,H</em>{i-1})$ 获得目标单词 $y_i$ 和每个输入单词的对齐可能性（$F$ 在不同模型中使用的方法不同），然后函数 $F$ 的输出经过 Softmax 进行归一化后，即得到符合概率分布的注意力概率分布。图-6 中可视化的是英语-德语翻译系统加入 Attention 机制后，$Source$ 和 $Target$ 中单词对应的概率分布：</p>
+<p>对于使用 RNN 的 Decoder 而言，在时刻 $i$ 若要生成单词 $y_i$，由于可以得知时刻 $i-1$ 的隐藏层节点 $H_{i-1}$ 的值，那么可以把 $H_{i-1}$ 和 $Source$ 中每个单词对应的隐藏层节点 $h_j$ 分别计算，即通过函数 $F(h_j,H_{i-1})$ 获得目标单词 $y_i$ 和每个输入单词的对齐可能性（$F$ 在不同模型中使用的方法不同），然后函数 $F$ 的输出经过 Softmax 进行归一化后，即得到符合概率分布的注意力概率分布。图-6 中可视化的是英语-德语翻译系统加入 Attention 机制后，$Source$ 和 $Target$ 中单词对应的概率分布：</p>
 <center>
     <img src="/summary/Attention%20Mechanism/6 英语-德语翻译中Attention的概率分布.png" height="400" width="400">
     <br>
@@ -302,7 +302,7 @@ V &= [v_1=h_1 W_v,\ v_2=h_2 W_v] &\Rightarrow V = HW_v
     </div>
 </center>
 
-<p>在获得输入信息 $H$ 在不同空间的表达 $Q$、$K$ 和 $V$ 后，计算 $q<em>1$ 在 $h_1$ 和 $h_2$ 的分数（相似性或相关性） $s</em>{11}$ 和 $s<em>{12}$。然后用 Softmax 进行归一化，获得在 $h_1$ 这个位置的注意力分布 $a</em>{11}$ 和 $a_{12}$，代表了模型当前在 $h_1$ 这个位置需要对输入信息 $h_1$ 和 $h_2$ 的关注程度。最后，根据该位置的注意力分布对 $v_1$ 和 $v_2$ 进行加权平均获得 $h_1$ 位置的 Attention 向量 $context_1$。</p>
+<p>在获得输入信息 $H$ 在不同空间的表达 $Q$、$K$ 和 $V$ 后，计算 $q_1$ 在 $h_1$ 和 $h_2$ 的分数（相似性或相关性） $s_{11}$ 和 $s_{12}$。然后用 Softmax 进行归一化，获得在 $h_1$ 这个位置的注意力分布 $a_{11}$ 和 $a_{12}$，代表了模型当前在 $h_1$ 这个位置需要对输入信息 $h_1$ 和 $h_2$ 的关注程度。最后，根据该位置的注意力分布对 $v_1$ 和 $v_2$ 进行加权平均获得 $h_1$ 位置的 Attention 向量 $context_1$。</p>
 <p>同理，对于输入信息 $H=[h_1,h_2,…,h_n]$，可以得到每个位置的 Attention 向量  $\mathrm{Attention}=[context_1,context_2,…,context_n]$。</p>
 <p>整个 Self-Attention 的计算过程的矩阵形式为：</p>
 <script type="math/tex; mode=display">
@@ -314,7 +314,7 @@ V &= [v_1=h_1 W_v,\ v_2=h_2 W_v] &\Rightarrow V = HW_v
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://guoyongyu.github.io/summary/Attention%20Mechanism/" data-id="clakglk3c0011kps68fic5jcb" class="article-share-link">Share</a>
+      <a data-url="https://guoyongyu.github.io/summary/Attention%20Mechanism/" data-id="clakgr4uv0011n8s6cg8bamly" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Deep-Learning/" rel="tag">Deep Learning</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Knowledge/" rel="tag">Knowledge</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Summary/" rel="tag">Summary</a></li></ul>
