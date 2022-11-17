@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>Activation Function | The Blog of Star Rain</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="关于深度学习中激活函数的简单总结。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Activation Function">
+<meta property="og:url" content="https://guoyongyu.github.io/summary/Activation%20Function/index.html">
+<meta property="og:site_name" content="The Blog of Star Rain">
+<meta property="og:description" content="关于深度学习中激活函数的简单总结。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-05-29T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-11-17T02:02:28.068Z">
+<meta property="article:author" content="Star Rain">
+<meta property="article:tag" content="Summary">
+<meta property="article:tag" content="Knowledge">
+<meta property="article:tag" content="Deep Learning">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="The Blog of Star Rain" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="[object Object]">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Blog of Star Rain</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://guoyongyu.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Activation Function" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/summary/Activation%20Function/" class="article-date">
+  <time datetime="2022-05-29T16:00:00.000Z" itemprop="datePublished">2022-05-30</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Summary/">Summary</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Activation Function
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>关于深度学习中激活函数的简单总结。</p>
+<span id="more"></span>
+
+<center><font size=9><b>激活函数</b></font></center>
+
+<hr>
+<h1 id="1-简介"><a href="#1-简介" class="headerlink" title="1  简介"></a>1  简介</h1><p>激活函数是向神经网络中引入非线性因素，通过激活函数神经网络就可以拟合各种曲线。激活函数主要分为饱和激活函数（Saturated Neurons）和非饱和函数（One-sided Saturations）。</p>
+<h1 id="2-Sigmoid-函数"><a href="#2-Sigmoid-函数" class="headerlink" title="2  Sigmoid 函数"></a>2  Sigmoid 函数</h1><p>数学形式：<br>$$<br>\mathrm{sigmoid}(x) &#x3D; \frac{1}{1 + \mathrm{e}^{-x}}<br>$$<br>特点：</p>
+<ul>
+<li>能够把输入的连续实值变换为 $0$ 和 $1$ 之间的输出。特别的，如果是非常大的负数，那么输出就是 $0$；如果是非常大的正数，输出就是 $1$。</li>
+<li>缺点 1：在深度神经网络中梯度反向传递时导致梯度爆炸和梯度消失。</li>
+<li>缺点 2：Sigmoid 的 output 不是 0 均值（zero-centered）。</li>
+</ul>
+<h1 id="3-tanh-函数"><a href="#3-tanh-函数" class="headerlink" title="3  tanh 函数"></a>3  tanh 函数</h1><p>数学形式：<br>$$<br>\mathrm{tanh} (x) &#x3D; \frac{\mathrm{e}^x - \mathrm{e}^{-x}}{\mathrm{e}^x + \mathrm{e}^{-x}}<br>$$<br>特点：</p>
+<ul>
+<li>解决了 Sigmoid 函数的不是 zero-centered 的输出问题。</li>
+</ul>
+<h1 id="4-ReLU-函数"><a href="#4-ReLU-函数" class="headerlink" title="4  ReLU 函数"></a>4  ReLU 函数</h1><p>数学形式：<br>$$<br>\mathrm{ReLU} (x) &#x3D; \max (0, x)<br>$$<br>特点：</p>
+<ul>
+<li><p>优点：</p>
+<ul>
+<li>解决了梯度消亡问题</li>
+<li>计算速度非常快</li>
+<li>收敛速度远快于 Sigmoid 和 tanh</li>
+</ul>
+</li>
+<li><p>缺点：</p>
+<ul>
+<li>ReLU 的输出不是 zero-centered</li>
+<li>Dead ReLU 问题，指的是某些神经元可能永远不会被激活，导致相应的参数永远不能被更新</li>
+</ul>
+</li>
+</ul>
+<h1 id="5-Leaky-ReLU函数"><a href="#5-Leaky-ReLU函数" class="headerlink" title="5  Leaky ReLU函数"></a>5  Leaky ReLU函数</h1><p>数学形式：<br>$$<br>\mathrm{LeakyReLU} (x) &#x3D; \max (\alpha x, x)<br>$$<br>特点：</p>
+<ul>
+<li>为解决 Dead ReLU 问题，提出了将 ReLU 的前半段设为 $\alpha x$，通常 $\alpha&#x3D;0.01$。</li>
+<li>理论上来讲，Leaky ReLU 有 ReLU 的所有优点，且没有 Dead ReLU 问题，但在实际中，并没有完全证明 Leaky ReLU 总是优于 ReLU。</li>
+<li>PReLU 函数与 Leaky ReLU 函数相类似</li>
+</ul>
+<h1 id="6-ELU（Exponential-Linear-Units）函数"><a href="#6-ELU（Exponential-Linear-Units）函数" class="headerlink" title="6  ELU（Exponential Linear Units）函数"></a>6  ELU（Exponential Linear Units）函数</h1><p>数学形式：<br>$$<br>\mathrm{ELU} (x) &#x3D;<br>\begin{cases}<br>x, &amp; \mathrm{if} \ x &gt; 0\<br>\alpha (\mathrm{e}^x - 1), &amp; \mathrm{otherwise}<br>\end{cases}<br>$$<br>特点：</p>
+<ul>
+<li>ELU 也是为解决 ReLU 存在的问题而提出，基本有 ReLU 的所有优点，没有 Dead ReLU 问题且输出接近 0</li>
+<li>问题是计算开销太大</li>
+</ul>
+<h1 id="7-Softmax-函数"><a href="#7-Softmax-函数" class="headerlink" title="7  Softmax 函数"></a>7  Softmax 函数</h1><p>数学形式：<br>$$<br>\mathrm{softmax}: \bold{x} \in \mathbb{R}^n \rightarrow \bold{x’} \in \mathbb{R}^n\<br>\mathrm{s.t.}\ \forall x’_i \in \bold{x’},\ x’<em>i &#x3D; \frac{\mathrm{e}^{x_i}}{\sum</em>{j&#x3D;1}^n \mathrm{e}^{x_j}}<br>$$<br>特点：</p>
+<ul>
+<li>在零点不可微</li>
+<li>负输入的梯度为零，这意味着对于该区域的激活，权重不会在反向传播期间更新，因此会产生永不激活的死亡神经元</li>
+</ul>
+<h1 id="8-Swish-函数"><a href="#8-Swish-函数" class="headerlink" title="8  Swish 函数"></a>8  Swish 函数</h1><p>数学形式：<br>$$<br>\mathrm{swish} (x) &#x3D; x \cdot \mathrm{sigmoid} (x)<br>$$<br>特点：</p>
+<ul>
+<li><strong>无界性</strong>有助于防止慢速训练期间，梯度逐渐接近 0 并导致饱和</li>
+<li>导数恒大于 0</li>
+</ul>
+<h1 id="9-Softplus-函数"><a href="#9-Softplus-函数" class="headerlink" title="9  Softplus 函数"></a>9  Softplus 函数</h1><p>数学形式：<br>$$<br>\mathrm{softplus} (x) &#x3D; \ln (1 + \mathrm{e}^x)<br>$$<br>特点：</p>
+<ul>
+<li>类似于 ReLU 函数，但是相对较平滑</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://guoyongyu.github.io/summary/Activation%20Function/" data-id="clakfls5h00044zs6bu7scob9" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Deep-Learning/" rel="tag">Deep Learning</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Knowledge/" rel="tag">Knowledge</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Summary/" rel="tag">Summary</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/summary/Anchor/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Anchor
+        
+      </div>
+    </a>
+  
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Paper-Collection/">Paper Collection</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Summary/">Summary</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Collection/" rel="tag">Collection</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Deep-Learning/" rel="tag">Deep Learning</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Knowledge/" rel="tag">Knowledge</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Metrics/" rel="tag">Metrics</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SLAM/" rel="tag">SLAM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Semantic-SLAM/" rel="tag">Semantic SLAM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Summary/" rel="tag">Summary</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Collection/" style="font-size: 10px;">Collection</a> <a href="/tags/Deep-Learning/" style="font-size: 15px;">Deep Learning</a> <a href="/tags/Knowledge/" style="font-size: 20px;">Knowledge</a> <a href="/tags/Metrics/" style="font-size: 10px;">Metrics</a> <a href="/tags/SLAM/" style="font-size: 10px;">SLAM</a> <a href="/tags/Semantic-SLAM/" style="font-size: 10px;">Semantic SLAM</a> <a href="/tags/Summary/" style="font-size: 20px;">Summary</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/11/">November 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/10/">October 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/06/">June 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">May 2022</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/HelloWorld/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/summary/ATE%20&%20RPE/">ATE &amp; RPE</a>
+          </li>
+        
+          <li>
+            <a href="/collection/Awesome%20Semantic%20SLAM/">Awesome Semantic SLAM</a>
+          </li>
+        
+          <li>
+            <a href="/summary/Attention%20Mechanism/">Attention Mechanism</a>
+          </li>
+        
+          <li>
+            <a href="/summary/Anchor/">Anchor</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2022 Star Rain<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>

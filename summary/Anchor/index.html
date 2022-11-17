@@ -5,14 +5,21 @@
   
 
   
-  <title>Archives: 2022 | The Blog of Star Rain</title>
+  <title>Anchor | The Blog of Star Rain</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="The Blog of Star Rain">
-<meta property="og:url" content="https://guoyongyu.github.io/archives/2022/index.html">
+  <meta name="description" content="计算机视觉，尤其目标检测相关算法中，anchor 的介绍与用途。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Anchor">
+<meta property="og:url" content="https://guoyongyu.github.io/summary/Anchor/index.html">
 <meta property="og:site_name" content="The Blog of Star Rain">
+<meta property="og:description" content="计算机视觉，尤其目标检测相关算法中，anchor 的介绍与用途。">
 <meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-06-01T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-11-17T02:02:14.703Z">
 <meta property="article:author" content="Star Rain">
+<meta property="article:tag" content="Summary">
+<meta property="article:tag" content="Knowledge">
+<meta property="article:tag" content="Deep Learning">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternate" href="/atom.xml" title="The Blog of Star Rain" type="application/atom+xml">
@@ -62,135 +69,78 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main">
-  
-  
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2022" class="archive-year">2022</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/HelloWorld/hello-world/" class="archive-article-date">
-  <time datetime="2022-11-16T10:33:54.885Z" itemprop="datePublished">Nov 16</time>
+        <section id="main"><article id="post-Anchor" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/summary/Anchor/" class="article-date">
+  <time datetime="2022-06-01T16:00:00.000Z" itemprop="datePublished">2022-06-02</time>
 </a>
-      
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Summary/">Summary</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/HelloWorld/hello-world/">Hello World</a>
+    <h1 class="article-title" itemprop="name">
+      Anchor
     </h1>
   
 
-    </header>
-  </div>
-</article>
-  
+      </header>
     
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/summary/ATE%20&%20RPE/" class="archive-article-date">
-  <time datetime="2022-11-15T16:00:00.000Z" itemprop="datePublished">Nov 16</time>
-</a>
+    <div class="article-entry" itemprop="articleBody">
       
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/summary/ATE%20&%20RPE/">ATE &amp; RPE</a>
-    </h1>
-  
+        <p>计算机视觉，尤其目标检测相关算法中，anchor 的介绍与用途。</p>
+<span id="more"></span>
 
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/collection/Awesome%20Semantic%20SLAM/" class="archive-article-date">
-  <time datetime="2022-10-30T13:23:54.000Z" itemprop="datePublished">Oct 30</time>
-</a>
+<center><b><font size=9>Anchor</font></b></center>
+
+<p>anchor 来源于 Faster R-CNN 中提到的在目标检测时的一种思想。在 Faster R-CNN 中，对于输入图像，先被缩放为 $800\times600$ 大小的图像 A，输入 backbone 中经 $1&#x2F;16$ 下采样得到 feature map，大小为 $\lceil 800&#x2F;16 \rceil \times \lceil 600&#x2F;16 \rceil &#x3D; 50 \times 38$，feature map 中的一个小方格就对应原图像 A 中 $16\times16$ 的像素框。</p>
+<p>在 Faster R-CNN 中，定义了三种 scale 和 ratio：</p>
+<ul>
+<li>scale 为缩放比，取 $[8,16,32]$</li>
+<li>ratio 为宽高比，取 $[1:2,1:1,2:1]$</li>
+</ul>
+<p>在特征图中给每个点取 anchor 时，先定义 $base_anchor$，对应特征图的一个点，即原图像 $16\times16$ 的像素。先考虑 ratio 的影响，根据三个 ratio，保持 $base_anchor$ 的面积不变，可以得到三种变形的 $base_anchor$，大小对应原图像为 $12\times24$ 和 $24\times12$（结果向上取整）。然后将 $base_anchor$ 的宽和高乘以 scale，即可得到在原图像上取的 anchor。</p>
+
       
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/collection/Awesome%20Semantic%20SLAM/">Awesome Semantic SLAM</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/summary/Attention%20Mechanism/" class="archive-article-date">
-  <time datetime="2022-06-16T16:00:00.000Z" itemprop="datePublished">Jun 17</time>
-</a>
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://guoyongyu.github.io/summary/Anchor/" data-id="clakfls5e00014zs62c402q8p" class="article-share-link">Share</a>
       
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/summary/Attention%20Mechanism/">Attention Mechanism</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/summary/Anchor/" class="archive-article-date">
-  <time datetime="2022-06-01T16:00:00.000Z" itemprop="datePublished">Jun 2</time>
-</a>
       
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/summary/Anchor/">Anchor</a>
-    </h1>
-  
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Deep-Learning/" rel="tag">Deep Learning</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Knowledge/" rel="tag">Knowledge</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Summary/" rel="tag">Summary</a></li></ul>
 
-    </header>
+    </footer>
   </div>
-</article>
   
     
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/summary/Activation%20Function/" class="archive-article-date">
-  <time datetime="2022-05-29T16:00:00.000Z" itemprop="datePublished">May 30</time>
-</a>
-      
+<nav id="article-nav">
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/summary/Activation%20Function/">Activation Function</a>
-    </h1>
+    <a href="/summary/Attention%20Mechanism/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Attention Mechanism
+        
+      </div>
+    </a>
   
+  
+    <a href="/summary/Activation%20Function/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Activation Function</div>
+    </a>
+  
+</nav>
 
-    </header>
-  </div>
+  
 </article>
-  
-  
-    </div></section>
-  
-
 
 </section>
         

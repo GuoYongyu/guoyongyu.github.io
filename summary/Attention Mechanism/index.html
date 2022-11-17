@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>Attention Mechanism | The Blog of Star Rain</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="注意力机制在 Transformer 中很常见，目前也经常被用于计算机视觉当中。本文整理总结了网络上关于注意力机制的介绍。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Attention Mechanism">
+<meta property="og:url" content="https://guoyongyu.github.io/summary/Attention%20Mechanism/index.html">
+<meta property="og:site_name" content="The Blog of Star Rain">
+<meta property="og:description" content="注意力机制在 Transformer 中很常见，目前也经常被用于计算机视觉当中。本文整理总结了网络上关于注意力机制的介绍。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://guoyongyu.github.io/summary/Attention%20Mechanism/Attention%20Mechanism/1%20Encoder-Decoder框架.png">
+<meta property="og:image" content="https://guoyongyu.github.io/summary/Attention%20Mechanism/Attention%20Mechanism/2%20注意力Encoder-Decoder框架.png">
+<meta property="og:image" content="https://guoyongyu.github.io/summary/Attention%20Mechanism/Attention%20Mechanism/3%20Attention在翻译时的形成过程示例.png">
+<meta property="og:image" content="https://guoyongyu.github.io/summary/Attention%20Mechanism/Attention%20Mechanism/4%20使用RNN细化后的Encoder-Decoder框架.png">
+<meta property="og:image" content="https://guoyongyu.github.io/summary/Attention%20Mechanism/Attention%20Mechanism/5%20注意力概率分布的计算过程.png">
+<meta property="og:image" content="https://guoyongyu.github.io/summary/Attention%20Mechanism/Attention%20Mechanism/6%20英语-德语翻译中Attention的概率分布.png">
+<meta property="og:image" content="https://guoyongyu.github.io/summary/Attention%20Mechanism/Attention%20Mechanism/7%20Attention机制的本质思想.png">
+<meta property="og:image" content="https://guoyongyu.github.io/summary/Attention%20Mechanism/Attention%20Mechanism/8%20计算Attention的三个阶段.png">
+<meta property="og:image" content="https://guoyongyu.github.io/summary/Attention%20Mechanism/Attention%20Mechanism/9%20自注意力机制的计算过程.jpg">
+<meta property="og:image" content="https://guoyongyu.github.io/summary/Attention%20Mechanism/Attention%20Mechanism/10%20自注意力机制的详细计算过程.jpg">
+<meta property="article:published_time" content="2022-06-16T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-11-17T02:06:35.954Z">
+<meta property="article:author" content="Star Rain">
+<meta property="article:tag" content="Summary">
+<meta property="article:tag" content="Knowledge">
+<meta property="article:tag" content="Deep Learning">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://guoyongyu.github.io/summary/Attention%20Mechanism/Attention%20Mechanism/1%20Encoder-Decoder框架.png">
+  
+    <link rel="alternate" href="/atom.xml" title="The Blog of Star Rain" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="[object Object]">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">The Blog of Star Rain</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://guoyongyu.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Attention Mechanism" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/summary/Attention%20Mechanism/" class="article-date">
+  <time datetime="2022-06-16T16:00:00.000Z" itemprop="datePublished">2022-06-17</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Summary/">Summary</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Attention Mechanism
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>注意力机制在 Transformer 中很常见，目前也经常被用于计算机视觉当中。本文整理总结了网络上关于注意力机制的介绍。</p>
+<span id="more"></span>
+
+<center><font size=9><b>注意力机制</b></font></center>
+
+<hr>
+<h1 id="1-Encoder-Decoder-框架"><a href="#1-Encoder-Decoder-框架" class="headerlink" title="1  Encoder-Decoder 框架"></a>1  Encoder-Decoder 框架</h1><p>目前大多数注意力模型附着在 Encoder-Decoder 框架下。下图是 NLP 处理中常用的 Encoder-Decoder 框架：</p>
+<center>
+    <img src="./Attention Mechanism/1 Encoder-Decoder框架.png" weight="600" height="300">
+    <div>
+        图-1 Encoder-Decoder 框架
+    </div>
+</center>
+
+<p>可以简单理解为处理一个语句（篇章）生成另一个语句（篇章）的模型：对于句子 $&lt;Source, Target&gt;$，目标是输入句子 $Source$，期待通过 Encoder-Decoder 框架生成目标句子 $Target$，$Source$ 和 $Target$ 的单词序列为：<br>$$<br>Source&#x3D;&lt;x_1,x_2,…,x_m&gt;\<br>Target&#x3D;&lt;y_1,y_2,…,y_n&gt;<br>$$<br>编码器 Encoder 通过对句子 $Source$ 进行编码，将输入的句子通过非线性变换转化为中间语义编码<br>$$<br>C&#x3D;\mathcal{F}(x_1,x_2,…,x_m)<br>$$<br>解码器 Decoder 将中间语义编码 $C$ 和之前已经产生的历史输出单词序列 $y_1,y_2,…,y_{i-1}$ 来生成第 $i$ 步的单词<br>$$<br>y_i&#x3D;\mathcal{G}(C,y_1,y_2,…,y_{i-1})<br>$$<br>若 $Source$ 和 $Target$ 是不同语言的句子，那么是机器翻译 Encoder-Decoder 框架；若 $Source$ 是一篇文章，而 $Target$ 是文章的概括性描述，那么是文本摘要 Encoder-Decoder 框架；若 $Source$ 是一句问句，而 $Target$ 是问句的回答，那么是问答系统或对话机器人 Encoder-Decoder 框架。</p>
+<p>除 NLP 领域外，Encoder-Decoder 框架在其他领域也被广泛应用，如语音识别领域，Encoder 的输入是语音流，而 Decoder 的输出为语音所对应的文本；在 CV 领域，Encoder 的输入是一帧图片，Decoder 的输出是描述图片语义特征的描述语。通常 NLP 和语音识别时 Encoder 采用 RNN，而 CV 则采用 CNN。</p>
+<h1 id="2-经典-Attention-模型（Soft-Attention）"><a href="#2-经典-Attention-模型（Soft-Attention）" class="headerlink" title="2  经典 Attention 模型（Soft-Attention）"></a>2  经典 Attention 模型（Soft-Attention）</h1><h2 id="2-1-Attention-的引入"><a href="#2-1-Attention-的引入" class="headerlink" title="2.1  Attention 的引入"></a>2.1  Attention 的引入</h2><p>图-1 中的 Encoder-Decoder 框架没有体现出 “注意力机制”，因此可以将其看作注意力不集中的分心模型。为什么称其注意力不集中？先观察下面 $Target$ 中每个单词的生成过程：<br>$$<br>\begin{aligned}<br>y_1 &amp;&#x3D; \mathcal{G}(C) \<br>y_2 &amp;&#x3D; \mathcal{G}(C, y_1) \<br>y_3 &amp;&#x3D; \mathcal{G}(C, y_1, y_2) \<br>…<br>\end{aligned}<br>$$<br>式中 $\mathcal{G}$ 为 Decoder 的非线性变化函数。从上面的生成过程可以看出，不论生成哪一个单词，所使用的输入句子 $Source$ 的语义编码 $C$ 是相同的。需要注意的是 $C$ 由 $Sourc$ 的每个单词经 Encoder 编码生成，这也意味着，对于每一个 $Target$ 中的单词 $y_i$ 来说，输入句子 $Source$ 中的每一个单词对其生成都有着相同的影响力，因此称这个模型注意力不集中。</p>
+<p><b><font face="楷体" color="#800000" size=4><br>例：对于机器翻译，输入句子 “Tom chase Jerry”，Encoder-Decoder 逐步生成中文单词：“汤姆”、“追逐”、“杰瑞”。在翻译 “杰瑞” 时，分心模型里所有输入英文单词对目标单词 “杰瑞” 的影响是相同的，这显然不合理，因为 “Jerry” 翻译为 “杰瑞” 更加合理，而分心模型无法体现这一点。<br></font></b></p>
+<p>不引入注意力机制，在输入短句子时可能没有明显的问题，但是对于长难句来说，输入句子的语义信息仅通过一个中间语义编码向量来表示，单词本身的信息大量丢失，极大影响输出结果的正确性，因此，这就是引入注意力机制的重要原因。</p>
+<p>再用上面的翻译例子，引入 Attention 后，在翻译 “杰瑞” 时，将体现出不同英文单词对于翻译当前中文单词不同的影响程度，例如如下的概率分布：<br>$$<br>(\mathrm{Tom}, 0.3),\ (\mathrm{Chase}, 0.2),\ (\mathrm{Jerry}, 0.5)<br>$$<br>每个英文单词的概率表示翻译 “杰瑞” 时，注意力分配给不同英文单词的注意力大小，这引入了新的信息，将有助于正确翻译目标单词。</p>
+<p>同理，$Target$ 中的每个单词都应学到其对应的 $Source$ 中单词的注意力概率分布。这也就意味着，在生成单词 $y_i$ 时，前面所使用的相同的中间语义编码 $C$ 被替换为根据当前生成单词而不断变化的 $C_i$ ，如下图所示：</p>
+<center>
+    <img src="./Attention Mechanism/2 注意力Encoder-Decoder框架.png">
+    <br>
+    <div>
+        图-2 引入注意力机制的 Encoder-Decoder 框架
+    </div>
+</center>
+
+<p>即生成 $Target$ 的过程变为：<br>$$<br>\begin{aligned}<br>y_1 &amp;&#x3D; \mathcal{G}<em>1 (C_1) \<br>y_2 &amp;&#x3D; \mathcal{G}<em>2 (C_2, y_1) \<br>y_3 &amp;&#x3D; \mathcal{G}<em>3 (C_3, y_1, y_2)<br>\end{aligned}<br>$$<br>每个 $C_i$ 可能对应不同的 $Source$ 中单词的注意力概率分布，以前面的翻译例子，其对应的信息可能如下：<br>$$<br>\begin{aligned}<br>C</em>{\mathrm{汤姆}} &amp;&#x3D; \mathcal{g}(0.6<em>\mathcal{f}(\mathrm{Tom}),\ 0.2</em>\mathcal{f}(\mathrm{Chase}),\ 0.2*\mathcal{f}(\mathrm{Jerry})) \<br>C</em>{\mathrm{追逐}} &amp;&#x3D; \mathcal{g}(0.2<em>\mathcal{f}(\mathrm{Tom}),\ 0.7</em>\mathcal{f}(\mathrm{Chase}),\ 0.1*\mathcal{f}(\mathrm{Jerry})) \<br>C</em>{\mathrm{杰瑞}} &amp;&#x3D; \mathcal{g}(0.3<em>\mathcal{f}(\mathrm{Tom}),\ 0.2</em>\mathcal{f}(\mathrm{Chase}),\ 0.5*\mathcal{f}(\mathrm{Jerry}))<br>\end{aligned}<br>$$<br>其中，$\mathcal{f}$ 表示 Encoder 对输入英文单词的某种变换函数，例如：如果 Encoder 使用 RNN 模型，那么 $\mathcal{f}$ 的函数结果往往是某时刻输入 $x_i$ 后隐藏节点的状态值；$\mathcal{g}$ 表示 Encoder 根据单词的中间编码合成整个句子中间语义编码的变换函数，一般，$\mathcal{g}$ 函数是对构成元素的加权求和，即下式：<br>$$<br>C_i &#x3D; \sum_{j&#x3D;1}^{L_x} a_{ij}h_j<br>$$<br>其中：$L_x$ 表示句子 $Source$ 的长度；$a_{ij}$ 表示在 $Target$ 输出第 $i$ 个单词时 $Source$ 句子中第 $j$ 个单词的注意力系数分配；$h_j$ 表示 $Source$ 句子中第 $j$ 个单词的语义编码。以前面的例子为例，则有 $L_x &#x3D; 3$，$h_1 &#x3D; \mathcal{f}(\mathrm{Tom})$，$h_2 &#x3D; \mathcal{f}(\mathrm{Chase})$，$h_3 &#x3D; \mathcal{f}(\mathrm{Jerry})$ 分别是 $Source$ 中每个单词的语义编码，对于编码 $C_1$ 而言，权重为 $a_{11} &#x3D; 0.6$，$a_{12}&#x3D;0.2$，$a_{13}&#x3D;0.2$，其形成过程如下图：</p>
+<center>
+    <img src="./Attention Mechanism/3 Attention在翻译时的形成过程示例.png" weight="400" height="400">
+    <br>
+    <div>
+        图-3 Attention 在翻译时的形成过程示意图
+    </div>
+</center>
+
+<p>这个过程还存在一个问题，即在形成 Attention 时，如何得到 $Source$ 单词的注意力概率分布，例如翻译 “杰瑞” 时如何得到概率分布 $(\mathrm{Tom}, 0.3)$，$(\mathrm{Chase}, 0.2)$，$(\mathrm{Jerry}, 0.5)$？</p>
+<h2 id="2-2-Attention-中注意力分布的生成"><a href="#2-2-Attention-中注意力分布的生成" class="headerlink" title="2.2  Attention 中注意力分布的生成"></a>2.2  Attention 中注意力分布的生成</h2><p>先对图-1 中非 Attention 的 Encoder-Decoder 框架细化，Encoder 和 Decoder 采用 RNN 模型，得到下面的框架图：</p>
+<center>
+    <img src="./Attention Mechanism/4 使用RNN细化后的Encoder-Decoder框架.png">
+    <br>
+    <div>
+        图-4 使用 RNN 细化后的 Encoder-Decoder 框架
+    </div>
+</center>
+
+<p>用下图说明注意力概率分布的通用计算过程：</p>
+<center>
+    <img src="./Attention Mechanism/5 注意力概率分布的计算过程.png" height="400" width="600">
+    <br>
+    <div>
+        图-5 注意力概率分布的计算过程
+    </div>
+</center>
+
+<p>对于使用 RNN 的 Decoder 而言，在时刻 $i$ 若要生成单词 $y_i$，由于可以得知时刻 $i-1$ 的隐藏层节点 $H_{i-1}$ 的值，那么可以把 $H_{i-1}$ 和 $Source$ 中每个单词对应的隐藏层节点 $h_j$ 分别计算，即通过函数 $F(h_j,H_{i-1})$ 获得目标单词 $y_i$ 和每个输入单词的对齐可能性（$F$ 在不同模型中使用的方法不同），然后函数 $F$ 的输出经过 Softmax 进行归一化后，即得到符合概率分布的注意力概率分布。图-6 中可视化的是英语-德语翻译系统加入 Attention 机制后，$Source$ 和 $Target$ 中单词对应的概率分布：</p>
+<center>
+    <img src="./Attention Mechanism/6 英语-德语翻译中Attention的概率分布.png" height="400" width="400">
+    <br>
+    <div>
+        图-6 英语-德语翻译中 Attention 的概率分布
+    </div>
+</center>
+
+
+
+<h2 id="2-3-Attention-机制的本质"><a href="#2-3-Attention-机制的本质" class="headerlink" title="2.3  Attention 机制的本质"></a>2.3  Attention 机制的本质</h2><p>将 Attention 机制从 Encoder-Decoder 框架中剥离，并进一步抽象，可以更简单地看出 Attention 机制的本质。</p>
+<center>
+    <img src="./Attention Mechanism/7 Attention机制的本质思想.png">
+    <br>
+    <div>
+        图-7 Attention 机制的本质思想
+    </div>
+</center>
+
+<p>以图-7 为例：将 $Source$ 中的构成元素抽象为一些列的键值对数据 $&lt;key, value&gt;$，此时，对于给定 $Target$ 中的某个元素 $query$，通过计算 $query$ 和各个 $key$ 的相似性或相关性，得到每个 $key$ 对应 $value$ 的权重系数，然后对 $value$ 进行加权求和，即得到最终的 Attention 数值。因此本质上，Attention 机制是对 $Source$ 中元素的 $value$ 值进行加权求和，而 $query$ 和 $key$ 用来计算对应 $value$ 的权重系数。即可以将其本质思想改写为如下公式：<br>$$<br>\mathrm{Attention}(query, Source) &#x3D; \sum_{i&#x3D;1}^{L_x} \mathrm{Similarity}(query, key_i) * value_i<br>$$<br>其中，$L_x&#x3D;||Source||$。在前面机器翻译的例子里计算 Attention 的过程中，$Source$ 中的 $key$ 和 $value$ 指向的则是同一个数据，即输入句子中单词的语义编码。</p>
+<p>从图-7 可以引出另外一种理解，将 Attention 机制看作一种软寻址（Soft Addressing）：$Source$ 可以看作存储器内存储的内容，元素由地址 $key$ 和值 $value$ 组成，当前有个 $key&#x3D;query$ 的查询，目的是取出存储器中对应的 $value$ 值，即 Attention 数值。通过 $query$ 和存储器内元素的地址 $key$ 进行相似性比较寻址。之所以成为<strong>软寻址</strong>，指的不同一般寻址从存储中找出取出一条数据，而是可能从每个 $key$ 地址都会取出内容，取出内容的重要性根据 $query$ 和 $key$ 的相似性决定，之后对 $value$ 进行加权求和，从而得到最终的 $value$ 值，即 Attention 值。</p>
+<p>对于 Attention 机制的具体计算过程，对目前大多数方法进行抽象，可以归纳为两个过程三个阶段：</p>
+<ul>
+<li><p>过程 1：根据 $query$ 和 $key$ 计算权重系数</p>
+<ul>
+<li>阶段①：根据 $query$ 和 $key$ 计算两者的相似性或相关性</li>
+<li>阶段②：对阶段①的原始分值进行归一化处理</li>
+</ul>
+</li>
+<li><p>过程 2（阶段③）：根据权重系数对 $value$ 进行加权求和</p>
+</li>
+</ul>
+<p>上面的过程可以得到图-8 中的结果：</p>
+<center>
+    <img src="./Attention Mechanism/8 计算Attention的三个阶段.png">
+    <br>
+    <div>
+        图-8 计算 Attention 的三个阶段
+    </div>
+</center>
+
+<p>在阶段①，可以使用不同的函数和计算方法，根据 $query(&#x3D;q)$ 和 $key_i(&#x3D;k_i)$，计算两者的相似性或相关性，常见的方法如下（式中 $W$、$U$ 和 $v$ 为可学习的参数矩阵或向量，$D$ 为输入向量的维度）：</p>
+<ul>
+<li><p>点积<br>$$<br>s_i &#x3D; \mathrm{Similarity}(query, key_i) &#x3D; query \cdot key_i &#x3D; q^T k_i<br>$$</p>
+</li>
+<li><p>缩放点积<br>$$<br>s_i &#x3D; \mathrm{Similarity}(query, key_i) &#x3D; \frac{q^T k_i}{\sqrt{D}}<br>$$</p>
+</li>
+<li><p>余弦（cosine）相似性<br>$$<br>s_i &#x3D; \mathrm{Similarity}(query, key_i) &#x3D; \frac{query \cdot key_i}{||query|| \cdot ||key_i||}<br>$$</p>
+</li>
+<li><p>MLP 网络：$s_i &#x3D; \mathrm{Similarity}(query, key_i) &#x3D; \mathrm{MLP}(query, key_i)$</p>
+<ul>
+<li>加性模型：$s_i &#x3D; \mathrm{Similarity}(query, key_i) &#x3D; v^T \tanh (Wk_i+Uq)$</li>
+<li>双线性模型：$s_i &#x3D; \mathrm{Similarity}(query, key_i) &#x3D; k_i^T W q$，可以重塑为 $s_i &#x3D; \mathrm{Similarity}(query, key_i) &#x3D; k_i^T (U^T V) q &#x3D; (U k_i)^T (Vq)$，即对 $query$ 和 $key$ 进行线性变换后，再计算点积。</li>
+</ul>
+</li>
+</ul>
+<p>阶段②引入类似 Softmax 的计算，对阶段①的结果一方面进行归一化，另一方面也突出重要元素的权重：<br>$$<br>a_i &#x3D; \mathrm{Softmax}(s_i) &#x3D; \frac{\exp(s_i)}{\sum_{j&#x3D;1}^{L_x}\exp(s_j)}<br>$$<br>然后加权得到 Attention 值：<br>$$<br>\mathrm{Attention}(query, Source) &#x3D; \sum_{i&#x3D;1}^{L_x} a_i \cdot value_i<br>$$<br>目前大多数的注意力机制都符合上述的三阶段的计算过程。</p>
+<h1 id="3-Attention-注意力机制的变体"><a href="#3-Attention-注意力机制的变体" class="headerlink" title="3  Attention 注意力机制的变体"></a>3  Attention 注意力机制的变体</h1><h2 id="3-1-硬性注意力（Hard-Attention）"><a href="#3-1-硬性注意力（Hard-Attention）" class="headerlink" title="3.1  硬性注意力（Hard Attention）"></a>3.1  硬性注意力（Hard Attention）</h2><p>软性注意力通过注意力分布加权求和来融合输入向量。而<strong>硬性注意力</strong>则不采用这种方式，它根据注意力分布选择输入向量中的一个作为输出：<br>$$<br>\mathrm{Attention}(query, Source) &#x3D; value_{i*} \<br>\mathrm{where}\ i* &#x3D; \mathrm{ArgCondition}(a_i\ \mathrm{or}\ s_i) \<br>i*\ 即满足\ \mathrm{Condition}\ 条件的\ a_i\ 或\ s_i\ 的索引<br>$$<br>这种选择有两种选择方式：</p>
+<ul>
+<li>选择注意力分布中，分数（概率）最大的一项所对应的输入向量作为 Attention 的输出。</li>
+<li>根据注意力分布进行随机采样，采样结果作为 Attention 的输出。</li>
+</ul>
+<p>硬性注意力通过上面的方式选择 Attention 的输出，会使最终的损失函数与注意力分布之间的函数关系不可导，从而无法使用反向传播算法训练模型，硬性注意力通常需要使用强化学习来进行训练。一般深度学习算法会使用软性注意力的方式进行计算。</p>
+<h2 id="3-2-多头注意力（Multi-Head-Attention）"><a href="#3-2-多头注意力（Multi-Head-Attention）" class="headerlink" title="3.2  多头注意力（Multi-Head Attention）"></a>3.2  多头注意力（Multi-Head Attention）</h2><p>多头注意力机制是利用多个查询向量 $Q &#x3D; [q_1, q_2, … , q_m]$，并行地从输入信息 $&lt;key, value&gt;$ 或 $(K,V)&#x3D;[(k_1,v_1),(k_2,v_2),…,(k_n,v_n)]$ 中选取多组信息。在查询过程中，每个查询向量 $q_i$ 将会关注输入信息的不同部分。</p>
+<p>假设 $a_{ij}$ 表示第 $i$ 个查询向量 $q_i$ 与第 $j$ 个输入信息 $k_j$ 的注意力权重，$s(\cdot)&#x3D;\mathrm{Similarity}(\cdot)$，$context_i$ 表示由查询向量 $q_i$ 计算得出的 Attention 输出向量，其计算方式为：<br>$$<br>a_{ij} &#x3D; \mathrm{Softmax}(s(q_i,k_j)) &#x3D; \frac{\exp(s(q_i,k_j))}{\sum_{t&#x3D;1}^n \exp(s(q_i,k_t))} \<br>context_i &#x3D; \sum_{j&#x3D;1}^n a_{ij} \cdot v_j<br>$$<br>最终将所有查询向量的计算结果进行拼接得到最终结果（$\oplus$ 表示向量拼接操作）：<br>$$<br>\mathrm{Attention} &#x3D; context_1 \oplus context_2 \oplus \cdots \oplus context_m<br>$$</p>
+<h1 id="4-自注意力机制（Self-Attention）"><a href="#4-自注意力机制（Self-Attention）" class="headerlink" title="4  自注意力机制（Self-Attention）"></a>4  自注意力机制（Self-Attention）</h1><p>Self-Attention 也被称为 Intra-Attention（内部 Attention）。在一般 Encoder-Decoder 框架中，输入 $Source$ 和输出 $Target$ 内容是不相同的，Attention 机制发生在 $Target$ 的元素 $query$ 和 $Source$ 中的所有元素之间。Self-Attention 不是 $Target$ 和 $Source$ 之间的 Attention 机制，而是 $Source$ 内部元素之间或者 $Target$ 内部元素之间发生的 Attention 机制，也可以理解为 $Target&#x3D;Source$ 这种特殊情况下的注意力计算机制。</p>
+<p>在前面所介绍的 Attention 机制中，会使用一个查询向量 $q$ 和对应的输入 $H&#x3D;[h_1,h_2,…,h_n]$ 进行计算，查询向量 $q$ 则和任务相关，例如 Encoder-Decoder 框架中，$q$ 可以是 Decoder 端前一时刻的<strong>输出状态向量</strong>。而<strong>在 Self-Attention 中，查询向量也可以使用输入信息生成</strong>，而非任务相关的向量。即模型读到输入信息后，根据输入信息本身决定当前的重要信息。</p>
+<p>自注意力机制往往采用 <strong>Query-Key-Value</strong> 的模式，以 BERT 重点自注意力机制为例，展开下面的讨论，如图-9 所示：</p>
+<center>
+    <img src="./Attention Mechanism/9 自注意力机制的计算过程.jpg" width="640" height="400">
+    <br>
+    <div>
+        图-9 自注意力机制的计算过程
+    </div>
+</center>
+
+<p>图-9 中，输入信息 $H&#x3D;[h_1,h_2]$，蓝色矩阵中每行表示一个输入向量，三个矩阵 $W_q$，$W_k$，$W_v$ 将输入信息 $H$ 以此转换到对应的查询空间 $Q&#x3D;[q_1,q_2]$，键空间 $K&#x3D;[k_1,k_2]$ 和值空间 $V&#x3D;[v_1,v_2]$：<br>$$<br>\begin{aligned}<br>Q &amp;&#x3D; [q_1&#x3D;h_1 W_q,\ q_2&#x3D;h_2 W_q] &amp;\Rightarrow Q &#x3D; HW_q \<br>K &amp;&#x3D; [k_1&#x3D;h_1 W_k,\ k_2&#x3D;h_2 W_k] &amp;\Rightarrow K &#x3D; HW_k \<br>V &amp;&#x3D; [v_1&#x3D;h_1 W_v,\ v_2&#x3D;h_2 W_v] &amp;\Rightarrow V &#x3D; HW_v<br>\end{aligned}<br>$$<br>不妨以 $h_1$ 为例计算这个位置的 Attention 输出向量 $context_1$，如图-10 所示，其中 $D_k$ 表示 $key$ 向量的维度（$query$ 向量、$key$ 向量和 $value$ 向量的维度相同）：</p>
+<center>
+    <img src="./Attention Mechanism/10 自注意力机制的详细计算过程.jpg" width="600" height="600">
+    <br>
+    <div>
+        图-10 自注意力机制的详细计算过程
+    </div>
+</center>
+
+<p>在获得输入信息 $H$ 在不同空间的表达 $Q$、$K$ 和 $V$ 后，计算 $q_1$ 在 $h_1$ 和 $h_2$ 的分数（相似性或相关性） $s_{11}$ 和 $s_{12}$。然后用 Softmax 进行归一化，获得在 $h_1$ 这个位置的注意力分布 $a_{11}$ 和 $a_{12}$，代表了模型当前在 $h_1$ 这个位置需要对输入信息 $h_1$ 和 $h_2$ 的关注程度。最后，根据该位置的注意力分布对 $v_1$ 和 $v_2$ 进行加权平均获得 $h_1$ 位置的 Attention 向量 $context_1$。</p>
+<p>同理，对于输入信息 $H&#x3D;[h_1,h_2,…,h_n]$，可以得到每个位置的 Attention 向量  $\mathrm{Attention}&#x3D;[context_1,context_2,…,context_n]$。</p>
+<p>整个 Self-Attention 的计算过程的矩阵形式为：<br>$$<br>\mathrm{Attention} &#x3D; \mathrm{Softmax} (\frac{QK^T}{\sqrt{D_k}})V<br>$$</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/jins-note/p/13056604.html">https://www.cnblogs.com/jins-note/p/13056604.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/393940472">https://zhuanlan.zhihu.com/p/393940472</a></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://guoyongyu.github.io/summary/Attention%20Mechanism/" data-id="clakfls5r000t4zs6924299v6" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Deep-Learning/" rel="tag">Deep Learning</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Knowledge/" rel="tag">Knowledge</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Summary/" rel="tag">Summary</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/collection/Awesome%20Semantic%20SLAM/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Awesome Semantic SLAM
+        
+      </div>
+    </a>
+  
+  
+    <a href="/summary/Anchor/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Anchor</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Paper-Collection/">Paper Collection</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Summary/">Summary</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Collection/" rel="tag">Collection</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Deep-Learning/" rel="tag">Deep Learning</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Knowledge/" rel="tag">Knowledge</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Metrics/" rel="tag">Metrics</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SLAM/" rel="tag">SLAM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Semantic-SLAM/" rel="tag">Semantic SLAM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Summary/" rel="tag">Summary</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Collection/" style="font-size: 10px;">Collection</a> <a href="/tags/Deep-Learning/" style="font-size: 15px;">Deep Learning</a> <a href="/tags/Knowledge/" style="font-size: 20px;">Knowledge</a> <a href="/tags/Metrics/" style="font-size: 10px;">Metrics</a> <a href="/tags/SLAM/" style="font-size: 10px;">SLAM</a> <a href="/tags/Semantic-SLAM/" style="font-size: 10px;">Semantic SLAM</a> <a href="/tags/Summary/" style="font-size: 20px;">Summary</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/11/">November 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/10/">October 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/06/">June 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">May 2022</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/HelloWorld/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/summary/ATE%20&%20RPE/">ATE &amp; RPE</a>
+          </li>
+        
+          <li>
+            <a href="/collection/Awesome%20Semantic%20SLAM/">Awesome Semantic SLAM</a>
+          </li>
+        
+          <li>
+            <a href="/summary/Attention%20Mechanism/">Attention Mechanism</a>
+          </li>
+        
+          <li>
+            <a href="/summary/Anchor/">Anchor</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2022 Star Rain<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>
