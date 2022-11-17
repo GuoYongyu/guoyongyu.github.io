@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/logo-32x32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/logo-16x16.ico">
+  <link rel="mask-icon" href="/images/logo.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"guoyongyu.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="特征金字塔是多尺度目标检测中的一个基本组成部分，但是由于特征金字塔计算量大，所以多数方法为了检测速度而尽可能的避免使用特征金字塔，而是只使用高层的特征来进行预测。高层的特征虽然包含了丰富的语义信息，但是由于低分辨率，很难准确地保存物体的位置信息。与之相反，低层的特征虽然语义信息较少，但是由于分辨率高，就可以准确地包含物体位置信息。所以如果可以将低层的特征和高层的特征融合起来，就能得到一个识别和定位">
+<meta property="og:type" content="article">
+<meta property="og:title" content="FPN">
+<meta property="og:url" content="https://guoyongyu.github.io/summary/FPN/index.html">
+<meta property="og:site_name" content="The Blog of Star Rain">
+<meta property="og:description" content="特征金字塔是多尺度目标检测中的一个基本组成部分，但是由于特征金字塔计算量大，所以多数方法为了检测速度而尽可能的避免使用特征金字塔，而是只使用高层的特征来进行预测。高层的特征虽然包含了丰富的语义信息，但是由于低分辨率，很难准确地保存物体的位置信息。与之相反，低层的特征虽然语义信息较少，但是由于分辨率高，就可以准确地包含物体位置信息。所以如果可以将低层的特征和高层的特征融合起来，就能得到一个识别和定位">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://guoyongyu.github.io/summary/FPN/1%20常见结构.jpg">
+<meta property="og:image" content="https://guoyongyu.github.io/summary/FPN/2%20FPN结构.jpg">
+<meta property="og:image" content="https://guoyongyu.github.io/summary/FPN/3%20最近邻插值.jpg">
+<meta property="og:image" content="https://guoyongyu.github.io/summary/FPN/4%20Lateral%20Connection.jpg">
+<meta property="og:image" content="https://guoyongyu.github.io/summary/FPN/5%20FPN的具体结构.jpg">
+<meta property="og:image" content="https://guoyongyu.github.io/summary/FPN/6%20RPN网络结构.jpg">
+<meta property="og:image" content="https://guoyongyu.github.io/summary/FPN/7%20加入FPN的RPN.jpg">
+<meta property="og:image" content="https://guoyongyu.github.io/summary/FPN/8%20加入FPN的Faster%20R-CNN.jpg">
+<meta property="article:published_time" content="2022-11-05T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-11-17T08:25:00.304Z">
+<meta property="article:author" content="Star Rain">
+<meta property="article:tag" content="Summary">
+<meta property="article:tag" content="Deep Learning">
+<meta property="article:tag" content="CNN">
+<meta property="article:tag" content="FPN">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://guoyongyu.github.io/summary/FPN/1%20常见结构.jpg">
+
+
+<link rel="canonical" href="https://guoyongyu.github.io/summary/FPN/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://guoyongyu.github.io/summary/FPN/","path":"summary/FPN/","title":"FPN"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>FPN | The Blog of Star Rain</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">The Blog of Star Rain</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E5%8A%A8%E6%9C%BA"><span class="nav-number">1.</span> <span class="nav-text">1  动机</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E7%BB%93%E6%9E%84"><span class="nav-number">2.</span> <span class="nav-text">2  结构</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-FPN%EF%BC%88Feature-Pyramid-Network%EF%BC%89"><span class="nav-number">3.</span> <span class="nav-text">3  FPN（Feature Pyramid Network）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-Bottom-up"><span class="nav-number">3.1.</span> <span class="nav-text">3.1  Bottom-up</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-Top-down"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 Top-down</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-3-Lateral-Connection"><span class="nav-number">3.3.</span> <span class="nav-text">3.3  Lateral Connection</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-%E5%BA%94%E7%94%A8"><span class="nav-number">4.</span> <span class="nav-text">4  应用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#4-1-Feature-Pyramid-Network-for-RPN"><span class="nav-number">4.1.</span> <span class="nav-text">4.1  Feature Pyramid Network for RPN</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-2-Feature-Pyramid-Network-for-Fast-R-CNN"><span class="nav-number">4.2.</span> <span class="nav-text">4.2  Feature Pyramid Network for Fast R-CNN</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-3-Faster-R-CNN-with-FPN"><span class="nav-number">4.3.</span> <span class="nav-text">4.3  Faster R-CNN with FPN</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%BA%90%E7%A0%81"><span class="nav-number">6.</span> <span class="nav-text">源码</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Star Rain</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">31</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://guoyongyu.github.io/summary/FPN/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Star Rain">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="The Blog of Star Rain">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="FPN | The Blog of Star Rain">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          FPN
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2022-11-06 00:00:00" itemprop="dateCreated datePublished" datetime="2022-11-06T00:00:00+08:00">2022-11-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2022-11-17 16:25:00" itemprop="dateModified" datetime="2022-11-17T16:25:00+08:00">2022-11-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Summary/" itemprop="url" rel="index"><span itemprop="name">Summary</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>特征金字塔是多尺度目标检测中的一个基本组成部分，但是由于特征金字塔计算量大，所以多数方法为了检测速度而尽可能的避免使用特征金字塔，而是只使用高层的特征来进行预测。高层的特征虽然包含了丰富的语义信息，但是由于低分辨率，很难准确地保存物体的位置信息。与之相反，低层的特征虽然语义信息较少，但是由于分辨率高，就可以准确地包含物体位置信息。所以如果可以将低层的特征和高层的特征融合起来，就能得到一个识别和定位都准确的目标检测系统。</p>
+<p>本文结合网络资源对 FPN 进行整理。</p>
+<span id="more"></span>
+<center><b><font size="9">特征金字塔网络</font></b></center>
+
+<hr>
+<h1 id="1-动机"><a href="#1-动机" class="headerlink" title="1  动机"></a>1  动机</h1><p>特征金字塔是多尺度目标检测中的一个基本组成部分，但是由于特征金字塔计算量大，所以多数方法为了检测速度而尽可能的避免使用特征金字塔，而是只使用高层的特征来进行预测。高层的特征虽然包含了丰富的语义信息，但是由于低分辨率，很难准确地保存物体的位置信息。与之相反，低层的特征虽然语义信息较少，但是由于分辨率高，就可以准确地包含物体位置信息。所以如果可以将低层的特征和高层的特征融合起来，就能得到一个识别和定位都准确的目标检测系统。</p>
+<h1 id="2-结构"><a href="#2-结构" class="headerlink" title="2  结构"></a>2  结构</h1><center>
+    <img src="/summary/FPN/1 常见结构.jpg">
+    <div>
+        图-1 常用的目标检测结构
+    </div>
+</center>
+
+
+<ul>
+<li>(a) Featurized image pyramid：先把图片拓展或压缩为不同尺寸，对每种尺寸的图片提取不同尺度的特征，再对每个尺度的特征都进行单独的预测。<ul>
+<li>优点：不同尺度的特征都可以包含很丰富的语义信息。</li>
+<li>缺点：时间成本太高。</li>
+</ul>
+</li>
+<li>(b) Single feature map：这是在 SPPnet，Fast R-CNN，Faster R-CNN 中使用的，在网络的最后一层的特征图上进行预测。<ul>
+<li>优点：计算速度比较快。</li>
+<li>缺点：最后一层的特征图分辨率低，不能准确的包含物体的位置信息。</li>
+</ul>
+</li>
+<li>(c) Pyramid feature hierarchy：这是 SSD 采用的多尺度融合的方法，从网络不同层抽取不同尺度的特征，然后在这不同尺度的特征上分别进行预测。<ul>
+<li>优点：不需要额外的计算量。</li>
+<li>缺点：有些尺度的特征语义信息不是很丰富，此外，SSD 没有用到足够低层的特征，而 FPN 的作者认为低层的特征对于小物体检测是非常有帮助的。</li>
+</ul>
+</li>
+</ul>
+<p>所以，为了使得不同尺度的特征都包含丰富的语义信息，同时又不使得计算成本过高，FPN 采用 Top-down 和 Lateral connection 的方式，让低层高分辨率低语义的特征和高层低分辨率高语义的特征融合在一起，使得最终得到的不同尺度的特征图都有丰富的语义信息，如图 (d)。</p>
+<h1 id="3-FPN（Feature-Pyramid-Network）"><a href="#3-FPN（Feature-Pyramid-Network）" class="headerlink" title="3  FPN（Feature Pyramid Network）"></a>3  FPN（Feature Pyramid Network）</h1><p>特征金字塔网络的结构主要包括三部分，如图-2，上半部分自左至右为 <strong>Bottom-up</strong>、<strong>Top-down</strong>，下半部分为 <strong>Lateral connection</strong>。</p>
+<center>
+    <img src="/summary/FPN/2 FPN结构.jpg">
+    <div>
+        图-2 FPN的结构
+    </div>
+</center>
+
+<h2 id="3-1-Bottom-up"><a href="#3-1-Bottom-up" class="headerlink" title="3.1  Bottom-up"></a>3.1  Bottom-up</h2><p>Bottom-up 是将图片输入到 backbone ConvNet 中提取特征的过程。backbone 输出的 feature map 的尺寸有的是不变的，有的是成 2 倍的减小。对于那些输出的尺寸不变的层，把它们归为一个 stage，每个 stage 的最后一层输出的特征则被抽取出来。以 ResNet 为例，将卷积块 conv2， conv3， conv4， conv5 的输出定义为 $\{C_2,C_3,C_4,C_5 \}$，这些都是每个 stage 中最后一个残差块的输出，这些输出分别是原图的 $\{1/4,1/8,1/16,1/32\}$ 倍。</p>
+<h2 id="3-2-Top-down"><a href="#3-2-Top-down" class="headerlink" title="3.2 Top-down"></a>3.2 Top-down</h2><p>Top-down 是将高层得到的 feature map 进行上采样然后往下传递。因为高层的特征包含丰富的语义信息，经过 Top-down 的传播能使这些语义信息传播到低层特征上，使低层特征也包含丰富的语义信息。FPN 中，采样方法是最近邻上采样，使得特征图扩大 2 倍。上采样的目的就是放大图片，在原有图像像素的基础上在像素点之间采用合适的插值算法插入新的像素。</p>
+<ul>
+<li><p>最近邻上采样：最简单的一种插值方法，在待求像素的四个邻近像素中，将距离待求像素最近的邻近像素值赋给待求像素。设待求像素的坐标为 $(i+u,j+v)$，$i,j$ 为正整数，$u,v$ 为大于 0 小于 1 的小数，则待求像素灰度的值 $f(i+u,j+v)$ 的计算方式如下图所示：</p>
+<center>
+    <img src="/summary/FPN/3 最近邻插值.jpg">
+    <div>
+        图-3 最近邻插值
+    </div>
+</center>
+
+<p>如果 $(i+u,j+v)$ 落在 A 区域内，即 $u&lt;0.5,v&lt;0.5$，则将 a 点的像素值赋给待求像素，其他三种情况同理。最邻近法计算量较小，但可能会造成插值生成的图像灰度上的不连续，在灰度变化的地方可能出现明显的锯齿状。</p>
+</li>
+</ul>
+<h2 id="3-3-Lateral-Connection"><a href="#3-3-Lateral-Connection" class="headerlink" title="3.3  Lateral Connection"></a>3.3  Lateral Connection</h2><p>Lateral connection 主要包括三个步骤：</p>
+<center>
+    <img src="/summary/FPN/4 Lateral Connection.jpg">
+    <div>
+        图-4 Lateral Connection
+    </div>
+</center>
+
+<ul>
+<li><p>（1）对于每个 stage 输出的 feature map $C_n$，都先进行 $1\times1$ 的卷积降低维度。</p>
+</li>
+<li><p>（2）将得到的特征和上一层采样得到特征图 $P_{n+1}$ 进行融合，即直接相加，element-wise addition。因为每个 stage 输出的特征图之间是 2 倍的关系，所以上一层上采样得到的特征图的大小和本层的大小一样。</p>
+</li>
+<li><p>（3）相加完之后进行 $3\times3$ 的卷积得到本层的特征输出 $P_n$。使用 $3\times3$ 卷积的目的是消除上采样产生的混叠效应，就是指前面提到的<strong>插值生成的图像灰度不连续，在灰度变化的地方可能出现明显的锯齿状</strong>。</p>
+</li>
+</ul>
+<center>
+    <img src="/summary/FPN/5 FPN的具体结构.jpg">
+    <div>
+        图-5 FPN的具体结构
+    </div>
+</center>
+
+<p>具体来说，$C_5$ 层先经过 $1\times1$ 卷积，得到 $M_5$ 特征。$M_5$ 通过上采样，再融合 $C_4$ 经过 $1\times1$ 卷积后的特征图，得到 $M_4$。这个过程再做两次，分别得到 $M_3$ 和 $M_2$。$M$ 层特征图再经过 $3\times3$ 卷积，得到最终的 $\{ P_2,P_3,P_4,P_5 \}$ 层特征，然后 $P$ 层特征图上分别做分类回归。</p>
+<h1 id="4-应用"><a href="#4-应用" class="headerlink" title="4  应用"></a>4  应用</h1><h2 id="4-1-Feature-Pyramid-Network-for-RPN"><a href="#4-1-Feature-Pyramid-Network-for-RPN" class="headerlink" title="4.1  Feature Pyramid Network for RPN"></a>4.1  Feature Pyramid Network for RPN</h2><p>图-6 为 Faster R-CNN 中 RPN 的网络结构，接收单尺度的特征输入，然后经过 $3\times3$ 的卷积，并在 feature map 上的每个点处生成 9 个 anchor（3 个尺寸，每种尺寸对应 3 个宽高比），之后再在两个分支并行的进行 $1\times1$ 卷积，分别用于对 anchor 进行分类和回归。</p>
+<center>
+    <img src="/summary/FPN/6 RPN网络结构.jpg">
+    <div>
+        图-6 RPN网络结构
+    </div>
+</center>
+
+<p>将 FPN 和 RPN 结合起来，RPN 的输入变成多尺度的 feature map，就需要在金字塔的每一层后边都接一个 RPN head（一个 $3\times3$ 卷积，两个 $1\times1$ 卷积），如图-7 所示，其中 $P_6$ 是通过 $P_5$ 下采样得到。</p>
+<center>
+    <img src="/summary/FPN/7 加入FPN的RPN.jpg">
+    <div>
+        图-7 在RPN中加入FPN
+    </div>
+</center>
+
+<p>在生成 anchor 时，因为输入多尺度特征，因此不需要再对每层都使用 3 种不同尺度的 anchor，只为每层设定一种尺寸的 anchor，图中绿色数字就代表每层 anchor 的尺寸，但是每种尺寸仍然对应 3 种宽高比。因此，共有 15 种 anchor。anchor 的 ground truth label 和 Faster R-CNN 中的定义相同，即如果某个 anchor 和 ground-truth box 有最大的 IoU，或者 IoU 大于 0.7，那这个 anchor就是正样本，如果 IoU 小于0.3，那就是负样本。每层 RPN head 的参数是共享的。</p>
+<h2 id="4-2-Feature-Pyramid-Network-for-Fast-R-CNN"><a href="#4-2-Feature-Pyramid-Network-for-Fast-R-CNN" class="headerlink" title="4.2  Feature Pyramid Network for Fast R-CNN"></a>4.2  Feature Pyramid Network for Fast R-CNN</h2><p>在 Fast R-CNN 中有一个 RoI Pooling 层，其使用 region proposal 的结果和特征图作为输入，得到每个 proposal 对应的特征后进行池化，之后再分别用于分类结果和边框回归。</p>
+<p>之前 Fast R-CNN 使用的是单尺度的特征图，但是现在使用不同尺度的特征图，那么 RoI 需要在哪一个尺度的特征图上提取对应的特征呢？ FPN 的作者认为，不同尺度的 RoI 应该使用不同特征层作为 RoI pooling 层的输入，大尺度 RoI 就用后面一些的金字塔层，比如 $P_5$；小尺度 RoI 就用前面一点的特征层，比如 $P_4$。对于如何判断 RoI 该用哪个层的输出，这里定义了一个计算公式：</p>
+<script type="math/tex; mode=display">
+k=\lfloor k_0 + \log_2 \frac{\sqrt{wh}}{224} \rfloor</script><p>其中，输出的 $k$ 代表特征图的层数编号。$k_0(=5)$ 是基准值，代表第 5 层特征图 $P_5$。$w$ 和 $h$ 为 RoI 的宽和高，224 是 ImageNet 的标准输入。假设 RoI 的 $w$ 和 $h$ 为 $112\times122$，那么 $k_0 = k - 1$，即为 4，选择第 4 层特征图。</p>
+<h2 id="4-3-Faster-R-CNN-with-FPN"><a href="#4-3-Faster-R-CNN-with-FPN" class="headerlink" title="4.3  Faster R-CNN with FPN"></a>4.3  Faster R-CNN with FPN</h2><center>
+    <img src="/summary/FPN/8 加入FPN的Faster R-CNN.jpg">
+    <div>
+        图-8 在Faster R-CNN中加入FPN
+    </div>
+</center>
+
+<p>和普通的 Faster R-CNN 相同，为每个 RoI 提取特征之后，经过 RoI pooling 层将 RoI 的特征 resize 为相同大小，此处 resize 为 $7\times7$ 的，之后连接两个 1024-d 的 FC layer，然后并行的输入到两个 FC layer 中分别进行分类和回归，得到最终结果。</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/62604038">https://zhuanlan.zhihu.com/p/62604038</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/u014380165/article/details/72890275">https://blog.csdn.net/u014380165/article/details/72890275</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/boligongzhu/p/15084655.html">https://www.cnblogs.com/boligongzhu/p/15084655.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/7043054519881580551">https://juejin.cn/post/7043054519881580551</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_36825778/article/details/104328143">https://blog.csdn.net/qq_36825778/article/details/104328143</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/127022724">https://zhuanlan.zhihu.com/p/127022724</a></li>
+</ul>
+<h1 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/unsky/FPN">https://github.com/unsky/FPN</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/jwyang/fpn.pytorch">https://github.com/jwyang/fpn.pytorch</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Summary/" rel="tag"># Summary</a>
+              <a href="/tags/Deep-Learning/" rel="tag"># Deep Learning</a>
+              <a href="/tags/CNN/" rel="tag"># CNN</a>
+              <a href="/tags/FPN/" rel="tag"># FPN</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/papernote/Blitz-SLAM/" rel="prev" title="Blitz-SLAM">
+                  <i class="fa fa-chevron-left"></i> Blitz-SLAM
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/summary/Epipolar%20Geometry/" rel="next" title="Epipolar Geometry">
+                  Epipolar Geometry <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Star Rain</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+  <script class="next-config" data-name="pdf" type="application/json">{"object_url":{"url":"https://cdn.jsdelivr.net/npm/pdfobject@2.2.7/pdfobject.min.js","integrity":"sha256-ph3Dk89VmuTVXG6x/RDzk53SU9LPdAh1tpv0UvnDZ2I="},"url":"/lib/pdf/web/viewer.html"}</script>
+  <script src="/js/third-party/tags/pdf.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"cdn":"//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML","tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

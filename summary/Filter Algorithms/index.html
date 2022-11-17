@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/logo-32x32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/logo-16x16.ico">
+  <link rel="mask-icon" href="/images/logo.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"guoyongyu.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="本文结合网络资源对常见的几种滤波算法进行了总结整理。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Filter Algorithms">
+<meta property="og:url" content="https://guoyongyu.github.io/summary/Filter%20Algorithms/index.html">
+<meta property="og:site_name" content="The Blog of Star Rain">
+<meta property="og:description" content="本文结合网络资源对常见的几种滤波算法进行了总结整理。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-05-29T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-11-17T08:24:01.634Z">
+<meta property="article:author" content="Star Rain">
+<meta property="article:tag" content="Summary">
+<meta property="article:tag" content="Knowledge">
+<meta property="article:tag" content="Filter Algorithms">
+<meta property="article:tag" content="Algorithms">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://guoyongyu.github.io/summary/Filter%20Algorithms/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://guoyongyu.github.io/summary/Filter%20Algorithms/","path":"summary/Filter Algorithms/","title":"Filter Algorithms"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Filter Algorithms | The Blog of Star Rain</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">The Blog of Star Rain</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E9%99%90%E5%B9%85%E6%BB%A4%E6%B3%A2%E6%B3%95%EF%BC%88%E7%A8%8B%E5%BA%8F%E5%88%A4%E6%96%AD%E6%BB%A4%E6%B3%A2%E6%B3%95%EF%BC%89"><span class="nav-number">1.</span> <span class="nav-text">1  限幅滤波法（程序判断滤波法）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-%E6%96%B9%E6%B3%95"><span class="nav-number">1.1.</span> <span class="nav-text">1.1  方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-%E4%BC%98%E7%82%B9"><span class="nav-number">1.2.</span> <span class="nav-text">1.2  优点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3-%E7%BC%BA%E7%82%B9"><span class="nav-number">1.3.</span> <span class="nav-text">1.3  缺点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-4-%E4%BB%A3%E7%A0%81"><span class="nav-number">1.4.</span> <span class="nav-text">1.4  代码</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E4%B8%AD%E4%BD%8D%E5%80%BC%E6%BB%A4%E6%B3%A2%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">2  中位值滤波法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-%E6%96%B9%E6%B3%95"><span class="nav-number">2.1.</span> <span class="nav-text">2.1  方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-%E4%BC%98%E7%82%B9"><span class="nav-number">2.2.</span> <span class="nav-text">2.2  优点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-%E7%BC%BA%E7%82%B9"><span class="nav-number">2.3.</span> <span class="nav-text">2.3  缺点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-%E4%BB%A3%E7%A0%81"><span class="nav-number">2.4.</span> <span class="nav-text">2.4  代码</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-%E7%AE%97%E6%9C%AF%E5%B9%B3%E5%9D%87%E6%BB%A4%E6%B3%A2%E6%B3%95"><span class="nav-number">3.</span> <span class="nav-text">3  算术平均滤波法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-%E6%96%B9%E6%B3%95"><span class="nav-number">3.1.</span> <span class="nav-text">3.1  方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-%E4%BC%98%E7%82%B9"><span class="nav-number">3.2.</span> <span class="nav-text">3.2  优点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-3-%E7%BC%BA%E7%82%B9"><span class="nav-number">3.3.</span> <span class="nav-text">3.3  缺点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-4-%E4%BB%A3%E7%A0%81"><span class="nav-number">3.4.</span> <span class="nav-text">3.4  代码</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-%E9%80%92%E6%8E%A8%E5%B9%B3%E5%9D%87%E6%BB%A4%E6%B3%A2%E6%B3%95"><span class="nav-number">4.</span> <span class="nav-text">4  递推平均滤波法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#4-1-%E6%96%B9%E6%B3%95"><span class="nav-number">4.1.</span> <span class="nav-text">4.1  方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-2-%E4%BC%98%E7%82%B9"><span class="nav-number">4.2.</span> <span class="nav-text">4.2  优点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-3-%E7%BC%BA%E7%82%B9"><span class="nav-number">4.3.</span> <span class="nav-text">4.3  缺点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-4-%E4%BB%A3%E7%A0%81"><span class="nav-number">4.4.</span> <span class="nav-text">4.4  代码</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-%E4%B8%AD%E4%BD%8D%E5%80%BC%E5%B9%B3%E5%9D%87%E6%BB%A4%E6%B3%A2%E6%B3%95%EF%BC%88%E9%98%B2%E8%84%89%E5%86%B2%E5%B9%B2%E6%89%B0%E5%B9%B3%E5%9D%87%E6%BB%A4%E6%B3%A2%E6%B3%95%EF%BC%89"><span class="nav-number">5.</span> <span class="nav-text">5  中位值平均滤波法（防脉冲干扰平均滤波法）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#5-1-%E6%96%B9%E6%B3%95"><span class="nav-number">5.1.</span> <span class="nav-text">5.1  方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-2-%E4%BC%98%E7%82%B9"><span class="nav-number">5.2.</span> <span class="nav-text">5.2  优点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-3-%E7%BC%BA%E7%82%B9"><span class="nav-number">5.3.</span> <span class="nav-text">5.3  缺点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-4-%E4%BB%A3%E7%A0%81"><span class="nav-number">5.4.</span> <span class="nav-text">5.4  代码</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6-%E9%99%90%E5%B9%85%E5%B9%B3%E5%9D%87%E6%BB%A4%E6%B3%A2%E6%B3%95"><span class="nav-number">6.</span> <span class="nav-text">6  限幅平均滤波法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#6-1-%E6%96%B9%E6%B3%95"><span class="nav-number">6.1.</span> <span class="nav-text">6.1  方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-2-%E4%BC%98%E7%82%B9"><span class="nav-number">6.2.</span> <span class="nav-text">6.2  优点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-3-%E7%BC%BA%E7%82%B9"><span class="nav-number">6.3.</span> <span class="nav-text">6.3  缺点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-4-%E4%BB%A3%E7%A0%81"><span class="nav-number">6.4.</span> <span class="nav-text">6.4  代码</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#7-%E4%B8%80%E9%98%B6%E6%BB%9E%E5%90%8E%E6%BB%A4%E6%B3%A2%E6%B3%95"><span class="nav-number">7.</span> <span class="nav-text">7  一阶滞后滤波法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#7-1-%E6%96%B9%E6%B3%95%EF%BC%9A"><span class="nav-number">7.1.</span> <span class="nav-text">7.1  方法：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-2-%E4%BC%98%E7%82%B9"><span class="nav-number">7.2.</span> <span class="nav-text">7.2  优点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-3-%E7%BC%BA%E7%82%B9"><span class="nav-number">7.3.</span> <span class="nav-text">7.3  缺点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-4-%E4%BB%A3%E7%A0%81"><span class="nav-number">7.4.</span> <span class="nav-text">7.4  代码</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#8-%E5%8A%A0%E6%9D%83%E9%80%92%E6%8E%A8%E5%B9%B3%E5%9D%87%E6%BB%A4%E6%B3%A2%E6%B3%95"><span class="nav-number">8.</span> <span class="nav-text">8  加权递推平均滤波法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#8-1-%E6%96%B9%E6%B3%95"><span class="nav-number">8.1.</span> <span class="nav-text">8.1  方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-2-%E4%BC%98%E7%82%B9"><span class="nav-number">8.2.</span> <span class="nav-text">8.2  优点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-3-%E7%BC%BA%E7%82%B9"><span class="nav-number">8.3.</span> <span class="nav-text">8.3  缺点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-4-%E4%BB%A3%E7%A0%81"><span class="nav-number">8.4.</span> <span class="nav-text">8.4  代码</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#9-%E6%B6%88%E6%8A%96%E6%BB%A4%E6%B3%A2%E6%B3%95"><span class="nav-number">9.</span> <span class="nav-text">9  消抖滤波法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#9-1-%E6%96%B9%E6%B3%95"><span class="nav-number">9.1.</span> <span class="nav-text">9.1  方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#9-2-%E4%BC%98%E7%82%B9"><span class="nav-number">9.2.</span> <span class="nav-text">9.2  优点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#9-3-%E7%BC%BA%E7%82%B9"><span class="nav-number">9.3.</span> <span class="nav-text">9.3  缺点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#9-4-%E4%BB%A3%E7%A0%81"><span class="nav-number">9.4.</span> <span class="nav-text">9.4  代码</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#10-%E9%99%90%E5%B9%85%E6%B6%88%E6%8A%96%E6%BB%A4%E6%B3%A2%E6%B3%95"><span class="nav-number">10.</span> <span class="nav-text">10  限幅消抖滤波法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#10-1-%E6%96%B9%E6%B3%95"><span class="nav-number">10.1.</span> <span class="nav-text">10.1  方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#10-2-%E4%BC%98%E7%82%B9"><span class="nav-number">10.2.</span> <span class="nav-text">10.2  优点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#10-3-%E7%BC%BA%E7%82%B9"><span class="nav-number">10.3.</span> <span class="nav-text">10.3  缺点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#10-4-%E4%BB%A3%E7%A0%81"><span class="nav-number">10.4.</span> <span class="nav-text">10.4  代码</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#11-%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E6%BB%A4%E6%B3%A2%E6%B3%95"><span class="nav-number">11.</span> <span class="nav-text">11  滑动窗口滤波法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#11-1-%E6%96%B9%E6%B3%95%E4%B8%80"><span class="nav-number">11.1.</span> <span class="nav-text">11.1  方法一</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#11-2-%E6%96%B9%E6%B3%95%E4%BA%8C"><span class="nav-number">11.2.</span> <span class="nav-text">11.2  方法二</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#12-%E5%8D%A1%E5%B0%94%E6%9B%BC%E6%BB%A4%E6%B3%A2%E6%B3%95"><span class="nav-number">12.</span> <span class="nav-text">12  卡尔曼滤波法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#12-1-%E7%8A%B6%E6%80%81%E4%BC%B0%E8%AE%A1"><span class="nav-number">12.1.</span> <span class="nav-text">12.1  状态估计</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#12-2-%E5%8D%A1%E5%B0%94%E6%9B%BC%E5%A2%9E%E7%9B%8A"><span class="nav-number">12.2.</span> <span class="nav-text">12.2  卡尔曼增益</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#12-3-%E5%8D%A1%E5%B0%94%E6%9B%BC%E6%BB%A4%E6%B3%A2%E7%AE%97%E6%B3%95"><span class="nav-number">12.3.</span> <span class="nav-text">12.3  卡尔曼滤波算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#12-4-%E4%BB%A3%E7%A0%81"><span class="nav-number">12.4.</span> <span class="nav-text">12.4  代码</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Star Rain</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">31</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://guoyongyu.github.io/summary/Filter%20Algorithms/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Star Rain">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="The Blog of Star Rain">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Filter Algorithms | The Blog of Star Rain">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Filter Algorithms
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2022-05-30 00:00:00" itemprop="dateCreated datePublished" datetime="2022-05-30T00:00:00+08:00">2022-05-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2022-11-17 16:24:01" itemprop="dateModified" datetime="2022-11-17T16:24:01+08:00">2022-11-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Summary/" itemprop="url" rel="index"><span itemprop="name">Summary</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>本文结合网络资源对常见的几种滤波算法进行了总结整理。</p>
+<span id="more"></span>
+<center><font size="9"><b>滤波算法</b></font></center>
+
+<hr>
+<h1 id="1-限幅滤波法（程序判断滤波法）"><a href="#1-限幅滤波法（程序判断滤波法）" class="headerlink" title="1  限幅滤波法（程序判断滤波法）"></a>1  限幅滤波法（程序判断滤波法）</h1><h2 id="1-1-方法"><a href="#1-1-方法" class="headerlink" title="1.1  方法"></a>1.1  方法</h2><ol>
+<li>根据经验判断，确定两次采样允许的最大偏差值（设为 $A$）</li>
+<li>每次检测到新值时判断：<br> 如果 $本次值与上次值之差\le A$，则本次值有效；<br> 如果 $本次值与上次值之差&gt;A$，则本次值无效，放弃本次值，用上次值代替本次值。<h2 id="1-2-优点"><a href="#1-2-优点" class="headerlink" title="1.2  优点"></a>1.2  优点</h2></li>
+</ol>
+<ul>
+<li><p>能有效克服因偶然因素引起的脉冲干扰</p>
+<h2 id="1-3-缺点"><a href="#1-3-缺点" class="headerlink" title="1.3  缺点"></a>1.3  缺点</h2></li>
+<li><p>无法抑制那种周期性的干扰</p>
+</li>
+<li>平滑度差</li>
+</ul>
+<h2 id="1-4-代码"><a href="#1-4-代码" class="headerlink" title="1.4  代码"></a>1.4  代码</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">A 值可根据实际情况调整</span></span><br><span class="line"><span class="comment">value 为有效值，new_value 为当前采样值</span></span><br><span class="line"><span class="comment">滤波程序返回有效的实际值</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> A 10</span></span><br><span class="line"><span class="function"><span class="type">char</span> value</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="type">char</span> <span class="title">filter</span><span class="params">(<span class="type">void</span>)</span> </span>&#123;</span><br><span class="line">    <span class="type">char</span> new_value;</span><br><span class="line">    new_value = <span class="built_in">get_ad</span>();</span><br><span class="line">    <span class="keyword">if</span>((new_value - value &gt; A) || (value - new_value &gt; A)) &#123;</span><br><span class="line">        <span class="keyword">return</span> value;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> new_value;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="2-中位值滤波法"><a href="#2-中位值滤波法" class="headerlink" title="2  中位值滤波法"></a>2  中位值滤波法</h1><h2 id="2-1-方法"><a href="#2-1-方法" class="headerlink" title="2.1  方法"></a>2.1  方法</h2><ol>
+<li>连续采样 $N$ 次（$N$ 取奇数）</li>
+<li>把 $N$ 次采样值按大小排列</li>
+<li>取中间值为本次有效值<h2 id="2-2-优点"><a href="#2-2-优点" class="headerlink" title="2.2  优点"></a>2.2  优点</h2></li>
+</ol>
+<ul>
+<li>能有效克服因偶然因素引起的波动干扰</li>
+<li><p>对温度、液位的变化缓慢的被测参数有良好的滤波效果</p>
+<h2 id="2-3-缺点"><a href="#2-3-缺点" class="headerlink" title="2.3  缺点"></a>2.3  缺点</h2></li>
+<li><p>对流量、速度等快速变化的参数不宜</p>
+<h2 id="2-4-代码"><a href="#2-4-代码" class="headerlink" title="2.4  代码"></a>2.4  代码</h2></li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">N 值可根据实际情况调整</span></span><br><span class="line"><span class="comment">排序采用冒泡法</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> N 11</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">char</span> <span class="title">filter</span><span class="params">(<span class="type">void</span>)</span> </span>&#123;</span><br><span class="line">    <span class="type">char</span> value_buf[N];</span><br><span class="line">    <span class="type">char</span> i, j, temp;</span><br><span class="line">    <span class="keyword">for</span>(i = <span class="number">0</span>; i &lt; N; i++) &#123;</span><br><span class="line">        value_buf[i] = <span class="built_in">get_ad</span>();</span><br><span class="line">        <span class="built_in">delay</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span>(j = <span class="number">0</span>; j &lt; N - <span class="number">1</span>; j++) &#123;</span><br><span class="line">        <span class="keyword">for</span>(i = <span class="number">0</span>; i &lt; N - j; i++) &#123;</span><br><span class="line">            <span class="keyword">if</span>(value_buf[i] &gt; value_buf[i + <span class="number">1</span>]) &#123;</span><br><span class="line">                temp = value_buf[i];</span><br><span class="line">                value_buf[i] = value_buf[i + <span class="number">1</span>];</span><br><span class="line">                value_buf[i + <span class="number">1</span>] = temp;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> value_buf[(N - <span class="number">1</span>) / <span class="number">2</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="3-算术平均滤波法"><a href="#3-算术平均滤波法" class="headerlink" title="3  算术平均滤波法"></a>3  算术平均滤波法</h1><h2 id="3-1-方法"><a href="#3-1-方法" class="headerlink" title="3.1  方法"></a>3.1  方法</h2><ol>
+<li>连续取 $N$ 个采样值进行算术平均运算</li>
+<li>$N$ 值较大时：信号平滑度较高，但灵敏度较低</li>
+<li>$N$ 值较小时：信号平滑度较低，但灵敏度较高</li>
+<li>$N$ 值的选取：一般流量，$N=12$；压力：$N=4$<h2 id="3-2-优点"><a href="#3-2-优点" class="headerlink" title="3.2  优点"></a>3.2  优点</h2></li>
+</ol>
+<ul>
+<li>适用于对一般具有随机干扰的信号进行滤波</li>
+<li><p>这样信号的特点是有一个平均值，信号在某一数值范围附近上下波动</p>
+<h2 id="3-3-缺点"><a href="#3-3-缺点" class="headerlink" title="3.3  缺点"></a>3.3  缺点</h2></li>
+<li><p>对于测量速度较慢或要求数据计算速度较快的实时控制不适用</p>
+</li>
+<li>比较浪费 RAM<h2 id="3-4-代码"><a href="#3-4-代码" class="headerlink" title="3.4  代码"></a>3.4  代码</h2></li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> N 11</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">char</span> <span class="title">filter</span><span class="params">(<span class="type">void</span>)</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> sum = <span class="number">0</span>, i = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(i = <span class="number">0</span>; i &lt; N; i++) &#123;</span><br><span class="line">        sum += <span class="built_in">get_ad</span>();</span><br><span class="line">        <span class="built_in">delay</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> (<span class="type">char</span>)(sum / N);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="4-递推平均滤波法"><a href="#4-递推平均滤波法" class="headerlink" title="4  递推平均滤波法"></a>4  递推平均滤波法</h1><h2 id="4-1-方法"><a href="#4-1-方法" class="headerlink" title="4.1  方法"></a>4.1  方法</h2><ol>
+<li>把连续取 $N$ 个采样值看成一个队列</li>
+<li>队列的长度固定为 $N$</li>
+<li>每次采样到一个新数据放入队尾，并扔掉原来队首的一次数据（先进先出原则）</li>
+<li>把队列中的 $N$ 个数据进行算术平均运算，就可获得新的滤波结果</li>
+<li>$N$ 值的选取：流量，$N=12$；压力：$N=4$；液面，$N=4\sim12$；温度，$N=1\sim4$<h2 id="4-2-优点"><a href="#4-2-优点" class="headerlink" title="4.2  优点"></a>4.2  优点</h2></li>
+</ol>
+<ul>
+<li>对周期性干扰有良好的抑制作用，平滑度高</li>
+<li><p>适用于高频振荡的系统    </p>
+<h2 id="4-3-缺点"><a href="#4-3-缺点" class="headerlink" title="4.3  缺点"></a>4.3  缺点</h2></li>
+<li><p>灵敏度低</p>
+</li>
+<li>对偶然出现的脉冲性干扰的抑制作用较差</li>
+<li>不易消除由于脉冲干扰所引起的采样值偏差</li>
+<li>不适用于脉冲干扰比较严重的场合</li>
+<li>比较浪费 RAM<h2 id="4-4-代码"><a href="#4-4-代码" class="headerlink" title="4.4  代码"></a>4.4  代码</h2></li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> N 12</span></span><br><span class="line"></span><br><span class="line"><span class="type">char</span> value_buf[N];</span><br><span class="line"><span class="type">char</span> i = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">char</span> <span class="title">filter</span><span class="params">(<span class="type">void</span>)</span> </span>&#123;</span><br><span class="line">    <span class="type">char</span> count = <span class="number">0</span>;</span><br><span class="line">    <span class="type">int</span> sum = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    value_buf[i++] = <span class="built_in">get_ad</span>();</span><br><span class="line">    <span class="keyword">if</span>(i == N) &#123;</span><br><span class="line">        i = <span class="number">0</span>;    <span class="comment">//先进先出</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span>(count = <span class="number">0</span>; count &lt; N; count++) &#123;</span><br><span class="line">        sum += value_buf[count];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> (<span class="type">char</span>)(sum / N);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="5-中位值平均滤波法（防脉冲干扰平均滤波法）"><a href="#5-中位值平均滤波法（防脉冲干扰平均滤波法）" class="headerlink" title="5  中位值平均滤波法（防脉冲干扰平均滤波法）"></a>5  中位值平均滤波法（防脉冲干扰平均滤波法）</h1><h2 id="5-1-方法"><a href="#5-1-方法" class="headerlink" title="5.1  方法"></a>5.1  方法</h2><ol>
+<li>相当于“中位值滤波法”+“算术平均滤波法”</li>
+<li>连续采样 $N$ 个数据，去掉一个最大值和一个最小值</li>
+<li>然后计算 $N-2$ 个数据的算术平均值</li>
+<li>$N$ 值的选取：$3\sim14$<h2 id="5-2-优点"><a href="#5-2-优点" class="headerlink" title="5.2  优点"></a>5.2  优点</h2></li>
+</ol>
+<ul>
+<li>融合了两种滤波法的优点</li>
+<li><p>对于偶然出现的脉冲性干扰，可消除由于脉冲干扰所引起的采样值偏差</p>
+<h2 id="5-3-缺点"><a href="#5-3-缺点" class="headerlink" title="5.3  缺点"></a>5.3  缺点</h2></li>
+<li><p>测量速度较慢，和算术平均滤波法一样</p>
+</li>
+<li>比较浪费 RAM<h2 id="5-4-代码"><a href="#5-4-代码" class="headerlink" title="5.4  代码"></a>5.4  代码</h2></li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> N 12</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">char</span> <span class="title">filter</span><span class="params">(<span class="type">void</span>)</span> </span>&#123;</span><br><span class="line">    <span class="type">char</span> i = <span class="number">0</span>, j = <span class="number">0</span>, temp = <span class="number">0</span>;</span><br><span class="line">    <span class="type">char</span> value_buf[N];</span><br><span class="line">    <span class="type">int</span> sum = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span>(i = <span class="number">0</span>; i &lt; N; i++)&#123;</span><br><span class="line">        value_buf[i] = <span class="built_in">get_ad</span>();</span><br><span class="line">        <span class="built_in">delay</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span>(j = <span class="number">0</span>; j &lt; N - <span class="number">1</span>; j++) &#123;</span><br><span class="line">        <span class="keyword">for</span>(i = <span class="number">0</span>; i &lt; N - j; i++) &#123;</span><br><span class="line">            <span class="keyword">if</span>(value_buf[i] &gt; value_buf[i + <span class="number">1</span>]) &#123;</span><br><span class="line">                temp = value_buf[i];</span><br><span class="line">                value_buf[i] = value_buf[i + <span class="number">1</span>];</span><br><span class="line">                value_buf[i + <span class="number">1</span>] = temp;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span>(i = <span class="number">1</span>; i &lt; N - <span class="number">1</span>; i++) &#123;</span><br><span class="line">        sum += value_buf[i];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> (<span class="type">char</span>)(sum / (N - <span class="number">2</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="6-限幅平均滤波法"><a href="#6-限幅平均滤波法" class="headerlink" title="6  限幅平均滤波法"></a>6  限幅平均滤波法</h1><h2 id="6-1-方法"><a href="#6-1-方法" class="headerlink" title="6.1  方法"></a>6.1  方法</h2><ol>
+<li>相当于“限幅滤波法”+“递推平均滤波法”</li>
+<li>每次采样到的新数据先进行限幅处理</li>
+<li>再送入队列进行递推平均滤波处理<h2 id="6-2-优点"><a href="#6-2-优点" class="headerlink" title="6.2  优点"></a>6.2  优点</h2></li>
+</ol>
+<ul>
+<li>融合了两种滤波法的优点</li>
+<li><p>对于偶然出现的脉冲性干扰，可消除由于脉冲干扰所引起的采样值偏差</p>
+<h2 id="6-3-缺点"><a href="#6-3-缺点" class="headerlink" title="6.3  缺点"></a>6.3  缺点</h2></li>
+<li><p>比较浪费 RAM</p>
+<h2 id="6-4-代码"><a href="#6-4-代码" class="headerlink" title="6.4  代码"></a>6.4  代码</h2></li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">结合程序 1 和 4</span></span><br><span class="line"><span class="comment"> */</span></span><br></pre></td></tr></table></figure>
+<h1 id="7-一阶滞后滤波法"><a href="#7-一阶滞后滤波法" class="headerlink" title="7  一阶滞后滤波法"></a>7  一阶滞后滤波法</h1><h2 id="7-1-方法："><a href="#7-1-方法：" class="headerlink" title="7.1  方法："></a>7.1  方法：</h2><ol>
+<li>取 $a=[0,1]$</li>
+<li>$本次滤波结果=(1-a)<em>本次采样值+a</em>上次滤波结果$<h2 id="7-2-优点"><a href="#7-2-优点" class="headerlink" title="7.2  优点"></a>7.2  优点</h2></li>
+</ol>
+<ul>
+<li>对周期性干扰具有良好的抑制作用</li>
+<li><p>适用于波动频率较高的场合</p>
+<h2 id="7-3-缺点"><a href="#7-3-缺点" class="headerlink" title="7.3  缺点"></a>7.3  缺点</h2></li>
+<li><p>相位滞后，灵敏度低</p>
+</li>
+<li>滞后程度取决于 $a$ 值大小</li>
+<li>不能消除滤波频率高于采样频率的 $1/2$ 的干扰信号<h2 id="7-4-代码"><a href="#7-4-代码" class="headerlink" title="7.4  代码"></a>7.4  代码</h2></li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">为加块程序处理速度，假定基数 a = 0 ~ 100</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="type">char</span> value;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">char</span> <span class="title">filter</span><span class="params">(<span class="type">void</span>)</span> </span>&#123;</span><br><span class="line">    <span class="type">char</span> new_value = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    new_value = <span class="built_in">get_ad</span>();</span><br><span class="line">    <span class="keyword">return</span> (a * value + (<span class="number">100</span> - a) * new_value) / <span class="number">100</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="8-加权递推平均滤波法"><a href="#8-加权递推平均滤波法" class="headerlink" title="8  加权递推平均滤波法"></a>8  加权递推平均滤波法</h1><h2 id="8-1-方法"><a href="#8-1-方法" class="headerlink" title="8.1  方法"></a>8.1  方法</h2><ul>
+<li>是对递推平均滤波法的改进，即不同时刻的数据加以不同的权</li>
+<li>通常是，越接近现时刻的数据，权取得越大</li>
+<li><p>给予新采样值的权系数越大，则灵敏度越高，但信号平滑度越低</p>
+<h2 id="8-2-优点"><a href="#8-2-优点" class="headerlink" title="8.2  优点"></a>8.2  优点</h2></li>
+<li><p>适用于有较大纯滞后时间常数的对象</p>
+</li>
+<li><p>和采样周期较短的系统</p>
+<h2 id="8-3-缺点"><a href="#8-3-缺点" class="headerlink" title="8.3  缺点"></a>8.3  缺点</h2></li>
+<li><p>对于纯滞后时间常数较小，采样周期较长，变化缓慢的信号</p>
+</li>
+<li>不能迅速反应系统当前所受干扰的严重程度，滤波效果差<h2 id="8-4-代码"><a href="#8-4-代码" class="headerlink" title="8.4  代码"></a>8.4  代码</h2></li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">coe数组为加权系数表</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> N 12</span></span><br><span class="line"></span><br><span class="line"><span class="type">char</span> coe[N] = &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>, <span class="number">10</span>, <span class="number">11</span>, <span class="number">12</span>&#125;;</span><br><span class="line"><span class="type">char</span> sum_coe = <span class="number">1</span> + <span class="number">2</span> + <span class="number">3</span> + <span class="number">4</span> + <span class="number">5</span> + <span class="number">6</span> + <span class="number">7</span> + <span class="number">8</span> + <span class="number">9</span> + <span class="number">10</span> + <span class="number">11</span> + <span class="number">12</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">char</span> <span class="title">filter</span><span class="params">(<span class="type">void</span>)</span> </span>&#123;</span><br><span class="line">    <span class="type">char</span> i = <span class="number">0</span>;</span><br><span class="line">    <span class="type">char</span> value_buf[N];</span><br><span class="line">    <span class="type">int</span> sum = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span>(i = <span class="number">0</span>; i &lt; N; i++) &#123;</span><br><span class="line">        value_buf[i] = <span class="built_in">get_ad</span>();</span><br><span class="line">        <span class="built_in">delay</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span>(i = <span class="number">0</span>; i &lt; N; i++) &#123;</span><br><span class="line">        sum += value_buf[i] * coe[i];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> (<span class="type">char</span>)(sum / sum_coe);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="9-消抖滤波法"><a href="#9-消抖滤波法" class="headerlink" title="9  消抖滤波法"></a>9  消抖滤波法</h1><h2 id="9-1-方法"><a href="#9-1-方法" class="headerlink" title="9.1  方法"></a>9.1  方法</h2><ol>
+<li>设置一个滤波计数器</li>
+<li>将每次采样值与当前有效值比较：<br>如果 $采样值＝当前有效值$，则计数器清零<br>如果 $采样值\ne当前有效值$，则 $计数器+1$，并判断计数器是否 $\ge$ 上限 $N$（溢出）</li>
+<li>如果计数器溢出，则将本次值替换当前有效值，并清计数器<h2 id="9-2-优点"><a href="#9-2-优点" class="headerlink" title="9.2  优点"></a>9.2  优点</h2></li>
+</ol>
+<ul>
+<li>对于变化缓慢的被测参数有较好的滤波效果</li>
+<li><p>可避免在临界值附近控制器的反复开/关跳动或显示器上数值抖动</p>
+<h2 id="9-3-缺点"><a href="#9-3-缺点" class="headerlink" title="9.3  缺点"></a>9.3  缺点</h2></li>
+<li><p>对于快速变化的参数不宜</p>
+</li>
+<li>如果在计数器溢出的那一次采样到的值恰好是干扰值,则会将干扰值当作有效值导入系统<h2 id="9-4-代码"><a href="#9-4-代码" class="headerlink" title="9.4  代码"></a>9.4  代码</h2></li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> N 12</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">char</span> <span class="title">filter</span><span class="params">(<span class="type">void</span>)</span> </span>&#123;</span><br><span class="line">    <span class="type">char</span> i = <span class="number">0</span>;</span><br><span class="line">    <span class="type">char</span> new_value = <span class="number">0</span>, value = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    new_value = <span class="built_in">get_ad</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span>(value != new_value) &#123;</span><br><span class="line">        i++;</span><br><span class="line">        <span class="keyword">if</span>(i &gt; N) &#123;</span><br><span class="line">            <span class="keyword">return</span> new_value;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">delay</span>();</span><br><span class="line">        new_value = <span class="built_in">get_ad</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> value;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="10-限幅消抖滤波法"><a href="#10-限幅消抖滤波法" class="headerlink" title="10  限幅消抖滤波法"></a>10  限幅消抖滤波法</h1><h2 id="10-1-方法"><a href="#10-1-方法" class="headerlink" title="10.1  方法"></a>10.1  方法</h2><ul>
+<li>相当于“限幅滤波法”+“消抖滤波法”</li>
+<li><p>先限幅，后消抖</p>
+<h2 id="10-2-优点"><a href="#10-2-优点" class="headerlink" title="10.2  优点"></a>10.2  优点</h2></li>
+<li><p>继承了“限幅”和“消抖”的优点</p>
+</li>
+<li><p>改进了“消抖滤波法”中的某些缺陷，避免将干扰值导入系统</p>
+<h2 id="10-3-缺点"><a href="#10-3-缺点" class="headerlink" title="10.3  缺点"></a>10.3  缺点</h2></li>
+<li><p>对于快速变化的参数不宜</p>
+<h2 id="10-4-代码"><a href="#10-4-代码" class="headerlink" title="10.4  代码"></a>10.4  代码</h2></li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">参考程序 1 和 9</span></span><br><span class="line"><span class="comment"> */</span></span><br></pre></td></tr></table></figure>
+<h1 id="11-滑动窗口滤波法"><a href="#11-滑动窗口滤波法" class="headerlink" title="11  滑动窗口滤波法"></a>11  滑动窗口滤波法</h1><h2 id="11-1-方法一"><a href="#11-1-方法一" class="headerlink" title="11.1  方法一"></a>11.1  方法一</h2><ul>
+<li>前提先要获得一组数据，大小排序去除明显无效的数据，然后指定一个宽度为4的滑块从做向右滑动，计算滑块最右端和最左端的差值，该差值应小于预设阈值（否则丢弃），找出差值最小的4个数据然后求平均输出。缺点：如果源数据由于（距离）某种原因，数据产生的速度变化较大。很长时间才来一个数据就不太合适</li>
+<li>主控制器读取数据，并将数据进行从小到大排序，并删除溢出值，设置宽度为 ４ 的滑动窗口，从排序好的数据最前端，自左向右进行滑动，并记录窗口尾部与头部的差值，保留差值最小的数据簇。此时，该组数据即为这组测量过程中，最集中的一组数据。将该差值与预先设定好的阈值进行比较，当满足阈值规定，则认为该组数据有效，若不满足，即表明该组数据离散程度太高，无法保证数据的有效性。设定滑动窗口大小为 ４，如果窗口大小过小，则无法保证数据是否处于有效值范围内，窗口大小过大，增大了对原始数据的要求，特别是当测量环境不佳的情况下，有效值本身的数量较少，过大的窗口限制了测量的适用性。阈值设定的作用是防止数据过于离散，甚至可能出现所有数据都非有效值的情况，阈值设定过大，则容易导致误差较大，阈值设定过小，限制了测量的量程。窗口大小以及阈值大小的设定，通过实验经验设置，取得了较好的测量效果。该算法在常见的平均取值法上，增加了滑动窗口的概念，以及阈值比较的想法，与平均取值法相比，有了更坚实的理论基础。</li>
+</ul>
+<h2 id="11-2-方法二"><a href="#11-2-方法二" class="headerlink" title="11.2  方法二"></a>11.2  方法二</h2><ul>
+<li>维护一个奇数长度（5）的窗口，根据预测和众数（数据重复的次数或者误差在一定范围内出现的次数）的方法来决定输出那个数据，次数小于一半的不输出，即 5 个数据中最少有 2 个相同的才输出该值（或这三个值的平均值），不同的值一定要留下，5 个元素中离新值差异最大的值丢弃。</li>
+</ul>
+<h1 id="12-卡尔曼滤波法"><a href="#12-卡尔曼滤波法" class="headerlink" title="12  卡尔曼滤波法"></a>12  卡尔曼滤波法</h1><h2 id="12-1-状态估计"><a href="#12-1-状态估计" class="headerlink" title="12.1  状态估计"></a>12.1  状态估计</h2><p>首先，对于一个我们关心的物理量，我们假设它符合下面的规律</p>
+<script type="math/tex; mode=display">
+x_k=ax_{k-1}</script><p>其中，$x_k$ 为该物理量本周期的实际值，$x_{k-1}$ 为该物理量上一个周期的实际值，当然这个物理量可能不符合这个规律，这里只是做了一个假设。下面我们再来看一下这个物理量的测量公式：</p>
+<script type="math/tex; mode=display">
+z_k=v_k+x_k</script><p>其中，$z_k$ 是这个物理量的测量值，$v_k$ 是测量噪声。这个公式体现的是实际值与测量值的关系。实际中，物理量一般不会像我们上面的公式那样简单，一般我们用下面的公式来表示：</p>
+<script type="math/tex; mode=display">
+x_k=ax_{k-1}+bu_{k}</script><p>其中，$bu_k$ 代表了处理噪声，这个噪声是处理模型与实际情况的差异，比如车速，他会受到人为加速、减速、路面不平等外界因素的影响。</p>
+<p>卡尔曼滤波的基本思想是综合利用上一次的状态和测量值来对物理量的状态进行预测估计。我们用 $\hat{x}_k$ 来表示 $x_k$ 的估计值，则有下面的公式：</p>
+<script type="math/tex; mode=display">
+\hat{x}_k=\hat{x}_{k-1}+g_k(z_k-\hat{x}_{k-1})</script><p>在这个公式中，综合利用了上一个周期的估计值和这个周期的测量值来对进行估计。其中，$g_k$ 叫做卡尔曼增益，这个公式与一阶滞后滤波很相似，只不过卡尔曼增益是会变的，每个周期都会更新，一阶滤波的系数则是固定值。考虑极端的情况来分析增益的作用，当  $g_k=0$ 时，增益为 $0$，这时，这表示我们这个周期的估计值与上个周期是相同的，不信任当前的测量值；当 $g_k=1$ 时，增益为 $1$，这 $z_k=\hat{x}_{k-1}$ 时，这表示我们这个周期的估计值与测量值是相同的，不信任上个周期的估计值。在实际应用时，$g_k$ 介于 $0\sim1$ 之间，它代表了对测量值的信任程度。</p>
+<h2 id="12-2-卡尔曼增益"><a href="#12-2-卡尔曼增益" class="headerlink" title="12.2  卡尔曼增益"></a>12.2  卡尔曼增益</h2><p>我们通过下面两个公式来计算并在每个周期进行卡尔曼增益的迭代更新：</p>
+<script type="math/tex; mode=display">
+g_k=p_{k-1}/(p_{k-1}+r)\\
+p_k=(1-g_k)p_{k-1}</script><p>在上述公式中，$r$ 是测量噪声 $v_k$ 的平均值，测量噪声是符合高斯分布的，一般可以从传感器厂商那里获得测量噪声的均值，如果无法获得可以根据采集到的数据给出一个经验值。$r$ 的大小对最终滤波效果的影响是比较大的。$p_k$ 为本周期的预测误差。我们采用分析卡尔曼增益的方法来分析预测误差的作用，即采用假设极端情况的方法。假设前一次的预测误差 $p_{k-1}=0$，根据第一个公式则 $g_k=0$，根据上面的分析，这种情况估计值为上个周期的估计值；如果前一次的预测误差 $p_{k-1}=1$，则增益变为 $g_k=1/(1+r)$，$r$ 一般取值很小，所以 $g_k\approx1$，这种情况以新测量的值作为估计值。</p>
+<p>对于第二个公式，当卡尔曼增益为 $0$ 时，$p_k=p_{k-1}$，即采用上一个周期的预测误差；当增益为1时，$p_k=0$。</p>
+<h2 id="12-3-卡尔曼滤波算法"><a href="#12-3-卡尔曼滤波算法" class="headerlink" title="12.3  卡尔曼滤波算法"></a>12.3  卡尔曼滤波算法</h2><p>有了上面的推导，我们在下面列出来完成卡尔曼滤波的公式，卡尔曼滤波分为预测过程和更新过程两个过程，在公式中，我们又引入了缩放系数 $h$，和协方差 $q$。</p>
+<ul>
+<li>预测过程</li>
+</ul>
+<script type="math/tex; mode=display">
+\hat{x}_k=a\hat{x}_{k-1}+bu_k\\
+p_k=ap_{k-1}a+q</script><ul>
+<li>更新过程</li>
+</ul>
+<script type="math/tex; mode=display">
+g_k=p_kh/(hp_kh+r)\\
+\hat{x}_k=\hat{x}_{k-1}+g_k(z_k-h\hat{x}_{k-1})\\
+p_k=(1-g_kh)p_k</script><p>上面的公式适合一维变量的卡尔曼滤波，将变量扩展到多维，用向量和矩阵替换上面的变量，就可以实现多维变量的卡尔曼滤波，下面的公式适用于多维变量：</p>
+<ul>
+<li>预测过程</li>
+</ul>
+<script type="math/tex; mode=display">
+\hat{x}_k=A\hat{x}_{k-1}+Bu_k\\
+P_k=AP_{k-1}A^T+Q</script><ul>
+<li>更新过程</li>
+</ul>
+<script type="math/tex; mode=display">
+G_k=P_kH(HP_kH+R)^{-1}\\
+\hat{x}_k=\hat{x}_{k-1}+G_k(z_k-H\hat{x}_{k-1})\\
+P_k=(1-G_kH)P_k</script><h2 id="12-4-代码"><a href="#12-4-代码" class="headerlink" title="12.4  代码"></a>12.4  代码</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span>&#123;</span><br><span class="line">    <span class="type">float</span> filterValue; <span class="comment">//滤波后的值</span></span><br><span class="line">    <span class="type">float</span> kalmanGain; <span class="comment">//Kalamn增益</span></span><br><span class="line">    <span class="type">float</span> A; <span class="comment">//状态矩阵</span></span><br><span class="line">    <span class="type">float</span> H; <span class="comment">//观测矩阵</span></span><br><span class="line">    <span class="type">float</span> Q; <span class="comment">//状态矩阵的方差</span></span><br><span class="line">    <span class="type">float</span> R; <span class="comment">//观测矩阵的方差</span></span><br><span class="line">    <span class="type">float</span> P; <span class="comment">//预测误差</span></span><br><span class="line">    <span class="type">float</span> B;</span><br><span class="line">    <span class="type">float</span> u;</span><br><span class="line">&#125;KalmanInfo;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Kalm::initKalmanFilter</span><span class="params">(KalmanInfo *info)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    info-&gt;A = <span class="number">1</span>;</span><br><span class="line">    info-&gt;H = <span class="number">1</span>;</span><br><span class="line">    info-&gt;P = <span class="number">0.1</span>;</span><br><span class="line">    info-&gt;Q = <span class="number">0.05</span>;</span><br><span class="line">    info-&gt;R = <span class="number">0.1</span>;</span><br><span class="line">    info-&gt;B = <span class="number">0.1</span>;</span><br><span class="line">    info-&gt;u = <span class="number">0</span>;</span><br><span class="line">    info-&gt;filterValue = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">float</span> <span class="title">Kalm::kalmanFilterFun</span><span class="params">(KalmanInfo *info, <span class="type">float</span> new_value)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">float</span> predictValue = info-&gt;A*info-&gt;filterValue+info-&gt;B*info-&gt;u; <span class="comment">//计算预测值</span></span><br><span class="line">    info-&gt;P = info-&gt;A*info-&gt;A*info-&gt;P + info-&gt;Q; <span class="comment">//求协方差</span></span><br><span class="line">    info-&gt;kalmanGain = info-&gt;P * info-&gt;H /(info-&gt;P * info-&gt;H * info-&gt;H + info-&gt;R); <span class="comment">//计算卡尔曼增益</span></span><br><span class="line">    info-&gt;filterValue = predictValue + (new_value - predictValue)*info-&gt;kalmanGain; <span class="comment">//计算输出的值</span></span><br><span class="line">    info-&gt;P = (<span class="number">1</span> - info-&gt;kalmanGain* info-&gt;H)*info-&gt;P; <span class="comment">//更新协方差</span></span><br><span class="line">    <span class="keyword">return</span> info-&gt;filterValue;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Summary/" rel="tag"># Summary</a>
+              <a href="/tags/Knowledge/" rel="tag"># Knowledge</a>
+              <a href="/tags/Filter-Algorithms/" rel="tag"># Filter Algorithms</a>
+              <a href="/tags/Algorithms/" rel="tag"># Algorithms</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/papernote/DETR/" rel="prev" title="DETR">
+                  <i class="fa fa-chevron-left"></i> DETR
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/summary/Activation%20Function/" rel="next" title="Activation Function">
+                  Activation Function <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Star Rain</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+  <script class="next-config" data-name="pdf" type="application/json">{"object_url":{"url":"https://cdn.jsdelivr.net/npm/pdfobject@2.2.7/pdfobject.min.js","integrity":"sha256-ph3Dk89VmuTVXG6x/RDzk53SU9LPdAh1tpv0UvnDZ2I="},"url":"/lib/pdf/web/viewer.html"}</script>
+  <script src="/js/third-party/tags/pdf.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"cdn":"//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML","tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
