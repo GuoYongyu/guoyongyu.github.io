@@ -15,7 +15,7 @@
 <meta property="og:description" content="计算机视觉，尤其目标检测相关算法中，anchor 的介绍与用途。">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2022-06-01T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-11-17T02:02:14.703Z">
+<meta property="article:modified_time" content="2022-11-17T02:23:28.712Z">
 <meta property="article:author" content="Star Rain">
 <meta property="article:tag" content="Summary">
 <meta property="article:tag" content="Knowledge">
@@ -97,10 +97,9 @@
       
         <p>计算机视觉，尤其目标检测相关算法中，anchor 的介绍与用途。</p>
 <span id="more"></span>
-
 <center><b><font size=9>Anchor</font></b></center>
 
-<p>anchor 来源于 Faster R-CNN 中提到的在目标检测时的一种思想。在 Faster R-CNN 中，对于输入图像，先被缩放为 $800\times600$ 大小的图像 A，输入 backbone 中经 $1&#x2F;16$ 下采样得到 feature map，大小为 $\lceil 800&#x2F;16 \rceil \times \lceil 600&#x2F;16 \rceil &#x3D; 50 \times 38$，feature map 中的一个小方格就对应原图像 A 中 $16\times16$ 的像素框。</p>
+<p>anchor 来源于 Faster R-CNN 中提到的在目标检测时的一种思想。在 Faster R-CNN 中，对于输入图像，先被缩放为 $800\times600$ 大小的图像 A，输入 backbone 中经 $1/16$ 下采样得到 feature map，大小为 $\lceil 800/16 \rceil \times \lceil 600/16 \rceil = 50 \times 38$，feature map 中的一个小方格就对应原图像 A 中 $16\times16$ 的像素框。</p>
 <p>在 Faster R-CNN 中，定义了三种 scale 和 ratio：</p>
 <ul>
 <li>scale 为缩放比，取 $[8,16,32]$</li>

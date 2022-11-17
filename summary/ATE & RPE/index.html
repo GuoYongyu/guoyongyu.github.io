@@ -15,7 +15,7 @@
 <meta property="og:description" content="在 SLAM 相关论文中，有几个常用的算法评价指标，ATE（绝对轨迹误差）和 RPE（相对位姿误差）即为常见的指标。本文收集并整理了网络上的内容，对二者进行了总结。">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2022-11-15T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-11-17T02:04:34.744Z">
+<meta property="article:modified_time" content="2022-11-17T02:23:34.548Z">
 <meta property="article:author" content="Star Rain">
 <meta property="article:tag" content="Summary">
 <meta property="article:tag" content="SLAM">
@@ -98,7 +98,6 @@
       
         <p>在 SLAM 相关论文中，有几个常用的算法评价指标，ATE（绝对轨迹误差）和 RPE（相对位姿误差）即为常见的指标。本文收集并整理了网络上的内容，对二者进行了总结。</p>
 <span id="more"></span>
-
 <center><b><font size=9>ATE & RPE</font></b></center>
 
 <h1 id="1-定义"><a href="#1-定义" class="headerlink" title="1  定义"></a>1  定义</h1><ul>
@@ -106,105 +105,136 @@
 <li>真实位姿：$Q_1, …, Q_n \in SE(3)$</li>
 <li>下标 $t$ 表示时间或帧，假设估计位姿和真实位姿各帧时间已经对齐，总帧数均为 $n$，$\Delta$ 表示帧间间隔时间。</li>
 </ul>
-<h1 id="2-相对位姿误差"><a href="#2-相对位姿误差" class="headerlink" title="2  相对位姿误差"></a>2  相对位姿误差</h1><p>相对位姿误差（Relative Pose Error，RPE）描述的是固定时间差 $\Delta$ 下，两帧位姿差相比真实位姿差的精度，相当于直接测量里程计的误差。第 $i$ 帧的 RPE 定义如下：<br>$$<br>RPE_i &#x3D; E_i \triangleq (Q_i^{-1} Q_{i+\Delta})^{-1} (P_i^{-1} P_{i + \Delta})<br>\tag{1}<br>$$<br>已知总数 $n$ 与间隔 $\Delta$ 的情况下，可以得到 $m &#x3D; n - \Delta$ 个 RPE，然后可以用均方根误差 RMSE 统计这个误差，得到一个总体值：<br>$$<br>RMSE(E_{1:n}, \Delta) :&#x3D; \left( \frac{1}{m} \sum_{i&#x3D;1}^m \left| \ln \left( (Q_i^{-1} Q_{i+\Delta})^{-1} (P_i^{-1} P_{i + \Delta}) \right)^{\vee} \right|^2 \right)^{\frac{1}{2}}<br>\tag{2}<br>$$<br>下式为平移部分的误差：<br>$$<br>RMSE(E_{1:n}, \Delta) :&#x3D; \left( \frac{1}{m} \sum_{i&#x3D;1}^m | \operatorname{trans}(E_i) |^2 \right)^{\frac{1}{2}}<br>\tag{3}<br>$$<br>其中 $\operatorname{trans}(E_i)$ 代表取相对位姿误差中的平移部分。通常使用 RPE 的平移部分进行评价。如果有需要，也可以使用旋转部分，其中：<br>$$<br>\operatorname{rot}(E_i) &#x3D; \ln \left( ({}^Q R_i^{-1} {}^Q R_{i+\Delta})^{-1} ({}^P R_i^{-1} {}^P R_{i + \Delta}) \right)^{\vee}<br>\tag{4}<br>$$<br>其中 ${}^Q R$ 表示位姿 $Q$ 的旋转部分。</p>
+<h1 id="2-相对位姿误差"><a href="#2-相对位姿误差" class="headerlink" title="2  相对位姿误差"></a>2  相对位姿误差</h1><p>相对位姿误差（Relative Pose Error，RPE）描述的是固定时间差 $\Delta$ 下，两帧位姿差相比真实位姿差的精度，相当于直接测量里程计的误差。第 $i$ 帧的 RPE 定义如下：</p>
+<script type="math/tex; mode=display">
+RPE_i = E_i \triangleq (Q_i^{-1} Q_{i+\Delta})^{-1} (P_i^{-1} P_{i + \Delta})
+\tag{1}</script><p>已知总数 $n$ 与间隔 $\Delta$ 的情况下，可以得到 $m = n - \Delta$ 个 RPE，然后可以用均方根误差 RMSE 统计这个误差，得到一个总体值：</p>
+<script type="math/tex; mode=display">
+RMSE(E_{1:n}, \Delta) := \left( \frac{1}{m} \sum_{i=1}^m \left\| \ln \left( (Q_i^{-1} Q_{i+\Delta})^{-1} (P_i^{-1} P_{i + \Delta}) \right)^{\vee} \right\|^2 \right)^{\frac{1}{2}}
+\tag{2}</script><p>下式为平移部分的误差：</p>
+<script type="math/tex; mode=display">
+RMSE(E_{1:n}, \Delta) := \left( \frac{1}{m} \sum_{i=1}^m \| \operatorname{trans}(E_i) \|^2 \right)^{\frac{1}{2}}
+\tag{3}</script><p>其中 $\operatorname{trans}(E_i)$ 代表取相对位姿误差中的平移部分。通常使用 RPE 的平移部分进行评价。如果有需要，也可以使用旋转部分，其中：</p>
+<script type="math/tex; mode=display">
+\operatorname{rot}(E_i) = \ln \left( ({}^Q R_i^{-1} {}^Q R_{i+\Delta})^{-1} ({}^P R_i^{-1} {}^P R_{i + \Delta}) \right)^{\vee}
+\tag{4}</script><p>其中 ${}^Q R$ 表示位姿 $Q$ 的旋转部分。</p>
 <p>也可以不使用 RMSE，直接使用平均值、中位数等来描述相对误差情况。</p>
-<p>实际情况中，$\Delta$ 的选择有多种，为了综合衡量，可以计算所有 $\Delta$ 的 RMSE 平均值：<br>$$<br>RMSE(E_{1:n}) &#x3D; \frac{1}{n} \sum_{\Delta&#x3D;1}^n RMSE(E_{1:n}, \Delta)<br>\tag{5}<br>$$<br>这样计算复杂度很高，因此 TUM 数据集在提供的工具中，通过计算固定数量的 RPE 样本计算近似值。</p>
+<p>实际情况中，$\Delta$ 的选择有多种，为了综合衡量，可以计算所有 $\Delta$ 的 RMSE 平均值：</p>
+<script type="math/tex; mode=display">
+RMSE(E_{1:n}) = \frac{1}{n} \sum_{\Delta=1}^n RMSE(E_{1:n}, \Delta)
+\tag{5}</script><p>这样计算复杂度很高，因此 TUM 数据集在提供的工具中，通过计算固定数量的 RPE 样本计算近似值。</p>
 <h1 id="3-绝对轨迹误差"><a href="#3-绝对轨迹误差" class="headerlink" title="3  绝对轨迹误差"></a>3  绝对轨迹误差</h1><p>绝对轨迹误差（Absolute Trajectory Error，ATE）是估计位姿和真实位姿的直接差值，可以直观反应算法精度和轨迹全局一致性。</p>
 <p>需要注意的是，估计位姿和真实位姿通常不在同一坐标系中，因此需要先将两者对齐：</p>
 <ul>
 <li>对于双目 SLAM 和 RGB-D 为尺度统一，通过最小二乘法计算一个从估计位姿到真实位姿的转换矩阵 $S \in SE(3)$；</li>
 <li>对于单目相机，具有尺度不确定性，需要计算估计位姿到真实位姿到相似转换矩阵 $S \in Sim(2)$。</li>
 </ul>
-<p>因此，第 $i$ 帧的 ATE 定义如下：<br>$$<br>ATE_i &#x3D; F_i \triangleq Q_i^{-1} S P_i<br>\tag{6}<br>$$<br>与 RPE 相似，使用 RMSE 统计 ATE：<br>$$<br>RMSE(F_{1:n}, \Delta) :&#x3D; \left( \frac{1}{m} \sum_{i&#x3D;1}^m | \operatorname{trans}(F_i) |^2 \right)^{\frac{1}{2}}<br>\tag{7}<br>$$<br>同 RPE，也可以使用平均值、中位数等来反应 ATE 等情况。上述只描述了平移误差部分，旋转误差也可以使用与 RPE 相同的方式计算。</p>
+<p>因此，第 $i$ 帧的 ATE 定义如下：</p>
+<script type="math/tex; mode=display">
+ATE_i = F_i \triangleq Q_i^{-1} S P_i
+\tag{6}</script><p>与 RPE 相似，使用 RMSE 统计 ATE：</p>
+<script type="math/tex; mode=display">
+RMSE(F_{1:n}, \Delta) := \left( \frac{1}{m} \sum_{i=1}^m \| \operatorname{trans}(F_i) \|^2 \right)^{\frac{1}{2}}
+\tag{7}</script><p>同 RPE，也可以使用平均值、中位数等来反应 ATE 等情况。上述只描述了平移误差部分，旋转误差也可以使用与 RPE 相同的方式计算。</p>
 <h1 id="4-EVO"><a href="#4-EVO" class="headerlink" title="4  EVO"></a>4  EVO</h1><ul>
 <li>Link：<a target="_blank" rel="noopener" href="https://github.com/MichaelGrupp/evo">https://github.com/MichaelGrupp/evo</a></li>
 </ul>
 <h2 id="4-1-安装"><a href="#4-1-安装" class="headerlink" title="4.1  安装"></a>4.1  安装</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># pip installation</span></span><br><span class="line">pip3 install evo --upgrade --no-library evo</span><br><span class="line"></span><br><span class="line"><span class="comment"># source code installation</span></span><br><span class="line">git <span class="built_in">clone</span> git@github.com:MichaelGrupp/evo.git</span><br><span class="line"><span class="built_in">cd</span> evo</span><br><span class="line">pip3 install --editable . --upgrade --no-library evo</span><br><span class="line"></span><br><span class="line"><span class="comment"># check successful installation</span></span><br><span class="line">evo_ate -h</span><br></pre></td></tr></table></figure>
-
-
-
 <h2 id="4-2-使用"><a href="#4-2-使用" class="headerlink" title="4.2  使用"></a>4.2  使用</h2><p><strong>（1）轨迹可视化</strong></p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">evo_traj kitti KITTI_00_ORB.txt KITTI_oo_SPTAM.txt --ref=KITTI_00_gt.txt -p --plot_mode=xz</span><br></pre></td></tr></table></figure>
-
 <p><strong>（2）APE</strong></p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">evo_ape kitti KITTI_00_gt.txt KITTI_00_ORB.txt -va --plot --plot_mode=xz</span><br></pre></td></tr></table></figure>
-
 <p><strong>（3）RPE</strong></p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">evo_rpe tum fr2_desk_groundtrutr2_desk_ORB.txt -va --plot --plot_mode=xyz</span><br></pre></td></tr></table></figure>
-
 <p><strong>（4）参数</strong></p>
+<div class="table-container">
 <table>
 <thead>
 <tr>
-<th align="center"><strong>选项</strong></th>
-<th align="center"><strong>含义</strong></th>
+<th style="text-align:center"><strong>选项</strong></th>
+<th style="text-align:center"><strong>含义</strong></th>
 </tr>
 </thead>
-<tbody><tr>
-<td align="center">-a, –align</td>
-<td align="center">轨迹对齐</td>
+<tbody>
+<tr>
+<td style="text-align:center">-a, —align</td>
+<td style="text-align:center">轨迹对齐</td>
 </tr>
 <tr>
-<td align="center">-s, –correct_scale</td>
-<td align="center">尺度对齐</td>
+<td style="text-align:center">-s, —correct_scale</td>
+<td style="text-align:center">尺度对齐</td>
 </tr>
 <tr>
-<td align="center">–sync</td>
-<td align="center">通过时间戳关联轨迹</td>
+<td style="text-align:center">—sync</td>
+<td style="text-align:center">通过时间戳关联轨迹</td>
 </tr>
 <tr>
-<td align="center">-p, –plot</td>
-<td align="center">可视化轨迹</td>
+<td style="text-align:center">-p, —plot</td>
+<td style="text-align:center">可视化轨迹</td>
 </tr>
 <tr>
-<td align="center">-v, –verbose</td>
-<td align="center">命令行输出细节信息</td>
+<td style="text-align:center">-v, —verbose</td>
+<td style="text-align:center">命令行输出细节信息</td>
 </tr>
 <tr>
-<td align="center">–plot_mode</td>
-<td align="center">轨迹可视化模式：xyz、xy、xz 等</td>
+<td style="text-align:center">—plot_mode</td>
+<td style="text-align:center">轨迹可视化模式：xyz、xy、xz 等</td>
 </tr>
 <tr>
-<td align="center">–save_plot</td>
-<td align="center">保存结果</td>
+<td style="text-align:center">—save_plot</td>
+<td style="text-align:center">保存结果</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
+</div>
 <p><strong>（5）metrics 解析</strong></p>
 <p>前面提到位姿误差包含平移和旋转，在 evo 设置输出的误差项对应 option为 <code>-r</code> 或 <code>--pose_relation</code>，对应如下模式：</p>
+<div class="table-container">
 <table>
 <thead>
 <tr>
-<th align="center">option</th>
-<th align="center">功能</th>
+<th style="text-align:center">option</th>
+<th style="text-align:center">功能</th>
 </tr>
 </thead>
-<tbody><tr>
-<td align="center">full</td>
-<td align="center">同时考虑旋转与平移误差，无单位</td>
+<tbody>
+<tr>
+<td style="text-align:center">full</td>
+<td style="text-align:center">同时考虑旋转与平移误差，无单位</td>
 </tr>
 <tr>
-<td align="center">trans_part</td>
-<td align="center">平移误差，单位为 m</td>
+<td style="text-align:center">trans_part</td>
+<td style="text-align:center">平移误差，单位为 m</td>
 </tr>
 <tr>
-<td align="center">rot_part</td>
-<td align="center">旋转误差，无单位</td>
+<td style="text-align:center">rot_part</td>
+<td style="text-align:center">旋转误差，无单位</td>
 </tr>
 <tr>
-<td align="center">angle_deg</td>
-<td align="center">旋转误差，单位为 degree</td>
+<td style="text-align:center">angle_deg</td>
+<td style="text-align:center">旋转误差，单位为 degree</td>
 </tr>
 <tr>
-<td align="center">angle_rad</td>
-<td align="center">旋转误差，单位为 rad</td>
+<td style="text-align:center">angle_rad</td>
+<td style="text-align:center">旋转误差，单位为 rad</td>
 </tr>
-</tbody></table>
-<p>无单位 full 和 rot_part 的误差指标使用了矩阵的二范数：<br>$$<br>error_{full} &#x3D; | \delta T_i - E | \<br>error_{rot} &#x3D; | \delta R_i - E |<br>\tag{8}<br>$$<br>其中 $\delta T_i$ 表示 GT 和估计位姿之间的变换矩阵，$E$ 为单位阵。</p>
+</tbody>
+</table>
+</div>
+<p>无单位 full 和 rot_part 的误差指标使用了矩阵的二范数：</p>
+<script type="math/tex; mode=display">
+error_{full} = \| \delta T_i - E \| \\
+error_{rot} = \| \delta R_i - E \|
+\tag{8}</script><p>其中 $\delta T_i$ 表示 GT 和估计位姿之间的变换矩阵，$E$ 为单位阵。</p>
 <h1 id="附件"><a href="#附件" class="headerlink" title="附件"></a>附件</h1><h2 id="罗德里格斯公式"><a href="#罗德里格斯公式" class="headerlink" title="罗德里格斯公式"></a>罗德里格斯公式</h2><ul>
 <li>注：旋转向量的二范数为旋转角的大小。</li>
 </ul>
-<p>$$<br>\begin{aligned}<br>&amp;R &#x3D; \cos \theta I + (1 - \cos \theta)n n^T + \sin \theta n^{\wedge} \<br>\Rightarrow &amp;\theta &#x3D; \arccos \left( \frac{\operatorname{trace}(R) - 1}{2} \right)<br>\end{aligned}<br>\tag{9}<br>$$</p>
-<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ul>
+<script type="math/tex; mode=display">
+\begin{aligned}
+&R = \cos \theta I + (1 - \cos \theta)n n^T + \sin \theta n^{\wedge} \\
+\Rightarrow &\theta = \arccos \left( \frac{\operatorname{trace}(R) - 1}{2} \right)
+\end{aligned}
+\tag{9}</script><h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ul>
 <li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/105428199">https://zhuanlan.zhihu.com/p/105428199</a></li>
 <li><a target="_blank" rel="noopener" href="https://www.pudn.com/news/6228d5059ddf223e1ad1d429.html">https://www.pudn.com/news/6228d5059ddf223e1ad1d429.html</a></li>
 </ul>

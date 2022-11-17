@@ -15,7 +15,7 @@
 <meta property="og:description" content="关于深度学习中激活函数的简单总结。">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2022-05-29T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-11-17T02:02:28.068Z">
+<meta property="article:modified_time" content="2022-11-17T02:23:19.447Z">
 <meta property="article:author" content="Star Rain">
 <meta property="article:tag" content="Summary">
 <meta property="article:tag" content="Knowledge">
@@ -97,22 +97,27 @@
       
         <p>关于深度学习中激活函数的简单总结。</p>
 <span id="more"></span>
-
 <center><font size=9><b>激活函数</b></font></center>
 
 <hr>
 <h1 id="1-简介"><a href="#1-简介" class="headerlink" title="1  简介"></a>1  简介</h1><p>激活函数是向神经网络中引入非线性因素，通过激活函数神经网络就可以拟合各种曲线。激活函数主要分为饱和激活函数（Saturated Neurons）和非饱和函数（One-sided Saturations）。</p>
-<h1 id="2-Sigmoid-函数"><a href="#2-Sigmoid-函数" class="headerlink" title="2  Sigmoid 函数"></a>2  Sigmoid 函数</h1><p>数学形式：<br>$$<br>\mathrm{sigmoid}(x) &#x3D; \frac{1}{1 + \mathrm{e}^{-x}}<br>$$<br>特点：</p>
+<h1 id="2-Sigmoid-函数"><a href="#2-Sigmoid-函数" class="headerlink" title="2  Sigmoid 函数"></a>2  Sigmoid 函数</h1><p>数学形式：</p>
+<script type="math/tex; mode=display">
+\mathrm{sigmoid}(x) = \frac{1}{1 + \mathrm{e}^{-x}}</script><p>特点：</p>
 <ul>
 <li>能够把输入的连续实值变换为 $0$ 和 $1$ 之间的输出。特别的，如果是非常大的负数，那么输出就是 $0$；如果是非常大的正数，输出就是 $1$。</li>
 <li>缺点 1：在深度神经网络中梯度反向传递时导致梯度爆炸和梯度消失。</li>
 <li>缺点 2：Sigmoid 的 output 不是 0 均值（zero-centered）。</li>
 </ul>
-<h1 id="3-tanh-函数"><a href="#3-tanh-函数" class="headerlink" title="3  tanh 函数"></a>3  tanh 函数</h1><p>数学形式：<br>$$<br>\mathrm{tanh} (x) &#x3D; \frac{\mathrm{e}^x - \mathrm{e}^{-x}}{\mathrm{e}^x + \mathrm{e}^{-x}}<br>$$<br>特点：</p>
+<h1 id="3-tanh-函数"><a href="#3-tanh-函数" class="headerlink" title="3  tanh 函数"></a>3  tanh 函数</h1><p>数学形式：</p>
+<script type="math/tex; mode=display">
+\mathrm{tanh} (x) = \frac{\mathrm{e}^x - \mathrm{e}^{-x}}{\mathrm{e}^x + \mathrm{e}^{-x}}</script><p>特点：</p>
 <ul>
 <li>解决了 Sigmoid 函数的不是 zero-centered 的输出问题。</li>
 </ul>
-<h1 id="4-ReLU-函数"><a href="#4-ReLU-函数" class="headerlink" title="4  ReLU 函数"></a>4  ReLU 函数</h1><p>数学形式：<br>$$<br>\mathrm{ReLU} (x) &#x3D; \max (0, x)<br>$$<br>特点：</p>
+<h1 id="4-ReLU-函数"><a href="#4-ReLU-函数" class="headerlink" title="4  ReLU 函数"></a>4  ReLU 函数</h1><p>数学形式：</p>
+<script type="math/tex; mode=display">
+\mathrm{ReLU} (x) = \max (0, x)</script><p>特点：</p>
 <ul>
 <li><p>优点：</p>
 <ul>
@@ -128,28 +133,43 @@
 </ul>
 </li>
 </ul>
-<h1 id="5-Leaky-ReLU函数"><a href="#5-Leaky-ReLU函数" class="headerlink" title="5  Leaky ReLU函数"></a>5  Leaky ReLU函数</h1><p>数学形式：<br>$$<br>\mathrm{LeakyReLU} (x) &#x3D; \max (\alpha x, x)<br>$$<br>特点：</p>
+<h1 id="5-Leaky-ReLU函数"><a href="#5-Leaky-ReLU函数" class="headerlink" title="5  Leaky ReLU函数"></a>5  Leaky ReLU函数</h1><p>数学形式：</p>
+<script type="math/tex; mode=display">
+\mathrm{LeakyReLU} (x) = \max (\alpha x, x)</script><p>特点：</p>
 <ul>
-<li>为解决 Dead ReLU 问题，提出了将 ReLU 的前半段设为 $\alpha x$，通常 $\alpha&#x3D;0.01$。</li>
+<li>为解决 Dead ReLU 问题，提出了将 ReLU 的前半段设为 $\alpha x$，通常 $\alpha=0.01$。</li>
 <li>理论上来讲，Leaky ReLU 有 ReLU 的所有优点，且没有 Dead ReLU 问题，但在实际中，并没有完全证明 Leaky ReLU 总是优于 ReLU。</li>
 <li>PReLU 函数与 Leaky ReLU 函数相类似</li>
 </ul>
-<h1 id="6-ELU（Exponential-Linear-Units）函数"><a href="#6-ELU（Exponential-Linear-Units）函数" class="headerlink" title="6  ELU（Exponential Linear Units）函数"></a>6  ELU（Exponential Linear Units）函数</h1><p>数学形式：<br>$$<br>\mathrm{ELU} (x) &#x3D;<br>\begin{cases}<br>x, &amp; \mathrm{if} \ x &gt; 0\<br>\alpha (\mathrm{e}^x - 1), &amp; \mathrm{otherwise}<br>\end{cases}<br>$$<br>特点：</p>
+<h1 id="6-ELU（Exponential-Linear-Units）函数"><a href="#6-ELU（Exponential-Linear-Units）函数" class="headerlink" title="6  ELU（Exponential Linear Units）函数"></a>6  ELU（Exponential Linear Units）函数</h1><p>数学形式：</p>
+<script type="math/tex; mode=display">
+\mathrm{ELU} (x) = 
+\begin{cases}
+x, & \mathrm{if} \ x > 0\\
+\alpha (\mathrm{e}^x - 1), & \mathrm{otherwise}
+\end{cases}</script><p>特点：</p>
 <ul>
 <li>ELU 也是为解决 ReLU 存在的问题而提出，基本有 ReLU 的所有优点，没有 Dead ReLU 问题且输出接近 0</li>
 <li>问题是计算开销太大</li>
 </ul>
-<h1 id="7-Softmax-函数"><a href="#7-Softmax-函数" class="headerlink" title="7  Softmax 函数"></a>7  Softmax 函数</h1><p>数学形式：<br>$$<br>\mathrm{softmax}: \bold{x} \in \mathbb{R}^n \rightarrow \bold{x’} \in \mathbb{R}^n\<br>\mathrm{s.t.}\ \forall x’_i \in \bold{x’},\ x’<em>i &#x3D; \frac{\mathrm{e}^{x_i}}{\sum</em>{j&#x3D;1}^n \mathrm{e}^{x_j}}<br>$$<br>特点：</p>
+<h1 id="7-Softmax-函数"><a href="#7-Softmax-函数" class="headerlink" title="7  Softmax 函数"></a>7  Softmax 函数</h1><p>数学形式：</p>
+<script type="math/tex; mode=display">
+\mathrm{softmax}: \bold{x} \in \mathbb{R}^n \rightarrow \bold{x'} \in \mathbb{R}^n\\
+\mathrm{s.t.}\ \forall x'_i \in \bold{x'},\ x'_i = \frac{\mathrm{e}^{x_i}}{\sum_{j=1}^n \mathrm{e}^{x_j}}</script><p>特点：</p>
 <ul>
 <li>在零点不可微</li>
 <li>负输入的梯度为零，这意味着对于该区域的激活，权重不会在反向传播期间更新，因此会产生永不激活的死亡神经元</li>
 </ul>
-<h1 id="8-Swish-函数"><a href="#8-Swish-函数" class="headerlink" title="8  Swish 函数"></a>8  Swish 函数</h1><p>数学形式：<br>$$<br>\mathrm{swish} (x) &#x3D; x \cdot \mathrm{sigmoid} (x)<br>$$<br>特点：</p>
+<h1 id="8-Swish-函数"><a href="#8-Swish-函数" class="headerlink" title="8  Swish 函数"></a>8  Swish 函数</h1><p>数学形式：</p>
+<script type="math/tex; mode=display">
+\mathrm{swish} (x) = x \cdot \mathrm{sigmoid} (x)</script><p>特点：</p>
 <ul>
 <li><strong>无界性</strong>有助于防止慢速训练期间，梯度逐渐接近 0 并导致饱和</li>
 <li>导数恒大于 0</li>
 </ul>
-<h1 id="9-Softplus-函数"><a href="#9-Softplus-函数" class="headerlink" title="9  Softplus 函数"></a>9  Softplus 函数</h1><p>数学形式：<br>$$<br>\mathrm{softplus} (x) &#x3D; \ln (1 + \mathrm{e}^x)<br>$$<br>特点：</p>
+<h1 id="9-Softplus-函数"><a href="#9-Softplus-函数" class="headerlink" title="9  Softplus 函数"></a>9  Softplus 函数</h1><p>数学形式：</p>
+<script type="math/tex; mode=display">
+\mathrm{softplus} (x) = \ln (1 + \mathrm{e}^x)</script><p>特点：</p>
 <ul>
 <li>类似于 ReLU 函数，但是相对较平滑</li>
 </ul>
