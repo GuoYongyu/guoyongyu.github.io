@@ -1,13 +1,26 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.2">
 
-  
-  <title>ATE &amp; RPE | The Blog of Star Rain</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="在 SLAM 相关论文中，有几个常用的算法评价指标，ATE（绝对轨迹误差）和 RPE（相对位姿误差）即为常见的指标。本文收集并整理了网络上的内容，对二者进行了总结。">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/logo-32x32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/logo-16x16.ico">
+  <link rel="mask-icon" href="/images/logo.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"guoyongyu.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="在 SLAM 相关论文中，有几个常用的算法评价指标，ATE（绝对轨迹误差）和 RPE（相对位姿误差）即为常见的指标。本文收集并整理了网络上的内容，对二者进行了总结。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ATE &amp; RPE">
 <meta property="og:url" content="https://guoyongyu.github.io/summary/ATE%20&%20RPE/index.html">
@@ -18,84 +31,206 @@
 <meta property="article:modified_time" content="2022-11-17T02:23:34.548Z">
 <meta property="article:author" content="Star Rain">
 <meta property="article:tag" content="Summary">
-<meta property="article:tag" content="SLAM">
 <meta property="article:tag" content="Knowledge">
+<meta property="article:tag" content="SLAM">
 <meta property="article:tag" content="Metrics">
 <meta name="twitter:card" content="summary">
-  
-    <link rel="alternate" href="/atom.xml" title="The Blog of Star Rain" type="application/atom+xml">
-  
-  
-    <link rel="icon" href="[object Object]">
-  
-  
-    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
-  
-  
-<link rel="stylesheet" href="/css/style.css">
 
-<meta name="generator" content="Hexo 5.4.2"></head>
 
-<body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">The Blog of Star Rain</a>
-      </h1>
-      
+<link rel="canonical" href="https://guoyongyu.github.io/summary/ATE%20&%20RPE/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://guoyongyu.github.io/summary/ATE%20&%20RPE/","path":"summary/ATE & RPE/","title":"ATE & RPE"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>ATE & RPE | The Blog of Star Rain</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
     </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">The Blog of Star Rain</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
         
-          <a class="main-nav-link" href="/">Home</a>
-        
-          <a class="main-nav-link" href="/archives">Archives</a>
-        
-      </nav>
-      <nav id="sub-nav">
-        
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
-        
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://guoyongyu.github.io"></form>
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E5%AE%9A%E4%B9%89"><span class="nav-number">1.</span> <span class="nav-text">1  定义</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E7%9B%B8%E5%AF%B9%E4%BD%8D%E5%A7%BF%E8%AF%AF%E5%B7%AE"><span class="nav-number">2.</span> <span class="nav-text">2  相对位姿误差</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-%E7%BB%9D%E5%AF%B9%E8%BD%A8%E8%BF%B9%E8%AF%AF%E5%B7%AE"><span class="nav-number">3.</span> <span class="nav-text">3  绝对轨迹误差</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-EVO"><span class="nav-number">4.</span> <span class="nav-text">4  EVO</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#4-1-%E5%AE%89%E8%A3%85"><span class="nav-number">4.1.</span> <span class="nav-text">4.1  安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-2-%E4%BD%BF%E7%94%A8"><span class="nav-number">4.2.</span> <span class="nav-text">4.2  使用</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%99%84%E4%BB%B6"><span class="nav-number">5.</span> <span class="nav-text">附件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%97%E5%BE%B7%E9%87%8C%E6%A0%BC%E6%96%AF%E5%85%AC%E5%BC%8F"><span class="nav-number">5.1.</span> <span class="nav-text">罗德里格斯公式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">6.</span> <span class="nav-text">参考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Star Rain</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
       </div>
     </div>
-  </div>
-</header>
-      <div class="outer">
-        <section id="main"><article id="post-ATE &amp; RPE" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/summary/ATE%20&%20RPE/" class="article-date">
-  <time datetime="2022-11-15T16:00:00.000Z" itemprop="datePublished">2022-11-16</time>
-</a>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
     
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Summary/">Summary</a>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
   </div>
 
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 class="article-title" itemprop="name">
-      ATE &amp; RPE
-    </h1>
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
   
 
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://guoyongyu.github.io/summary/ATE%20&%20RPE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Star Rain">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="The Blog of Star Rain">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="ATE & RPE | The Blog of Star Rain">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ATE & RPE
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2022-11-16 00:00:00" itemprop="dateCreated datePublished" datetime="2022-11-16T00:00:00+08:00">2022-11-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2022-11-17 10:23:34" itemprop="dateModified" datetime="2022-11-17T10:23:34+08:00">2022-11-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Summary/" itemprop="url" rel="index"><span itemprop="name">Summary</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
       </header>
+
     
-    <div class="article-entry" itemprop="articleBody">
-      
+    
+    
+    <div class="post-body" itemprop="articleBody">
         <p>在 SLAM 相关论文中，有几个常用的算法评价指标，ATE（绝对轨迹误差）和 RPE（相对位姿误差）即为常见的指标。本文收集并整理了网络上的内容，对二者进行了总结。</p>
 <span id="more"></span>
 <center><b><font size="9">ATE & RPE</font></b></center>
@@ -239,168 +374,79 @@ error_{rot} = \| \delta R_i - E \|
 <li><a target="_blank" rel="noopener" href="https://www.pudn.com/news/6228d5059ddf223e1ad1d429.html">https://www.pudn.com/news/6228d5059ddf223e1ad1d429.html</a></li>
 </ul>
 
-      
     </div>
-    <footer class="article-footer">
-      <a data-url="https://guoyongyu.github.io/summary/ATE%20&%20RPE/" data-id="clakgr4u90000n8s64zvwagqy" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Knowledge/" rel="tag">Knowledge</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Metrics/" rel="tag">Metrics</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SLAM/" rel="tag">SLAM</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Summary/" rel="tag">Summary</a></li></ul>
 
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Summary/" rel="tag"># Summary</a>
+              <a href="/tags/Knowledge/" rel="tag"># Knowledge</a>
+              <a href="/tags/SLAM/" rel="tag"># SLAM</a>
+              <a href="/tags/Metrics/" rel="tag"># Metrics</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/collection/Awesome%20Semantic%20SLAM/" rel="prev" title="Awesome Semantic SLAM">
+                  <i class="fa fa-chevron-left"></i> Awesome Semantic SLAM
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/HelloWorld/hello-world/" rel="next" title="Hello World">
+                  Hello World <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
     </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Star Rain</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
   </div>
-  
-    
-<nav id="article-nav">
-  
-    <a href="/HelloWorld/hello-world/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          Hello World
-        
-      </div>
-    </a>
-  
-  
-    <a href="/collection/Awesome%20Semantic%20SLAM/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">Awesome Semantic SLAM</div>
-    </a>
-  
-</nav>
 
-  
-</article>
-
-</section>
-        
-          <aside id="sidebar">
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Categories</h3>
-    <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Paper-Collection/">Paper Collection</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Summary/">Summary</a></li></ul>
     </div>
-  </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
 
 
   
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tags</h3>
-    <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Collection/" rel="tag">Collection</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Deep-Learning/" rel="tag">Deep Learning</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Knowledge/" rel="tag">Knowledge</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Metrics/" rel="tag">Metrics</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SLAM/" rel="tag">SLAM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Semantic-SLAM/" rel="tag">Semantic SLAM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Summary/" rel="tag">Summary</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tag Cloud</h3>
-    <div class="widget tagcloud">
-      <a href="/tags/Collection/" style="font-size: 10px;">Collection</a> <a href="/tags/Deep-Learning/" style="font-size: 15px;">Deep Learning</a> <a href="/tags/Knowledge/" style="font-size: 20px;">Knowledge</a> <a href="/tags/Metrics/" style="font-size: 10px;">Metrics</a> <a href="/tags/SLAM/" style="font-size: 10px;">SLAM</a> <a href="/tags/Semantic-SLAM/" style="font-size: 10px;">Semantic SLAM</a> <a href="/tags/Summary/" style="font-size: 20px;">Summary</a>
-    </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/11/">November 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/10/">October 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/06/">June 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">May 2022</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/HelloWorld/hello-world/">Hello World</a>
-          </li>
-        
-          <li>
-            <a href="/summary/ATE%20&%20RPE/">ATE &amp; RPE</a>
-          </li>
-        
-          <li>
-            <a href="/collection/Awesome%20Semantic%20SLAM/">Awesome Semantic SLAM</a>
-          </li>
-        
-          <li>
-            <a href="/summary/Attention%20Mechanism/">Attention Mechanism</a>
-          </li>
-        
-          <li>
-            <a href="/summary/Anchor/">Anchor</a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
-
-  
-</aside>
-        
-      </div>
-      <footer id="footer">
-  
-  <div class="outer">
-    <div id="footer-info" class="inner">
-      &copy; 2022 Star Rain<br>
-      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
-    </div>
-  </div>
-</footer>
-    </div>
-    <nav id="mobile-nav">
-  
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-</nav>
-    
-
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-
-
-  
-<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
-
-  
-<script src="/fancybox/jquery.fancybox.pack.js"></script>
 
 
 
 
-<script src="/js/script.js"></script>
 
-
-
-
-  </div>
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-        tex2jax: {
-            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
-            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
-            processEscapes: true
-        }
-    });
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax();
-        for (var i = 0; i < all.length; ++i)
-            all[i].SourceElement().parentNode.className += ' has-jax';
-    });
-</script>
-<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 </body>
 </html>
