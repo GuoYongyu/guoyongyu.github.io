@@ -14,16 +14,16 @@
 <meta property="og:site_name" content="The Blog of Star Rain">
 <meta property="og:description" content="注意力机制在 Transformer 中很常见，目前也经常被用于计算机视觉当中。本文整理总结了网络上关于注意力机制的介绍。">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://guoyongyu.github.io/summary/Attention%20Mechanism/Attention%20Mechanism/1%20Encoder-Decoder框架.png">
-<meta property="og:image" content="https://guoyongyu.github.io/summary/Attention%20Mechanism/Attention%20Mechanism/2%20注意力Encoder-Decoder框架.png">
-<meta property="og:image" content="https://guoyongyu.github.io/summary/Attention%20Mechanism/Attention%20Mechanism/3%20Attention在翻译时的形成过程示例.png">
-<meta property="og:image" content="https://guoyongyu.github.io/summary/Attention%20Mechanism/Attention%20Mechanism/4%20使用RNN细化后的Encoder-Decoder框架.png">
-<meta property="og:image" content="https://guoyongyu.github.io/summary/Attention%20Mechanism/Attention%20Mechanism/5%20注意力概率分布的计算过程.png">
-<meta property="og:image" content="https://guoyongyu.github.io/summary/Attention%20Mechanism/Attention%20Mechanism/6%20英语-德语翻译中Attention的概率分布.png">
-<meta property="og:image" content="https://guoyongyu.github.io/summary/Attention%20Mechanism/Attention%20Mechanism/7%20Attention机制的本质思想.png">
-<meta property="og:image" content="https://guoyongyu.github.io/summary/Attention%20Mechanism/Attention%20Mechanism/8%20计算Attention的三个阶段.png">
-<meta property="og:image" content="https://guoyongyu.github.io/summary/Attention%20Mechanism/Attention%20Mechanism/9%20自注意力机制的计算过程.jpg">
-<meta property="og:image" content="https://guoyongyu.github.io/summary/Attention%20Mechanism/Attention%20Mechanism/10%20自注意力机制的详细计算过程.jpg">
+<meta property="og:image" content="https://guoyongyu.github.io/summary/Attention%20Mechanism/1%20Encoder-Decoder框架.png">
+<meta property="og:image" content="https://guoyongyu.github.io/summary/Attention%20Mechanism/2%20注意力Encoder-Decoder框架.png">
+<meta property="og:image" content="https://guoyongyu.github.io/summary/Attention%20Mechanism/3%20Attention在翻译时的形成过程示例.png">
+<meta property="og:image" content="https://guoyongyu.github.io/summary/Attention%20Mechanism/4%20使用RNN细化后的Encoder-Decoder框架.png">
+<meta property="og:image" content="https://guoyongyu.github.io/summary/Attention%20Mechanism/5%20注意力概率分布的计算过程.png">
+<meta property="og:image" content="https://guoyongyu.github.io/summary/Attention%20Mechanism/6%20英语-德语翻译中Attention的概率分布.png">
+<meta property="og:image" content="https://guoyongyu.github.io/summary/Attention%20Mechanism/7%20Attention机制的本质思想.png">
+<meta property="og:image" content="https://guoyongyu.github.io/summary/Attention%20Mechanism/8%20计算Attention的三个阶段.png">
+<meta property="og:image" content="https://guoyongyu.github.io/summary/Attention%20Mechanism/9%20自注意力机制的计算过程.jpg">
+<meta property="og:image" content="https://guoyongyu.github.io/summary/Attention%20Mechanism/10%20自注意力机制的详细计算过程.jpg">
 <meta property="article:published_time" content="2022-06-16T16:00:00.000Z">
 <meta property="article:modified_time" content="2022-11-17T02:23:41.759Z">
 <meta property="article:author" content="Star Rain">
@@ -31,7 +31,7 @@
 <meta property="article:tag" content="Knowledge">
 <meta property="article:tag" content="Deep Learning">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://guoyongyu.github.io/summary/Attention%20Mechanism/Attention%20Mechanism/1%20Encoder-Decoder框架.png">
+<meta name="twitter:image" content="https://guoyongyu.github.io/summary/Attention%20Mechanism/1%20Encoder-Decoder框架.png">
   
     <link rel="alternate" href="/atom.xml" title="The Blog of Star Rain" type="application/atom+xml">
   
@@ -108,18 +108,18 @@
       
         <p>注意力机制在 Transformer 中很常见，目前也经常被用于计算机视觉当中。本文整理总结了网络上关于注意力机制的介绍。</p>
 <span id="more"></span>
-<center><font size=9><b>注意力机制</b></font></center>
+<center><font size="9"><b>注意力机制</b></font></center>
 
 <hr>
 <h1 id="1-Encoder-Decoder-框架"><a href="#1-Encoder-Decoder-框架" class="headerlink" title="1  Encoder-Decoder 框架"></a>1  Encoder-Decoder 框架</h1><p>目前大多数注意力模型附着在 Encoder-Decoder 框架下。下图是 NLP 处理中常用的 Encoder-Decoder 框架：</p>
 <center>
-    <img src="./Attention Mechanism/1 Encoder-Decoder框架.png" weight="600" height="300">
+    <img src="/summary/Attention%20Mechanism/1 Encoder-Decoder框架.png" weight="600" height="300">
     <div>
         图-1 Encoder-Decoder 框架
     </div>
 </center>
 
-<p>可以简单理解为处理一个语句（篇章）生成另一个语句（篇章）的模型：对于句子 $<Source, Target>$，目标是输入句子 $Source$，期待通过 Encoder-Decoder 框架生成目标句子 $Target$，$Source$ 和 $Target$ 的单词序列为：</p>
+<p>可以简单理解为处理一个语句（篇章）生成另一个语句（篇章）的模型：对于句子 $<Source, target>$，目标是输入句子 $Source$，期待通过 Encoder-Decoder 框架生成目标句子 $Target$，$Source$ 和 $Target$ 的单词序列为：</Source,></p>
 <script type="math/tex; mode=display">
 Source=<x_1,x_2,...,x_m>\\
 Target=<y_1,y_2,...,y_n></script><p>编码器 Encoder 通过对句子 $Source$ 进行编码，将输入的句子通过非线性变换转化为中间语义编码</p>
@@ -136,7 +136,7 @@ y_2 &= \mathcal{G}(C, y_1) \\
 y_3 &= \mathcal{G}(C, y_1, y_2) \\
 ...
 \end{aligned}</script><p>式中 $\mathcal{G}$ 为 Decoder 的非线性变化函数。从上面的生成过程可以看出，不论生成哪一个单词，所使用的输入句子 $Source$ 的语义编码 $C$ 是相同的。需要注意的是 $C$ 由 $Sourc$ 的每个单词经 Encoder 编码生成，这也意味着，对于每一个 $Target$ 中的单词 $y_i$ 来说，输入句子 $Source$ 中的每一个单词对其生成都有着相同的影响力，因此称这个模型注意力不集中。</p>
-<p><b><font face="楷体" color="#800000" size=4><br>例：对于机器翻译，输入句子 “Tom chase Jerry”，Encoder-Decoder 逐步生成中文单词：“汤姆”、“追逐”、“杰瑞”。在翻译 “杰瑞” 时，分心模型里所有输入英文单词对目标单词 “杰瑞” 的影响是相同的，这显然不合理，因为 “Jerry” 翻译为 “杰瑞” 更加合理，而分心模型无法体现这一点。
+<p><b><font face="楷体" color="#800000" size="4"><br>例：对于机器翻译，输入句子 “Tom chase Jerry”，Encoder-Decoder 逐步生成中文单词：“汤姆”、“追逐”、“杰瑞”。在翻译 “杰瑞” 时，分心模型里所有输入英文单词对目标单词 “杰瑞” 的影响是相同的，这显然不合理，因为 “Jerry” 翻译为 “杰瑞” 更加合理，而分心模型无法体现这一点。
 </font></b></p>
 <p>不引入注意力机制，在输入短句子时可能没有明显的问题，但是对于长难句来说，输入句子的语义信息仅通过一个中间语义编码向量来表示，单词本身的信息大量丢失，极大影响输出结果的正确性，因此，这就是引入注意力机制的重要原因。</p>
 <p>再用上面的翻译例子，引入 Attention 后，在翻译 “杰瑞” 时，将体现出不同英文单词对于翻译当前中文单词不同的影响程度，例如如下的概率分布：</p>
@@ -144,7 +144,7 @@ y_3 &= \mathcal{G}(C, y_1, y_2) \\
 (\mathrm{Tom}, 0.3),\ (\mathrm{Chase}, 0.2),\ (\mathrm{Jerry}, 0.5)</script><p>每个英文单词的概率表示翻译 “杰瑞” 时，注意力分配给不同英文单词的注意力大小，这引入了新的信息，将有助于正确翻译目标单词。</p>
 <p>同理，$Target$ 中的每个单词都应学到其对应的 $Source$ 中单词的注意力概率分布。这也就意味着，在生成单词 $y_i$ 时，前面所使用的相同的中间语义编码 $C$ 被替换为根据当前生成单词而不断变化的 $C_i$ ，如下图所示：</p>
 <center>
-    <img src="./Attention Mechanism/2 注意力Encoder-Decoder框架.png">
+    <img src="/summary/Attention%20Mechanism/2 注意力Encoder-Decoder框架.png">
     <br>
     <div>
         图-2 引入注意力机制的 Encoder-Decoder 框架
@@ -167,7 +167,7 @@ C_{\mathrm{杰瑞}} &= \mathcal{g}(0.3*\mathcal{f}(\mathrm{Tom}),\ 0.2*\mathcal{
 <script type="math/tex; mode=display">
 C_i = \sum_{j=1}^{L_x} a_{ij}h_j</script><p>其中：$L<em>x$ 表示句子 $Source$ 的长度；$a</em>{ij}$ 表示在 $Target$ 输出第 $i$ 个单词时 $Source$ 句子中第 $j$ 个单词的注意力系数分配；$h<em>j$ 表示 $Source$ 句子中第 $j$ 个单词的语义编码。以前面的例子为例，则有 $L_x = 3$，$h_1 = \mathcal{f}(\mathrm{Tom})$，$h_2 = \mathcal{f}(\mathrm{Chase})$，$h_3 = \mathcal{f}(\mathrm{Jerry})$ 分别是 $Source$ 中每个单词的语义编码，对于编码 $C_1$ 而言，权重为 $a</em>{11} = 0.6$，$a<em>{12}=0.2$，$a</em>{13}=0.2$，其形成过程如下图：</p>
 <center>
-    <img src="./Attention Mechanism/3 Attention在翻译时的形成过程示例.png" weight="400" height="400">
+    <img src="/summary/Attention%20Mechanism/3 Attention在翻译时的形成过程示例.png" weight="400" height="400">
     <br>
     <div>
         图-3 Attention 在翻译时的形成过程示意图
@@ -177,7 +177,7 @@ C_i = \sum_{j=1}^{L_x} a_{ij}h_j</script><p>其中：$L<em>x$ 表示句子 $Sour
 <p>这个过程还存在一个问题，即在形成 Attention 时，如何得到 $Source$ 单词的注意力概率分布，例如翻译 “杰瑞” 时如何得到概率分布 $(\mathrm{Tom}, 0.3)$，$(\mathrm{Chase}, 0.2)$，$(\mathrm{Jerry}, 0.5)$？</p>
 <h2 id="2-2-Attention-中注意力分布的生成"><a href="#2-2-Attention-中注意力分布的生成" class="headerlink" title="2.2  Attention 中注意力分布的生成"></a>2.2  Attention 中注意力分布的生成</h2><p>先对图-1 中非 Attention 的 Encoder-Decoder 框架细化，Encoder 和 Decoder 采用 RNN 模型，得到下面的框架图：</p>
 <center>
-    <img src="./Attention Mechanism/4 使用RNN细化后的Encoder-Decoder框架.png">
+    <img src="/summary/Attention%20Mechanism/4 使用RNN细化后的Encoder-Decoder框架.png">
     <br>
     <div>
         图-4 使用 RNN 细化后的 Encoder-Decoder 框架
@@ -186,7 +186,7 @@ C_i = \sum_{j=1}^{L_x} a_{ij}h_j</script><p>其中：$L<em>x$ 表示句子 $Sour
 
 <p>用下图说明注意力概率分布的通用计算过程：</p>
 <center>
-    <img src="./Attention Mechanism/5 注意力概率分布的计算过程.png" height="400" width="600">
+    <img src="/summary/Attention%20Mechanism/5 注意力概率分布的计算过程.png" height="400" width="600">
     <br>
     <div>
         图-5 注意力概率分布的计算过程
@@ -195,7 +195,7 @@ C_i = \sum_{j=1}^{L_x} a_{ij}h_j</script><p>其中：$L<em>x$ 表示句子 $Sour
 
 <p>对于使用 RNN 的 Decoder 而言，在时刻 $i$ 若要生成单词 $y<em>i$，由于可以得知时刻 $i-1$ 的隐藏层节点 $H</em>{i-1}$ 的值，那么可以把 $H<em>{i-1}$ 和 $Source$ 中每个单词对应的隐藏层节点 $h_j$ 分别计算，即通过函数 $F(h_j,H</em>{i-1})$ 获得目标单词 $y_i$ 和每个输入单词的对齐可能性（$F$ 在不同模型中使用的方法不同），然后函数 $F$ 的输出经过 Softmax 进行归一化后，即得到符合概率分布的注意力概率分布。图-6 中可视化的是英语-德语翻译系统加入 Attention 机制后，$Source$ 和 $Target$ 中单词对应的概率分布：</p>
 <center>
-    <img src="./Attention Mechanism/6 英语-德语翻译中Attention的概率分布.png" height="400" width="400">
+    <img src="/summary/Attention%20Mechanism/6 英语-德语翻译中Attention的概率分布.png" height="400" width="400">
     <br>
     <div>
         图-6 英语-德语翻译中 Attention 的概率分布
@@ -206,14 +206,14 @@ C_i = \sum_{j=1}^{L_x} a_{ij}h_j</script><p>其中：$L<em>x$ 表示句子 $Sour
 
 <h2 id="2-3-Attention-机制的本质"><a href="#2-3-Attention-机制的本质" class="headerlink" title="2.3  Attention 机制的本质"></a>2.3  Attention 机制的本质</h2><p>将 Attention 机制从 Encoder-Decoder 框架中剥离，并进一步抽象，可以更简单地看出 Attention 机制的本质。</p>
 <center>
-    <img src="./Attention Mechanism/7 Attention机制的本质思想.png">
+    <img src="/summary/Attention%20Mechanism/7 Attention机制的本质思想.png">
     <br>
     <div>
         图-7 Attention 机制的本质思想
     </div>
 </center>
 
-<p>以图-7 为例：将 $Source$ 中的构成元素抽象为一些列的键值对数据 $<key, value>$，此时，对于给定 $Target$ 中的某个元素 $query$，通过计算 $query$ 和各个 $key$ 的相似性或相关性，得到每个 $key$ 对应 $value$ 的权重系数，然后对 $value$ 进行加权求和，即得到最终的 Attention 数值。因此本质上，Attention 机制是对 $Source$ 中元素的 $value$ 值进行加权求和，而 $query$ 和 $key$ 用来计算对应 $value$ 的权重系数。即可以将其本质思想改写为如下公式：</p>
+<p>以图-7 为例：将 $Source$ 中的构成元素抽象为一些列的键值对数据 $<key, value>$，此时，对于给定 $Target$ 中的某个元素 $query$，通过计算 $query$ 和各个 $key$ 的相似性或相关性，得到每个 $key$ 对应 $value$ 的权重系数，然后对 $value$ 进行加权求和，即得到最终的 Attention 数值。因此本质上，Attention 机制是对 $Source$ 中元素的 $value$ 值进行加权求和，而 $query$ 和 $key$ 用来计算对应 $value$ 的权重系数。即可以将其本质思想改写为如下公式：</key,></p>
 <script type="math/tex; mode=display">
 \mathrm{Attention}(query, Source) = \sum_{i=1}^{L_x} \mathrm{Similarity}(query, key_i) * value_i</script><p>其中，$L_x=||Source||$。在前面机器翻译的例子里计算 Attention 的过程中，$Source$ 中的 $key$ 和 $value$ 指向的则是同一个数据，即输入句子中单词的语义编码。</p>
 <p>从图-7 可以引出另外一种理解，将 Attention 机制看作一种软寻址（Soft Addressing）：$Source$ 可以看作存储器内存储的内容，元素由地址 $key$ 和值 $value$ 组成，当前有个 $key=query$ 的查询，目的是取出存储器中对应的 $value$ 值，即 Attention 数值。通过 $query$ 和存储器内元素的地址 $key$ 进行相似性比较寻址。之所以成为<strong>软寻址</strong>，指的不同一般寻址从存储中找出取出一条数据，而是可能从每个 $key$ 地址都会取出内容，取出内容的重要性根据 $query$ 和 $key$ 的相似性决定，之后对 $value$ 进行加权求和，从而得到最终的 $value$ 值，即 Attention 值。</p>
@@ -230,7 +230,7 @@ C_i = \sum_{j=1}^{L_x} a_{ij}h_j</script><p>其中：$L<em>x$ 表示句子 $Sour
 </ul>
 <p>上面的过程可以得到图-8 中的结果：</p>
 <center>
-    <img src="./Attention Mechanism/8 计算Attention的三个阶段.png">
+    <img src="/summary/Attention%20Mechanism/8 计算Attention的三个阶段.png">
     <br>
     <div>
         图-8 计算 Attention 的三个阶段
@@ -270,7 +270,7 @@ i*\ 即满足\ \mathrm{Condition}\ 条件的\ a_i\ 或\ s_i\ 的索引</script><
 <li>根据注意力分布进行随机采样，采样结果作为 Attention 的输出。</li>
 </ul>
 <p>硬性注意力通过上面的方式选择 Attention 的输出，会使最终的损失函数与注意力分布之间的函数关系不可导，从而无法使用反向传播算法训练模型，硬性注意力通常需要使用强化学习来进行训练。一般深度学习算法会使用软性注意力的方式进行计算。</p>
-<h2 id="3-2-多头注意力（Multi-Head-Attention）"><a href="#3-2-多头注意力（Multi-Head-Attention）" class="headerlink" title="3.2  多头注意力（Multi-Head Attention）"></a>3.2  多头注意力（Multi-Head Attention）</h2><p>多头注意力机制是利用多个查询向量 $Q = [q_1, q_2, … , q_m]$，并行地从输入信息 $<key, value>$ 或 $(K,V)=[(k_1,v_1),(k_2,v_2),…,(k_n,v_n)]$ 中选取多组信息。在查询过程中，每个查询向量 $q_i$ 将会关注输入信息的不同部分。</p>
+<h2 id="3-2-多头注意力（Multi-Head-Attention）"><a href="#3-2-多头注意力（Multi-Head-Attention）" class="headerlink" title="3.2  多头注意力（Multi-Head Attention）"></a>3.2  多头注意力（Multi-Head Attention）</h2><p>多头注意力机制是利用多个查询向量 $Q = [q_1, q_2, … , q_m]$，并行地从输入信息 $<key, value>$ 或 $(K,V)=[(k_1,v_1),(k_2,v_2),…,(k_n,v_n)]$ 中选取多组信息。在查询过程中，每个查询向量 $q_i$ 将会关注输入信息的不同部分。</key,></p>
 <p>假设 $a_{ij}$ 表示第 $i$ 个查询向量 $q_i$ 与第 $j$ 个输入信息 $k_j$ 的注意力权重，$s(\cdot)=\mathrm{Similarity}(\cdot)$，$context_i$ 表示由查询向量 $q_i$ 计算得出的 Attention 输出向量，其计算方式为：</p>
 <script type="math/tex; mode=display">
 a_{ij} = \mathrm{Softmax}(s(q_i,k_j)) = \frac{\exp(s(q_i,k_j))}{\sum_{t=1}^n \exp(s(q_i,k_t))} \\
@@ -280,7 +280,7 @@ context_i = \sum_{j=1}^n a_{ij} \cdot v_j</script><p>最终将所有查询向量
 <p>在前面所介绍的 Attention 机制中，会使用一个查询向量 $q$ 和对应的输入 $H=[h_1,h_2,…,h_n]$ 进行计算，查询向量 $q$ 则和任务相关，例如 Encoder-Decoder 框架中，$q$ 可以是 Decoder 端前一时刻的<strong>输出状态向量</strong>。而<strong>在 Self-Attention 中，查询向量也可以使用输入信息生成</strong>，而非任务相关的向量。即模型读到输入信息后，根据输入信息本身决定当前的重要信息。</p>
 <p>自注意力机制往往采用 <strong>Query-Key-Value</strong> 的模式，以 BERT 重点自注意力机制为例，展开下面的讨论，如图-9 所示：</p>
 <center>
-    <img src="./Attention Mechanism/9 自注意力机制的计算过程.jpg" width="640" height="400">
+    <img src="/summary/Attention%20Mechanism/9 自注意力机制的计算过程.jpg" width="640" height="400">
     <br>
     <div>
         图-9 自注意力机制的计算过程
@@ -295,7 +295,7 @@ K &= [k_1=h_1 W_k,\ k_2=h_2 W_k] &\Rightarrow K = HW_k \\
 V &= [v_1=h_1 W_v,\ v_2=h_2 W_v] &\Rightarrow V = HW_v
 \end{aligned}</script><p>不妨以 $h_1$ 为例计算这个位置的 Attention 输出向量 $context_1$，如图-10 所示，其中 $D_k$ 表示 $key$ 向量的维度（$query$ 向量、$key$ 向量和 $value$ 向量的维度相同）：</p>
 <center>
-    <img src="./Attention Mechanism/10 自注意力机制的详细计算过程.jpg" width="600" height="600">
+    <img src="/summary/Attention%20Mechanism/10 自注意力机制的详细计算过程.jpg" width="600" height="600">
     <br>
     <div>
         图-10 自注意力机制的详细计算过程
@@ -314,7 +314,7 @@ V &= [v_1=h_1 W_v,\ v_2=h_2 W_v] &\Rightarrow V = HW_v
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://guoyongyu.github.io/summary/Attention%20Mechanism/" data-id="clakfls5r000t4zs6924299v6" class="article-share-link">Share</a>
+      <a data-url="https://guoyongyu.github.io/summary/Attention%20Mechanism/" data-id="clakglk3c0011kps68fic5jcb" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Deep-Learning/" rel="tag">Deep Learning</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Knowledge/" rel="tag">Knowledge</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Summary/" rel="tag">Summary</a></li></ul>
@@ -459,5 +459,20 @@ V &= [v_1=h_1 W_v,\ v_2=h_2 W_v] &\Rightarrow V = HW_v
 
 
   </div>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 </body>
 </html>

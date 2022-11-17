@@ -97,7 +97,7 @@
       
         <p>计算机视觉，尤其目标检测相关算法中，anchor 的介绍与用途。</p>
 <span id="more"></span>
-<center><b><font size=9>Anchor</font></b></center>
+<center><b><font size="9">Anchor</font></b></center>
 
 <p>anchor 来源于 Faster R-CNN 中提到的在目标检测时的一种思想。在 Faster R-CNN 中，对于输入图像，先被缩放为 $800\times600$ 大小的图像 A，输入 backbone 中经 $1/16$ 下采样得到 feature map，大小为 $\lceil 800/16 \rceil \times \lceil 600/16 \rceil = 50 \times 38$，feature map 中的一个小方格就对应原图像 A 中 $16\times16$ 的像素框。</p>
 <p>在 Faster R-CNN 中，定义了三种 scale 和 ratio：</p>
@@ -110,7 +110,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://guoyongyu.github.io/summary/Anchor/" data-id="clakfls5e00014zs62c402q8p" class="article-share-link">Share</a>
+      <a data-url="https://guoyongyu.github.io/summary/Anchor/" data-id="clakglk310004kps6djpdgnag" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Deep-Learning/" rel="tag">Deep Learning</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Knowledge/" rel="tag">Knowledge</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Summary/" rel="tag">Summary</a></li></ul>
@@ -255,5 +255,20 @@
 
 
   </div>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 </body>
 </html>
