@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/logo-32x32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/logo-16x16.ico">
+  <link rel="mask-icon" href="/images/logo.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"guoyongyu.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="本文结合网络资源对匈牙利算法进行整理。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hungarian Algorithm">
+<meta property="og:url" content="https://guoyongyu.github.io/summary/Hungarian%20Algorithm/index.html">
+<meta property="og:site_name" content="The Blog of Star Rain">
+<meta property="og:description" content="本文结合网络资源对匈牙利算法进行整理。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-06-16T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-11-19T08:22:20.244Z">
+<meta property="article:author" content="Star Rain">
+<meta property="article:tag" content="Summary">
+<meta property="article:tag" content="Knowledge">
+<meta property="article:tag" content="Algorithm">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://guoyongyu.github.io/summary/Hungarian%20Algorithm/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://guoyongyu.github.io/summary/Hungarian%20Algorithm/","path":"summary/Hungarian Algorithm/","title":"Hungarian Algorithm"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Hungarian Algorithm | The Blog of Star Rain</title>
+  
+
+
+
+
+<link rel="dns-prefetch" href="https://waline.vercel.app">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">The Blog of Star Rain</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-papernote"><a href="/papernote/" rel="section"><i class="fa fa-bookmark fa-fw"></i>论文笔记</a></li><li class="menu-item menu-item-summary"><a href="/summary/" rel="section"><i class="fa fa-file-pen fa-fw"></i>知识总结</a></li><li class="menu-item menu-item-collection"><a href="/collection/" rel="section"><i class="fa fa-archive fa-fw"></i>收集</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E6%8C%87%E6%B4%BE%E9%97%AE%E9%A2%98"><span class="nav-number">1.</span> <span class="nav-text"> 1  指派问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E5%8C%88%E7%89%99%E5%88%A9%E7%AE%97%E6%B3%95%E7%9A%84%E7%9F%A9%E9%98%B5%E5%BD%A2%E5%BC%8F"><span class="nav-number">2.</span> <span class="nav-text"> 2  匈牙利算法的矩阵形式</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Star Rain</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">46</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">53</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/GuoYongyu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;GuoYongyu" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://guoyongyu.github.io/summary/Hungarian%20Algorithm/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Star Rain">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="The Blog of Star Rain">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Hungarian Algorithm | The Blog of Star Rain">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Hungarian Algorithm
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2022-06-17 00:00:00" itemprop="dateCreated datePublished" datetime="2022-06-17T00:00:00+08:00">2022-06-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2022-11-19 16:22:20" itemprop="dateModified" datetime="2022-11-19T16:22:20+08:00">2022-11-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Summary/" itemprop="url" rel="index"><span itemprop="name">Summary</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">Waline: </span>
+  
+    <a title="waline" href="/summary/Hungarian%20Algorithm/#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/summary/Hungarian%20Algorithm/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>本文结合网络资源对匈牙利算法进行整理。</p>
+<span id="more"></span>
+<center><b><font size="9">匈牙利算法</font></b></center>
+<hr>
+<h1 id="1-指派问题"><a class="markdownIt-Anchor" href="#1-指派问题"></a> 1  指派问题</h1>
+<p>假设有三位工人 A，B，C，需要分配每人完成一件工作；对于不同的工作他们索要不同的工钱，如下表所示。问题就是要找到一套开销最小的指派方案。</p>
+<table>
+<thead>
+<tr>
+<th>.</th>
+<th>工作1</th>
+<th>工作2</th>
+<th>工作3</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>1</td>
+<td>3</td>
+<td>3</td>
+</tr>
+<tr>
+<td>B</td>
+<td>3</td>
+<td>1</td>
+<td>3</td>
+</tr>
+<tr>
+<td>C</td>
+<td>3</td>
+<td>3</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<p>使用匈牙利方法可以找到开销最小的方案，即 A 负工作 1，B 负责工作 2，C 负责工作 3，总开销为 3。</p>
+<h1 id="2-匈牙利算法的矩阵形式"><a class="markdownIt-Anchor" href="#2-匈牙利算法的矩阵形式"></a> 2  匈牙利算法的矩阵形式</h1>
+<p>给定 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault">n</span></span></span></span> 位工人以及 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault">n</span></span></span></span> 件工作，可以用一个 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>n</mi><mo>×</mo><mi>n</mi></mrow><annotation encoding="application/x-tex">n\times n</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord mathdefault">n</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault">n</span></span></span></span> 的<strong>开销矩阵</strong>来表示这一指派问题：</p>
+\left[
+\begin{matrix}
+a_1 & a_2 & a_3 & a_4\\
+b_1 & b_2 & b_3 & b_4\\
+c_1 & c_2 & c_3 & c_4\\
+d_1 & d_2 & d_3 & d_4
+\end{matrix}
+\right]
+$$ {]}
+其中 $a, b, c, d$ 表示工人，下标 $1, 2, 3, 4$ 表示工作，$x_y$ 表示指派工人 $x$ 负责工作 $y$ 的开销。
+
+
+
+# 3  匈牙利算法步骤
+
+- 算法核心思想：一件大的事物若除去一件小的事物，对这件事没有多大影响。
+
+## Step 1  对开销矩阵的各行进行操作
+
+- 找出每一行中值最小的元素，然后把该行所有元素都减去这一最小值
+
+完成后矩阵的每一行至少会出现一个 $0$。假如 $a_1, b_4, c_2, d_3$ 是开销矩阵每行的最小值，则开销矩阵在完成本项操作后变成：
+
+<p>\left[<br>
+\begin{matrix}<br>
+0 &amp; a_2-a_1 &amp; a_3-a_1 &amp; a_4-a_1\<br>
+b_1-b_4 &amp; b_2-b_4 &amp; b_3-b_4 &amp; 0\<br>
+c_1-c_2 &amp; 0 &amp; c_3-c_2 &amp; c_4-c_2\<br>
+d_1-d_3 &amp; d_2-d_3 &amp; 0 &amp; d_4-d_3<br>
+\end{matrix}<br>
+\right]</p>
+这个矩阵每行都有一个 $0$，而且这些 $0$ 分布于**不同的列**，那么开销最小的指派方案就出来了，就是
+
+<p>a\rightarrow1, b\rightarrow4, c\rightarrow2, d\rightarrow3</p>
+执行完这一步后，开销矩阵中的 $0$ 元素很可能没有**分布于不同的行列**：
+
+<p>\left[<br>
+\begin{matrix}<br>
+a_1 &amp; 0 &amp; a_3 &amp; a_4\<br>
+0 &amp; b_2 &amp; b_3 &amp; b_4\<br>
+c_1 &amp; c_2 &amp; c_3 &amp; 0\<br>
+0 &amp; d_2 &amp; d_3 &amp; d_4<br>
+\end{matrix}<br>
+\right]</p>
+那么继续进行下一步计算。
+
+## Step 2  对开销矩阵的各**列**进行操作
+
+- 找出每一列中值最小的元素，然后把该列所有元素都减去这一最小值
+
+这一步之后，如果 $0$ 分布于不同的行列，则得到了最优解；如果以每个 $0$ 为中心画十字、被十字覆盖的其余 $0$ 不再画十字，所有的 $0$ 都画十字后仍有元素未被覆盖，则说明指派未完成，继续进行下一步。
+
+![](Hungarian Algorithm\匈牙利算法-step2.jpg)
+
+## Step 3  用尽量少的横线或竖线覆盖矩阵中的所有 $0$
+
+
+<p>\left[<br>
+\begin{matrix}<br>
+0 &amp; a_2 &amp; a_3 &amp; a_4\<br>
+b_1 &amp; b_2 &amp; b_3 &amp; 0\<br>
+0 &amp; c_2 &amp; c_3 &amp; c_4\<br>
+d_1 &amp; 0 &amp; 0 &amp; d_4<br>
+\end{matrix}<br>
+\right]</p>
+
+假设对上矩阵做计算寻找最优分配：
+
+### 3.1  尽可能多的分配
+
+（1）第一行有一个 $0$，所以把 $1$ 分配给 $a$。由于 $1$ 已经分配出去，所以位于第三行第一列的 $0$ 不再被考虑。
+
+![](Hungarian Algorithm\匈牙利算法-step3.1.1.jpg)
+
+（2）第二行有一个 $0$，所以把 $4$ 分配给 $b$。
+
+![](Hungarian Algorithm\匈牙利算法-step3.1.2.jpg)
+
+（3）第三行原本有一个 $0$，但由于 $1$ 已经被分配出去，所以不予以考虑，不能给 $c$ 分配。
+
+（4）第四行有两个未被覆盖的 $0$，但只能给 $d$ 一项，另一项未被分配的任务要划掉、本轮不予以考虑。
+
+![](Hungarian Algorithm\匈牙利算法-step3.1.4.jpg)
+
+### 3.2  用最少的线覆盖所有 $0$
+
+（1）标记所有上一步后仍未得到任务的工人
+
+![](Hungarian Algorithm\匈牙利算法-step3.2.1.jpg)
+
+（2）标记所有**刚被标记过的行中** $0$ 所在的列
+
+![](Hungarian Algorithm\匈牙利算法-step3.2.2.jpg)
+
+（3）标记所有刚被标记过的列中 $0$ 所在的行
+
+![](Hungarian Algorithm\匈牙利算法-step3.2.3.jpg)
+
+（4）对仍未得到任务的工人（矩阵的行）重复以上 3 步
+
+（5）在所有标记过的列和未标记的行上画线
+
+![](Hungarian Algorithm\匈牙利算法-step3.2.5.jpg)
+
+- 经过以上画线操作，所有的 $0$ 就被最少的线覆盖
+
+## Step 4 
+
+- 从上一步中未被覆盖的元素中找到最小值，然后把这些元素都减去最这一小值、给直线交叉点的元素加上这一最小值
+
+## Step 5
+
+- 重复 Step-3 和 Step-4，直到所有任务都被分配
+
+
+
+# 参考
+
+- https://blog.csdn.net/u011837761/article/details/52058703
+- https://zhuanlan.zhihu.com/p/96229700
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Summary/" rel="tag"># Summary</a>
+              <a href="/tags/Knowledge/" rel="tag"># Knowledge</a>
+              <a href="/tags/Algorithm/" rel="tag"># Algorithm</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/papernote/IMLS-SLAM/" rel="prev" title="Hungarian Algorithm">
+                  <i class="fa fa-chevron-left"></i> Hungarian Algorithm
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/summary/Attention%20Mechanism/" rel="next" title="Attention Mechanism">
+                  Attention Mechanism <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Star Rain</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://lib.baomitu.com/canvas-nest.js/1.0.1/canvas-nest.js"></script>
+
+
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+  <script class="next-config" data-name="pdf" type="application/json">{"object_url":{"url":"https://cdn.jsdelivr.net/npm/pdfobject@2.2.7/pdfobject.min.js","integrity":"sha256-ph3Dk89VmuTVXG6x/RDzk53SU9LPdAh1tpv0UvnDZ2I="},"url":"/lib/pdf/web/viewer.html"}</script>
+  <script src="/js/third-party/tags/pdf.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha256-TThEtR+XalhWKkfF383YLOrI50NGNeIqrzS+q08afrY=" crossorigin="anonymous">
+
+
+<script class="next-config" data-name="waline" type="application/json">{"lang":"en","enable":true,"serverURL":"https://waline.vercel.app","cssUrl":"https://unpkg.com/@waline/client@v2/dist/waline.css","commentCount":true,"pageview":false,"libUrl":"https://unpkg.com/@waline/client@v2/dist/waline.js","emoji":["https://unpkg.com/@waline/emojis@1.0.1/weibo","https://unpkg.com/@waline/emojis@1.0.1/alus","https://unpkg.com/@waline/emojis@1.0.1/bilibili","https://unpkg.com/@waline/emojis@1.0.1/qq","https://unpkg.com/@waline/emojis@1.0.1/tieba","https://unpkg.com/@waline/emojis@1.0.1/tw-emoji"],"meta":["nick","mail"],"requiredMeta":["nick"],"pageSize":10,"el":"#waline","comment":true,"path":"/summary/Hungarian%20Algorithm/"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>
