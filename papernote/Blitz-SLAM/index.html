@@ -53,7 +53,7 @@
 <meta property="og:image" content="https://guoyongyu.github.io/papernote/Blitz-SLAM/Figure-15.png">
 <meta property="og:image" content="https://guoyongyu.github.io/papernote/Blitz-SLAM/Figure-16.png">
 <meta property="article:published_time" content="2022-10-31T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-12-10T02:41:01.024Z">
+<meta property="article:modified_time" content="2022-12-25T02:35:59.521Z">
 <meta property="article:author" content="Star Rain">
 <meta property="article:tag" content="Semantic SLAM">
 <meta property="article:tag" content="Paper Note">
@@ -183,7 +183,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">58</span>
+          <span class="site-state-item-count">65</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -194,7 +194,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">66</span>
+        <span class="site-state-item-count">75</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -274,7 +274,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2022-12-10 10:41:01" itemprop="dateModified" datetime="2022-12-10T10:41:01+08:00">2022-12-10</time>
+      <time title="Modified: 2022-12-25 10:35:59" itemprop="dateModified" datetime="2022-12-25T10:35:59+08:00">2022-12-25</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -407,7 +407,7 @@
 <li>从上看，远处木板的点云具有严重的层次性，而桌面的点云则较为紧凑。</li>
 <li>当多个局部点云合并时，远处平板的分层现象会更加严重，直接影响全局点云图的视觉效果。</li>
 </ul>
-<p>因此，为了点云地图的质量，需要去除深度不稳定区域：当深度图中点的深度值大于 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>3000</mn><mo stretchy="false">(</mo><mn>0.6</mn><mi mathvariant="normal">m</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">3000(0.6\mathrm{m})</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">3</span><span class="mord">0</span><span class="mord">0</span><span class="mord">0</span><span class="mopen">(</span><span class="mord">0</span><span class="mord">.</span><span class="mord">6</span><span class="mord"><span class="mord mathrm">m</span></span><span class="mclose">)</span></span></span></span> 时，设置点的深度值为 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>0</mn></mrow><annotation encoding="application/x-tex">0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">0</span></span></span></span>。</p>
+<p>因此，为了点云地图的质量，需要去除深度不稳定区域：当深度图中点的深度值大于 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>30000</mn><mo stretchy="false">(</mo><mn>6</mn><mi mathvariant="normal">m</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">30000(6\mathrm{m})</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">3</span><span class="mord">0</span><span class="mord">0</span><span class="mord">0</span><span class="mord">0</span><span class="mopen">(</span><span class="mord">6</span><span class="mord"><span class="mord mathrm">m</span></span><span class="mclose">)</span></span></span></span> 时，设置点的深度值为 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>0</mn></mrow><annotation encoding="application/x-tex">0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">0</span></span></span></span>。</p>
 <h2 id="24-depth-mask"><a class="markdownIt-Anchor" href="#24-depth-mask"></a> 2.4  Depth Mask</h2>
 <p>BlitzNet 获取的原始掩码存在两个问题：</p>
 <ul>
