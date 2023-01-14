@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/logo-32x32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/logo-16x16.ico">
+  <link rel="mask-icon" href="/images/logo.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"guoyongyu.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="对论文 CDSFusion: Dense Semantic SLAM for Indoor Environment Using CPU Computing (Remote Sensing, 2022) 的阅读总结。Blitz-SLAM 使用 BlitzNet 提取目标检测框和掩码，用于剔除动态物体，实现语义 SLAM。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CDSFusion">
+<meta property="og:url" content="https://guoyongyu.github.io/papernote/CDSFusion/index.html">
+<meta property="og:site_name" content="The Blog of Star Rain">
+<meta property="og:description" content="对论文 CDSFusion: Dense Semantic SLAM for Indoor Environment Using CPU Computing (Remote Sensing, 2022) 的阅读总结。Blitz-SLAM 使用 BlitzNet 提取目标检测框和掩码，用于剔除动态物体，实现语义 SLAM。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://guoyongyu.github.io/papernote/CDSFusion/Figure-1.png">
+<meta property="og:image" content="https://guoyongyu.github.io/papernote/CDSFusion/Table-1.png">
+<meta property="og:image" content="https://guoyongyu.github.io/papernote/CDSFusion/Table-2.png">
+<meta property="og:image" content="https://guoyongyu.github.io/papernote/CDSFusion/Table-3.png">
+<meta property="og:image" content="https://guoyongyu.github.io/papernote/CDSFusion/Table-4.png">
+<meta property="og:image" content="https://guoyongyu.github.io/papernote/CDSFusion/Figure-2.png">
+<meta property="og:image" content="https://guoyongyu.github.io/papernote/CDSFusion/Table-5.png">
+<meta property="og:image" content="https://guoyongyu.github.io/papernote/CDSFusion/Figure-3.png">
+<meta property="og:image" content="https://guoyongyu.github.io/papernote/CDSFusion/Figure-4.png">
+<meta property="og:image" content="https://guoyongyu.github.io/papernote/CDSFusion/Figure-5.png">
+<meta property="og:image" content="https://guoyongyu.github.io/papernote/CDSFusion/Table-6.png">
+<meta property="og:image" content="https://guoyongyu.github.io/papernote/CDSFusion/Table-7.png">
+<meta property="article:published_time" content="2023-01-10T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-01-12T12:23:01.744Z">
+<meta property="article:author" content="Star Rain">
+<meta property="article:tag" content="Semantic SLAM">
+<meta property="article:tag" content="Paper Note">
+<meta property="article:tag" content="CPU Computing">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://guoyongyu.github.io/papernote/CDSFusion/Figure-1.png">
+
+
+<link rel="canonical" href="https://guoyongyu.github.io/papernote/CDSFusion/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://guoyongyu.github.io/papernote/CDSFusion/","path":"papernote/CDSFusion/","title":"CDSFusion"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>CDSFusion | The Blog of Star Rain</title>
+  
+
+
+
+
+<link rel="dns-prefetch" href="https://waline.vercel.app">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">The Blog of Star Rain</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-papernote"><a href="/papernote/" rel="section"><i class="fa fa-bookmark fa-fw"></i>论文笔记</a></li><li class="menu-item menu-item-summary"><a href="/summary/" rel="section"><i class="fa fa-file-pen fa-fw"></i>知识总结</a></li><li class="menu-item menu-item-collection"><a href="/collection/" rel="section"><i class="fa fa-archive fa-fw"></i>收集</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AE%BA%E6%96%87%E6%83%85%E5%86%B5"><span class="nav-number">1.</span> <span class="nav-text"> 论文情况</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-introduction"><span class="nav-number">2.</span> <span class="nav-text"> 1  Introduction</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-method"><span class="nav-number">3.</span> <span class="nav-text"> 2  Method</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#21-overview"><span class="nav-number">3.1.</span> <span class="nav-text"> 2.1  Overview</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#22-visual-ineratil-odometry"><span class="nav-number">3.2.</span> <span class="nav-text"> 2.2  Visual-Ineratil Odometry</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#23-semantic-segmentation"><span class="nav-number">3.3.</span> <span class="nav-text"> 2.3  Semantic Segmentation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#24-3d-reconstruction"><span class="nav-number">3.4.</span> <span class="nav-text"> 2.4  3D Reconstruction</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-experiments"><span class="nav-number">4.</span> <span class="nav-text"> 3  Experiments</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#31-feature-points-comparison"><span class="nav-number">4.1.</span> <span class="nav-text"> 3.1  Feature Points Comparison</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#42-visual-inertial-odometry"><span class="nav-number">4.2.</span> <span class="nav-text"> 4.2  Visual-Inertial Odometry</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#23-dense-semantic-slam"><span class="nav-number">4.3.</span> <span class="nav-text"> 2.3  Dense Semantic SLAM</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-conclusions"><span class="nav-number">5.</span> <span class="nav-text"> 4  Conclusions</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Star Rain</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">70</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">82</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/GuoYongyu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;GuoYongyu" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://guoyongyu.github.io/papernote/CDSFusion/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Star Rain">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="The Blog of Star Rain">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="CDSFusion | The Blog of Star Rain">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          CDSFusion
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2023-01-11 00:00:00" itemprop="dateCreated datePublished" datetime="2023-01-11T00:00:00+08:00">2023-01-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-01-12 20:23:01" itemprop="dateModified" datetime="2023-01-12T20:23:01+08:00">2023-01-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Paper-Note/" itemprop="url" rel="index"><span itemprop="name">Paper Note</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">Waline: </span>
+  
+    <a title="waline" href="/papernote/CDSFusion/#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/papernote/CDSFusion/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>对论文 CDSFusion: Dense Semantic SLAM for Indoor Environment Using CPU Computing (Remote Sensing, 2022) 的阅读总结。Blitz-SLAM 使用 BlitzNet 提取目标检测框和掩码，用于剔除动态物体，实现语义 SLAM。</p>
+<span id="more"></span>
+<center><b><font size="9">CDSFusion</font></b></center>
+<h1 id="论文情况"><a class="markdownIt-Anchor" href="#论文情况"></a> 论文情况</h1>
+<ul>
+<li>标题：CDSFusion: Dense Semantic SLAM for Indoor Environment Using CPU Computing</li>
+<li>作者：Sheng Wang, Guohua Gou, Haigang Sui, Yufeng Zhou, Hao Zhang, Jiajie Li</li>
+<li>期刊：Remote Sensing, 2022</li>
+<li>源码：未开源</li>
+</ul>
+<h1 id="1-introduction"><a class="markdownIt-Anchor" href="#1-introduction"></a> 1  Introduction</h1>
+<p>CDSFusion 的目的是实现在计算能力有限的平台上实现稠密语义 SLAM，其能在一块 CPU 上实现同步的 UAV 定位以及稠密语义 3D 重建。CDSFusion 基于 VINS-Mono：</p>
+<ul>
+<li>RGBD 的深度信息用于提高系统的鲁棒性和准确性；</li>
+<li>使用 FAST 特征替换 VINS-Mono 的 Shi-Timasi 特征，用于提高位姿估计的效率；</li>
+<li>使用 PSPNet（Pyramid Scene Parsing Network）获取语义分割结果，并使用 OpenVINO 进行模型预训练模；</li>
+<li>使用 3D 重建方法 Voxblox 重建稠密语义分析。</li>
+</ul>
+<p>CDSFusion 由 3 个模块构成：基于 RGBD 的 VIO 模块（位姿估计）、轻量级语义分割网络（实时语义分割）、3D 重建模块（3D 模型生成）。</p>
+<h1 id="2-method"><a class="markdownIt-Anchor" href="#2-method"></a> 2  Method</h1>
+<h2 id="21-overview"><a class="markdownIt-Anchor" href="#21-overview"></a> 2.1  Overview</h2>
+<center>
+    <img src="/papernote/CDSFusion/Figure-1.png">
+</center>
+<p>CDSFusion 以 RGB 图、深度图、高频率的 IMU 测量为输入：</p>
+<ul>
+<li>输入的测量数据用于在基于 RGBD 的 VIO 模块估计位姿，此部分也给出高精度的全局连续轨迹估计；</li>
+<li>RGB 图像在语义分割模块得到实时处理；</li>
+<li>在 3D 重建模块，局部语义点云使用语义图像和深度图像生成，并用于结合 VIO 给出的对应的相机位姿生成全局 3D 语义地图。</li>
+</ul>
+<h2 id="22-visual-ineratil-odometry"><a class="markdownIt-Anchor" href="#22-visual-ineratil-odometry"></a> 2.2  Visual-Ineratil Odometry</h2>
+<p>使用 FAST 特征替换 Shi-Tomas 特征：</p>
+<ul>
+<li>实验结果显示，FAST 特征相比 Shi-Tomas 和 ORB 特征有相同的准确性或者更鲁棒。</li>
+</ul>
+<p>所设计的 VIO 模块包含三个部分：</p>
+<ul>
+<li>视觉惯性模块：负责处理原始传感器数据；</li>
+<li>后端模块：融合处理过的测量数据以获取位姿估计；</li>
+<li>回环检测及优化模块：根据检测到的回环重定位和优化位姿。</li>
+</ul>
+<p>**前端模块包括 IMU 前端和视觉前端：**IMU 前端预融合原始连续两帧间的 IMU 测量数据；视觉前端使用 KLT 稀疏光流追踪连续帧上的 FAST 角点。对于每一新来的帧，追踪旧的特征，并产生新的 FAST 特征来维持图像上的特征数量。视觉前端也产生关键帧。深度信息用于初始化 VIO，以在使用 PnP 时 VIO 有精确的尺度数据。</p>
+<p>**后端模块：**预融合的 IMU 数据、视觉和回环被添加到构成 VIO 后端的滑动窗口。若没有检测到回环，则滑动窗口不包含回环信息。在滑动窗口上使用 Ceres 进行优化。</p>
+<p>**回环检测及优化模块依赖于 DBoW2：**对于每个关键帧，检测出 FAST 特征，并用 BRIEF 描述子作为视觉词，得到 DBoW2 的视觉数据库。然后可以使用 DBoW2 来获得回环检测的结果。回环被交付到 VIO 后端，与其他测量组成一个滑动窗口。回环检测后还包含重定位和全局位姿图优化过程，类似于 VINS-Mono。</p>
+<h2 id="23-semantic-segmentation"><a class="markdownIt-Anchor" href="#23-semantic-segmentation"></a> 2.3  Semantic Segmentation</h2>
+<p>语义分割方法基于 PSPNet，其原始实现是使用 Pytorch。使用 Intel OpenVINO 的模型优化器对预训练模型进行优化，使用 CPU 上的 SIMD 操作的 Infrence Engine 重新实现模型预测。由于模型优化器尚未直接支持 Pytorch，将预训练模型转换为 ONNX 格式，并使用模型优化器转换为最终模型。</p>
+<p>语义分割模块处理每个 RGB 帧，并返回每个像素的概率向量。概率向量的值表示像素属于对应类别的概率。简单地将像素分类为与概率向量中的最大值相对应的类，并用预定义的类别颜色对它们进行着色。最终的语义图像由彩色像素组成并传递给三维重建模块。</p>
+<h2 id="24-3d-reconstruction"><a class="markdownIt-Anchor" href="#24-3d-reconstruction"></a> 2.4  3D Reconstruction</h2>
+<p>基于 Voxblox 构建场景的三维语义地图，主要包括构建精确的全局三维地图和对地图进行语义标注两个步骤：</p>
+<ul>
+<li>**构建精确的全局三维地图：**采用基于 TSDF 模型滤除噪声并提取全局网格。在每个关键帧，当前深度图像被转换为 3D 点云。然后采用 Voxblox，将局部 3D 点云转换为局部网格，再将局部网格集成到全局网格中。所有过程都是在 CPU 上实时处理。</li>
+<li><strong>语义标注：</strong> 3D 重建模块使用每个关键帧对应的 2D 语义标注图像对全局地图进行语义标注。 2D 语义标签来自语义分割模块。利用 2D 语义图像，可以为深度图像产生的每个 3D 点添加语义标签，从而获得局部 3D 语义点云。然后，利用 Voxblox 生成局部语义网格。结合 VIO 模块中当前帧的位姿，将局部地图融合到全局地图中。</li>
+</ul>
+<h1 id="3-experiments"><a class="markdownIt-Anchor" href="#3-experiments"></a> 3  Experiments</h1>
+<p>为了验证速度，评估了 VINS-Mono、ORB-VINS-Mono 和 FAST-VINS-Mono 的单帧 VIO 前端时间，主要包括特征提取和光流跟踪两个方面。在准确性方面，使用平移均方根误差（RMSE）进行精度评估：</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mrow><mi mathvariant="normal">R</mi><mi mathvariant="normal">M</mi><mi mathvariant="normal">S</mi><mi mathvariant="normal">E</mi></mrow><mrow><mi>t</mi><mi>r</mi><mi>a</mi><mi>n</mi><mi>s</mi></mrow></msub><mo>=</mo><msup><mrow><mo fence="true">(</mo><mfrac><mn>1</mn><mi>N</mi></mfrac><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>0</mn></mrow><mrow><mi>N</mi><mo>−</mo><mn>1</mn></mrow></munderover><mi mathvariant="normal">∥</mi><mi mathvariant="normal">Δ</mi><msub><mi>p</mi><mi>i</mi></msub><msup><mi mathvariant="normal">∥</mi><mn>2</mn></msup><mo fence="true">)</mo></mrow><mfrac><mn>1</mn><mn>2</mn></mfrac></msup></mrow><annotation encoding="application/x-tex">\mathrm{RMSE}_{trans} = \left( \frac{1}{N} \sum_{i=0}^{N-1} \| \Delta p_i \|^2 \right)^{\frac{1}{2}}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord"><span class="mord mathrm">R</span><span class="mord mathrm">M</span><span class="mord mathrm">S</span><span class="mord mathrm">E</span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2805559999999999em;"><span style="top:-2.5500000000000003em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">t</span><span class="mord mathdefault mtight" style="margin-right:0.02778em;">r</span><span class="mord mathdefault mtight">a</span><span class="mord mathdefault mtight">n</span><span class="mord mathdefault mtight">s</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:3.449925000000001em;vertical-align:-1.277669em;"></span><span class="minner"><span class="minner"><span class="mopen delimcenter" style="top:0em;"><span class="delimsizing size4">(</span></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.32144em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.10903em;">N</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mop op-limits"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.8283360000000004em;"><span style="top:-1.872331em;margin-left:0em;"><span class="pstrut" style="height:3.05em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">i</span><span class="mrel mtight">=</span><span class="mord mtight">0</span></span></span></span><span style="top:-3.050005em;"><span class="pstrut" style="height:3.05em;"></span><span><span class="mop op-symbol large-op">∑</span></span></span><span style="top:-4.300005em;margin-left:0em;"><span class="pstrut" style="height:3.05em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight" style="margin-right:0.10903em;">N</span><span class="mbin mtight">−</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.277669em;"><span></span></span></span></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">∥</span><span class="mord">Δ</span><span class="mord"><span class="mord mathdefault">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord"><span class="mord">∥</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8641079999999999em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mclose delimcenter" style="top:0em;"><span class="delimsizing size4">)</span></span></span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:2.172256000000001em;"><span style="top:-4.5812360000000005em;margin-right:0.05em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mopen nulldelimiter sizing reset-size3 size6"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8443142857142858em;"><span style="top:-2.656em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight"><span class="mord mtight">2</span></span></span></span><span style="top:-3.2255000000000003em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line mtight" style="border-bottom-width:0.049em;"></span></span><span style="top:-3.384em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight"><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.344em;"><span></span></span></span></span></span><span class="mclose nulldelimiter sizing reset-size3 size6"></span></span></span></span></span></span></span></span></span></span></span></span></span></span></p>
+<p><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi mathvariant="normal">Δ</mi><msub><mi>p</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">\Delta p_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8777699999999999em;vertical-align:-0.19444em;"></span><span class="mord">Δ</span><span class="mord"><span class="mord mathdefault">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> 为位姿估计和位姿针织之间的误差。</p>
+<p>所有实验都是在华为 MateBook 13 上完成，配备 i7-8565U CPU @ 1.80 GHz，8 GB 内存和 NVIDIA GeForce MX250。为了增加实验的可信度，所提方法不增加任何加速，输入的实验数据一致，建图分辨率为0.02 m，所有其他参数使用系统默认值保持不变。实验使用 VINS-RGBD 中提供的数据集。</p>
+<h2 id="31-feature-points-comparison"><a class="markdownIt-Anchor" href="#31-feature-points-comparison"></a> 3.1  Feature Points Comparison</h2>
+<center>
+    <img src="/papernote/CDSFusion/Table-1.png">
+</center>
+<p>使用 FAST 特征的 VINS-Mono 获得了与原始 VINS-Mono 相当的精度。在 Wheeled Fast 数据集上，Fast-VINS-Mono 获得了相比原始 VINS-Mono 近两倍的准确率。原因是 FAST-VINS-Mono 采用快速特征进行跟踪。因此，VIO 速度更快，可以跟踪更多帧，并获得更丰富的几何结构信息，这使得 VIO 在快速运动或更多旋转时更加准确。</p>
+<p>对于每个数据集，这 3 种方法运行 10 次，并统计成功次数来计算成功率：</p>
+<center>
+    <img src="/papernote/CDSFusion/Table-2.png">
+</center>
+<p>FAST-VINS-Mono 和 VINS-Mono 的成功率均超过 90%，原因可能是 ORB 特征适合用于特征匹配，但不适用于光流跟踪。还比较了这三种方法的效率在实验中统计了每帧前端的平均时间消耗：</p>
+<center>
+    <img src="/papernote/CDSFusion/Table-3.png">
+</center>
+<p>FAST-VINS-Mono 算法在精度和鲁棒性相当的情况下比原 VINS-Mono 算法更快。</p>
+<h2 id="42-visual-inertial-odometry"><a class="markdownIt-Anchor" href="#42-visual-inertial-odometry"></a> 4.2  Visual-Inertial Odometry</h2>
+<center>
+    <img src="/papernote/CDSFusion/Table-4.png">
+</center>
+<p>与 VINS- Mono 相比，本文方法对所有测试数据集都具有更高的精度，这主要是因为本文方法从深度信息中获得了更精确的尺度。为了直观地展示表-1 中不同方法的精度对比，这些数据集的轨迹如图-2 所示。</p>
+<center>
+    <img src="/papernote/CDSFusion/Figure-2.png">
+</center>
+<p>在实验中统计了每帧前端的平均时间消耗。时间消耗如表-5 所示：</p>
+<center>
+    <img src="/papernote/CDSFusion/Table-5.png">
+</center>
+<p>实验结果表明，与 VINS-RGBD 相比，该方法每帧整个 VIO 前端的时间快了两倍以上。VINS-RGBD 的前端类似于 VINS-Mono，提取 Shi-Tomasi 角点特征并进行光流跟踪。与它们相比，所提出方法包含一个轻量级的视觉惯性里程计，可以用于更快的姿态估计。</p>
+<h2 id="23-dense-semantic-slam"><a class="markdownIt-Anchor" href="#23-dense-semantic-slam"></a> 2.3  Dense Semantic SLAM</h2>
+<p>在两个场景中评估了所提出方法：</p>
+<ul>
+<li>由开源项目 semantic_slam 提供的修改的房间数据集，其原始数据集没有语义地图的真实值，包括深度图像、RGB 图像和相机姿态；</li>
+<li>使用 RealSense D435i 相机和 NVIDIA TX2 机载计算机的无人机记录的办公室数据集，其中包括深度图像、RGB 图像和 IMU 测量值。</li>
+<li>两个数据集的真实 3D 地图，包括语义地图和纹理地图，由 BundleFusion 给出，语义分割结果由使用 SUNRGBD 训练的 PSPNet 预训练模型获得。</li>
+</ul>
+<p>其他方法很难在计算资源有限的硬件平台上重建完整的环境 3D 语义地图，为了进行对比，展示了使用 GPU 加速方法生成的完整场景的 3D 语义地图和 Kimera 生成的语义地图。用于比较的方法采用相同的 PSPNet 预训练模型，但没有对模型剪枝进行优化，其余部分与 CDSFusion 相同。在接下来的实验中，将该方法称为GDSSLAM（GPU-Based Dense Semantic SLAM）、CDSSLAM（CPU-Based Dense Semantic SLAM）来表示不需要 GPU 加速。语义信息图例如图-3 所示，数据集的重建结果如图-4 所示。</p>
+<center>
+    <img src="/papernote/CDSFusion/Figure-3.png">
+    <img src="/papernote/CDSFusion/Figure-4.png">
+</center>
+<p>重建的 3D 语义地图，其完整性与使用 GPU 加速的 GDSSLAM 的语义重建结果相同，如图-4 c, e 所示。与 Kimera 的结果相比，Kimera 由于是离线进行语义分割，所以总体上取得了更好的性能，如图-4 d, e。</p>
+<p>还展示了使用无人机在办公室飞行时获得的数据集的重建结果，如图-5所示。</p>
+<center>
+    <img src="/papernote/CDSFusion/Figure-5.png">
+</center>
+<p>在实验中统计了方法在处理两个数据集时的平均每帧耗时，如表-6 所示。</p>
+<center>
+    <img src="/papernote/CDSFusion/Table-6.png">
+</center>
+<p>与 CDSSLAM 相比，CDSFusion 仅依靠一个 CPU 就将测试数据集上的每帧处理速度提高了 3 倍以上，在 office 数据集上的速度甚至接近 GDSSLAM。为了验证模型优化的有效性，还设计了实验来研究不同方法在语义分割中每帧的时间消耗。在实验中统计了三种方法在处理两个数据集时的平均每帧耗时，如表-7 所示。</p>
+<center>
+    <img src="/papernote/CDSFusion/Table-7.png">
+</center>
+<p>CDSSLAM 在语义分割上消耗了大量的时间，这是导致语义地图生成速度慢的主要原因。GDSSLAM 借助专用图形处理器的加速大大提高了分割速度，从而实现了实时语义分割和地图生成。与 CDSS- LAM 相比，CDSFusion 仅依赖一个CPU，在测试数据集上的每帧分割速度提高了 3 倍以上，在 office 数据集上的速度甚至接近 GDSSLAM。</p>
+<h1 id="4-conclusions"><a class="markdownIt-Anchor" href="#4-conclusions"></a> 4  Conclusions</h1>
+<p>文中提出了一种基于 CPU 计算的室内密集语义 SLAM 系统 CDSFusion，能够在 CPU 上同时实时处理视觉惯性 SLAM、语义分割和密集三维重建的系统。CDSFusion 是模块化的，允许替换每个模块或单独执行每个模块，因此可以通过使一个模块表现更好来改进系统。</p>
+<p>**未来展望：**VIO 模块对相机的快速运动很敏感，可以提高 VIO 在相机快速运动中的鲁棒性和准确性。另一个研究方向与密集语义地图的准确性有关，本文的研究只考虑了完整性，但准确性也很重要。更高的精度要求更精确、更轻量的语义分割网络和实时重建。可以尝试优化其他一些网络，如 MobileNetV3，并加速网格重建。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Semantic-SLAM/" rel="tag"># Semantic SLAM</a>
+              <a href="/tags/Paper-Note/" rel="tag"># Paper Note</a>
+              <a href="/tags/CPU-Computing/" rel="tag"># CPU Computing</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/papernote/Dynamic-VINS/" rel="prev" title="Dynamic-VINS">
+                  <i class="fa fa-chevron-left"></i> Dynamic-VINS
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/papernote/DRG-SLAM/" rel="next" title="DRG-SLAM">
+                  DRG-SLAM <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Star Rain</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://lib.baomitu.com/canvas-nest.js/1.0.1/canvas-nest.js"></script>
+
+
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+  <script class="next-config" data-name="pdf" type="application/json">{"object_url":{"url":"https://cdn.jsdelivr.net/npm/pdfobject@2.2.7/pdfobject.min.js","integrity":"sha256-ph3Dk89VmuTVXG6x/RDzk53SU9LPdAh1tpv0UvnDZ2I="},"url":"/lib/pdf/web/viewer.html"}</script>
+  <script src="/js/third-party/tags/pdf.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha256-TThEtR+XalhWKkfF383YLOrI50NGNeIqrzS+q08afrY=" crossorigin="anonymous">
+
+
+<script class="next-config" data-name="waline" type="application/json">{"lang":"en","enable":true,"serverURL":"https://waline.vercel.app","cssUrl":"https://unpkg.com/@waline/client@v2/dist/waline.css","commentCount":true,"pageview":false,"libUrl":"https://unpkg.com/@waline/client@v2/dist/waline.js","emoji":["https://unpkg.com/@waline/emojis@1.0.1/weibo","https://unpkg.com/@waline/emojis@1.0.1/alus","https://unpkg.com/@waline/emojis@1.0.1/bilibili","https://unpkg.com/@waline/emojis@1.0.1/qq","https://unpkg.com/@waline/emojis@1.0.1/tieba","https://unpkg.com/@waline/emojis@1.0.1/tw-emoji"],"meta":["nick","mail"],"requiredMeta":["nick"],"pageSize":10,"el":"#waline","comment":true,"path":"/papernote/CDSFusion/"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>
