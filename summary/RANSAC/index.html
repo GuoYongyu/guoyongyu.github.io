@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/logo-32x32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/logo-16x16.ico">
+  <link rel="mask-icon" href="/images/logo.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"guoyongyu.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="RANSAC（RAndom SAmple Consensus，随机采样一致）算法是从一组含有“外点”（outliers）的数据中正确估计数学模型参数的迭代算法。本文是关于 Sinkhorn 相关网络资料的整理。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RANSAC">
+<meta property="og:url" content="https://guoyongyu.github.io/summary/RANSAC/index.html">
+<meta property="og:site_name" content="The Blog of Star Rain">
+<meta property="og:description" content="RANSAC（RAndom SAmple Consensus，随机采样一致）算法是从一组含有“外点”（outliers）的数据中正确估计数学模型参数的迭代算法。本文是关于 Sinkhorn 相关网络资料的整理。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-11-11T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-02-01T02:07:24.173Z">
+<meta property="article:author" content="Star Rain">
+<meta property="article:tag" content="Summary">
+<meta property="article:tag" content="Knowledge">
+<meta property="article:tag" content="RANSAC">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://guoyongyu.github.io/summary/RANSAC/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://guoyongyu.github.io/summary/RANSAC/","path":"summary/RANSAC/","title":"RANSAC"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>RANSAC | The Blog of Star Rain</title>
+  
+
+
+
+
+<link rel="dns-prefetch" href="https://waline.vercel.app">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">The Blog of Star Rain</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-papernote"><a href="/papernote/" rel="section"><i class="fa fa-bookmark fa-fw"></i>论文笔记</a></li><li class="menu-item menu-item-summary"><a href="/summary/" rel="section"><i class="fa fa-file-pen fa-fw"></i>知识总结</a></li><li class="menu-item menu-item-collection"><a href="/collection/" rel="section"><i class="fa fa-archive fa-fw"></i>收集</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text"> 1  简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E7%AE%97%E6%B3%95%E5%9F%BA%E6%9C%AC%E6%80%9D%E6%83%B3"><span class="nav-number">2.</span> <span class="nav-text"> 2  算法基本思想</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-%E8%BF%AD%E4%BB%A3%E6%AC%A1%E6%95%B0%E6%8E%A8%E5%AF%BC"><span class="nav-number">3.</span> <span class="nav-text"> 3  迭代次数推导</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-%E7%AE%97%E6%B3%95%E4%BC%AA%E7%A0%81"><span class="nav-number">4.</span> <span class="nav-text"> 4  算法伪码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-%E7%94%A8-python-%E6%8B%9F%E5%90%88%E7%9B%B4%E7%BA%BF"><span class="nav-number">5.</span> <span class="nav-text"> 5  用 Python 拟合直线</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6-orb-%E4%B8%AD%E7%9A%84-ransac-%E8%B0%83%E7%94%A8"><span class="nav-number">6.</span> <span class="nav-text"> 6  ORB 中的 RANSAC 调用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#7-opencv-%E5%AF%B9-ransac-%E7%9A%84%E5%BA%94%E7%94%A8"><span class="nav-number">7.</span> <span class="nav-text"> 7  OpenCV 对 RANSAC 的应用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#71-findhomography"><span class="nav-number">7.1.</span> <span class="nav-text"> 7.1  findHomography()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#72-findfundamental"><span class="nav-number">7.2.</span> <span class="nav-text"> 7.2  findFundamental()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#73-solvepnpransac"><span class="nav-number">7.3.</span> <span class="nav-text"> 7.3  solvePnPRansac()solvePnPRansac()solvePnPRansac()</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">8.</span> <span class="nav-text"> 参考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Star Rain</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">93</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">101</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/GuoYongyu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;GuoYongyu" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://guoyongyu.github.io/summary/RANSAC/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Star Rain">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="The Blog of Star Rain">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="RANSAC | The Blog of Star Rain">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          RANSAC
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2022-11-12 00:00:00" itemprop="dateCreated datePublished" datetime="2022-11-12T00:00:00+08:00">2022-11-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-02-01 10:07:24" itemprop="dateModified" datetime="2023-02-01T10:07:24+08:00">2023-02-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Summary/" itemprop="url" rel="index"><span itemprop="name">Summary</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">Waline: </span>
+  
+    <a title="waline" href="/summary/RANSAC/#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/summary/RANSAC/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>RANSAC（<strong>RA</strong>ndom <strong>SA</strong>mple <strong>C</strong>onsensus，随机采样一致）算法是从一组含有“外点”（outliers）的数据中正确估计数学模型参数的迭代算法。本文是关于 Sinkhorn 相关网络资料的整理。</p>
+<span id="more"></span>
+<center><b><font size="9">RANSAC</font></b></center>
+<h1 id="1-简介"><a class="markdownIt-Anchor" href="#1-简介"></a> 1  简介</h1>
+<p>定义：</p>
+<ul>
+<li><strong>RANSAC</strong>（<strong>RA</strong>ndom <strong>SA</strong>mple <strong>C</strong>onsensus，随机采样一致）算法是从一组含有“外点”（outliers）的数据中正确估计数学模型参数的迭代算法。</li>
+<li>“外点”一般指数据中的噪声，比如匹配中的误匹配和估计曲线中的离群点。所以，RANSAC 也是一种“外点”检测算法。</li>
+<li>RANSAC 算法是一种不确定算法，它只能在一种概率下产生结果，并且这个概率会随着迭代次数的增加而加大。</li>
+</ul>
+<p>基本假设：</p>
+<ul>
+<li>数据是由“内点”和“外点”组成的。“内点”就是组成模型参数的数据，“外点”就是不适合模型的数据。同时，RANSAC 假设：给定一组“内点”数据集合（通常较小），存在一个程序可以估计出符合“内点”的模型。</li>
+</ul>
+<h1 id="2-算法基本思想"><a class="markdownIt-Anchor" href="#2-算法基本思想"></a> 2  算法基本思想</h1>
+<p>基本思想：通过反复选择数据集去估计模型，一直迭代到估计出认为比较好的模型。</p>
+<p>算法步骤-1：</p>
+<ol>
+<li>随机地从数据集 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>S</mi></mrow><annotation encoding="application/x-tex">S</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.05764em;">S</span></span></span></span> 中选择 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>s</mi></mrow><annotation encoding="application/x-tex">s</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault">s</span></span></span></span> 个数据点，一般取 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>s</mi></mrow><annotation encoding="application/x-tex">s</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault">s</span></span></span></span> 能刚好组成一个最小子集（满足模型估计的最小数据集，如直线拟合为 2 个点），以 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>s</mi></mrow><annotation encoding="application/x-tex">s</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault">s</span></span></span></span> 个数据点估计待求模型；</li>
+<li>根据前一步的模型，遍历 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>S</mi></mrow><annotation encoding="application/x-tex">S</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.05764em;">S</span></span></span></span> 中的每一个数据点，判断是否满足这个模型，即是否在距离阈值 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>t</mi></mrow><annotation encoding="application/x-tex">t</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.61508em;vertical-align:0em;"></span><span class="mord mathdefault">t</span></span></span></span> 内：如果在，则为 inlier，将这个点加入 inlier 集合（一致集）<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>S</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">S_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.05764em;">S</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:-0.05764em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> 中；</li>
+<li>如果 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>S</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">S_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.05764em;">S</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:-0.05764em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> 的大小大于阈值 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>T</mi></mrow><annotation encoding="application/x-tex">T</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">T</span></span></span></span>，则用 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>S</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">S_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.05764em;">S</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:-0.05764em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> 中的所有点重新估计模型，更新迭代次数 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>k</mi></mrow><annotation encoding="application/x-tex">k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.03148em;">k</span></span></span></span>，并结束算法循环；</li>
+<li>如果 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>S</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">S_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.05764em;">S</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:-0.05764em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> 的大小小于阈值 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>T</mi></mrow><annotation encoding="application/x-tex">T</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">T</span></span></span></span>，选择一个新的最小子集 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>s</mi></mrow><annotation encoding="application/x-tex">s</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault">s</span></span></span></span>，重复上述过程；</li>
+<li>经过 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>k</mi></mrow><annotation encoding="application/x-tex">k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.03148em;">k</span></span></span></span> 次实验选择一个最大一致集 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>S</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">S_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.05764em;">S</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:-0.05764em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>，并用 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>S</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">S_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.05764em;">S</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:-0.05764em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> 的所有点重新估计模型。</li>
+</ol>
+<p>算法步骤-2：</p>
+<ol>
+<li>选择出可以估计出模型的最小数据集（对于直线拟合来说就是两个点，对于计算单应矩阵就是 4 个点）；</li>
+<li>使用这个数据集来计算出数据模型；</li>
+<li>将所有数据带入这个模型，计算出 inlier 的数目（在一定误差范围内的适合当前迭代推出的模型的数据）；</li>
+<li>比较当前模型和之前推出的最好的模型的 inlier 的数量，记录最大 inlier 数的模型参数和 inlier 数；</li>
+<li>重复 1-4 步，直到迭代结束或者当前模型足够好（ inlier 数目大于一定数量）。</li>
+</ol>
+<h1 id="3-迭代次数推导"><a class="markdownIt-Anchor" href="#3-迭代次数推导"></a> 3  迭代次数推导</h1>
+<p>假设 inlier 在数据中的占比为 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>t</mi></mrow><annotation encoding="application/x-tex">t</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.61508em;vertical-align:0em;"></span><span class="mord mathdefault">t</span></span></span></span>：</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>t</mi><mo>=</mo><mfrac><msub><mi>n</mi><mtext>inliers</mtext></msub><mrow><msub><mi>n</mi><mtext>inliers</mtext></msub><mo>+</mo><msub><mi>n</mi><mtext>outliers</mtext></msub></mrow></mfrac></mrow><annotation encoding="application/x-tex">t = \frac{n_{\text{inliers}}}{n_{\text{inliers}} + n_{\text{outliers}}}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.61508em;vertical-align:0em;"></span><span class="mord mathdefault">t</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1.94356em;vertical-align:-0.8360000000000001em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.1075599999999999em;"><span style="top:-2.3139999999999996em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathdefault">n</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">inliers</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord"><span class="mord mathdefault">n</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">outliers</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathdefault">n</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">inliers</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.8360000000000001em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></p>
+<p>那么每次计算模型使用 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>N</mi></mrow><annotation encoding="application/x-tex">N</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.10903em;">N</span></span></span></span> 个点的情况下，选取的点至少有一个 outlier 的概率为：</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>1</mn><mo>−</mo><msup><mi>t</mi><mi>N</mi></msup></mrow><annotation encoding="application/x-tex">1 - t^N
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.8913309999999999em;vertical-align:0em;"></span><span class="mord"><span class="mord mathdefault">t</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8913309999999999em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.10903em;">N</span></span></span></span></span></span></span></span></span></span></span></span></p>
+<p>即在迭代 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>k</mi></mrow><annotation encoding="application/x-tex">k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.03148em;">k</span></span></span></span> 次的情况下，<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo stretchy="false">(</mo><mn>1</mn><mo>−</mo><msup><mi>t</mi><mi>N</mi></msup><msup><mo stretchy="false">)</mo><mi>k</mi></msup></mrow><annotation encoding="application/x-tex">(1 - t^N)^k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1.099108em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathdefault">t</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8413309999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.10903em;">N</span></span></span></span></span></span></span></span><span class="mclose"><span class="mclose">)</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.849108em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.03148em;">k</span></span></span></span></span></span></span></span></span></span></span> 就是 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>k</mi></mrow><annotation encoding="application/x-tex">k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.03148em;">k</span></span></span></span> 次迭代计算模型都至少采样到一个 outlier 去计算模型的概率。那么能采样到正确的 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>N</mi></mrow><annotation encoding="application/x-tex">N</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.10903em;">N</span></span></span></span> 个点去计算出正确模型的概率就是：</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>P</mi><mo>=</mo><mn>1</mn><mo>−</mo><mo stretchy="false">(</mo><mn>1</mn><mo>−</mo><msup><mi>t</mi><mi>N</mi></msup><msup><mo stretchy="false">)</mo><mi>k</mi></msup></mrow><annotation encoding="application/x-tex">P = 1 - (1 - t^N)^k
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">P</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1.149108em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathdefault">t</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8913309999999999em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.10903em;">N</span></span></span></span></span></span></span></span><span class="mclose"><span class="mclose">)</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8991079999999999em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.03148em;">k</span></span></span></span></span></span></span></span></span></span></span></span></p>
+<p>从而求得迭代次数为：</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>k</mi><mo>=</mo><mfrac><mrow><mi>log</mi><mo>⁡</mo><mo stretchy="false">(</mo><mn>1</mn><mo>−</mo><mi>P</mi><mo stretchy="false">)</mo></mrow><mrow><mi>log</mi><mo>⁡</mo><mo stretchy="false">(</mo><mn>1</mn><mo>−</mo><msup><mi>t</mi><mi>N</mi></msup><mo stretchy="false">)</mo></mrow></mfrac></mrow><annotation encoding="application/x-tex">k = \frac{\log (1 - P)}{\log (1 - t^N)}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.03148em;">k</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:2.363em;vertical-align:-0.936em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.427em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mop">lo<span style="margin-right:0.01389em;">g</span></span><span class="mopen">(</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord"><span class="mord mathdefault">t</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.767331em;"><span style="top:-2.9890000000000003em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.10903em;">N</span></span></span></span></span></span></span></span><span class="mclose">)</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mop">lo<span style="margin-right:0.01389em;">g</span></span><span class="mopen">(</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">P</span><span class="mclose">)</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.936em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></p>
+<ul>
+<li><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>t</mi></mrow><annotation encoding="application/x-tex">t</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.61508em;vertical-align:0em;"></span><span class="mord mathdefault">t</span></span></span></span> 通常是一个先验值。若事先不知道 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>t</mi></mrow><annotation encoding="application/x-tex">t</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.61508em;vertical-align:0em;"></span><span class="mord mathdefault">t</span></span></span></span> 的取值，则使用自适应迭代次数的方法：一开始设定一个无穷大的迭代次数，然后每次更新模型参数时，用当前的 inlier 比值作为 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>t</mi></mrow><annotation encoding="application/x-tex">t</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.61508em;vertical-align:0em;"></span><span class="mord mathdefault">t</span></span></span></span> 来估算迭代次数。</li>
+</ul>
+<h1 id="4-算法伪码"><a class="markdownIt-Anchor" href="#4-算法伪码"></a> 4  算法伪码</h1>
+<p>输入：</p>
+<ul>
+<li>data：观测数据</li>
+<li>model：适应于数据的模型</li>
+<li>n：适用于模型的最小数据个数</li>
+<li>k：算法的迭代次数</li>
+<li>t：用于决定数据是否适应于模型的阈值（判断是否为 inlier 的阈值）</li>
+<li>d：半段模型是否适用于数据集的 inlier 数目</li>
+</ul>
+<p>输出：</p>
+<ul>
+<li>best_model：与数据最匹配的模型参数，没找到则返回 NULL</li>
+<li>best_consensus_set：估计出模型的数据点</li>
+<li>best_error：与数据相关的模型误差</li>
+</ul>
+<p>算法：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">iterations = <span class="number">0</span>;</span><br><span class="line">best_model = <span class="literal">NULL</span>;</span><br><span class="line">best_consensus_set = <span class="literal">NULL</span>;</span><br><span class="line">best_error = DBL_MAX;  <span class="comment">// 无穷大</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> (iterations &lt; k) &#123;</span><br><span class="line">    maybe_inliers = 从数据集中随机选择 n 个点;</span><br><span class="line">    maybe_model = 求得适合于 maybe_inliers 的模型参数;</span><br><span class="line">    consensus_set = maybe_inliers;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (data 中不属于 maybe_inliers 的点 p) &#123;</span><br><span class="line">        <span class="keyword">if</span> (数据点 p 适合 maybe_model，且误差小于 t) &#123;</span><br><span class="line">            将点 p 添加到 consensus_set;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (|consensus_set| &gt; d) &#123;</span><br><span class="line">        <span class="comment">// 已经找到可能较好的模型，检测模型误差</span></span><br><span class="line">        better_model = 适合于 consensus_set 中所有点的模型参数;</span><br><span class="line">        this_error = bette_model 产生的误差;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> (this_error &lt; best_error) &#123;</span><br><span class="line">            <span class="comment">// 发现了更好的模型</span></span><br><span class="line">            best_model = better_model;</span><br><span class="line">            best_consensus_set = consensus_set;</span><br><span class="line">            best_error = this_error;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    更新迭代总次数 k;</span><br><span class="line">    </span><br><span class="line">    iterations++;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">return</span> best_model, best_consensus_set, best_error;</span><br></pre></td></tr></table></figure>
+<h1 id="5-用-python-拟合直线"><a class="markdownIt-Anchor" href="#5-用-python-拟合直线"></a> 5  用 Python 拟合直线</h1>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"><span class="keyword">import</span> math</span><br><span class="line"></span><br><span class="line"><span class="comment"># 数据量。</span></span><br><span class="line">SIZE = <span class="number">50</span></span><br><span class="line"><span class="comment"># 产生数据。np.linspace 返回一个一维数组，SIZE指定数组长度。</span></span><br><span class="line"><span class="comment"># 数组最小值是 0，最大值是 10。所有元素间隔相等。</span></span><br><span class="line">X = np.linspace(<span class="number">0</span>, <span class="number">10</span>, SIZE)</span><br><span class="line">Y = <span class="number">3</span> * X + <span class="number">10</span></span><br><span class="line"></span><br><span class="line">fig = plt.figure()</span><br><span class="line"><span class="comment"># 画图区域分成1行1列。选择第一块区域。</span></span><br><span class="line">ax1 = fig.add_subplot(<span class="number">1</span>,<span class="number">1</span>, <span class="number">1</span>)</span><br><span class="line"><span class="comment"># 标题</span></span><br><span class="line">ax1.set_title(<span class="string">&quot;RANSAC&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 让散点图的数据更加随机并且添加一些噪声。</span></span><br><span class="line">random_x = []</span><br><span class="line">random_y = []</span><br><span class="line"><span class="comment"># 添加直线随机噪声</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(SIZE):</span><br><span class="line">    random_x.append(X[i] + random.uniform(-<span class="number">0.5</span>, <span class="number">0.5</span>)) </span><br><span class="line">    random_y.append(Y[i] + random.uniform(-<span class="number">0.5</span>, <span class="number">0.5</span>)) </span><br><span class="line"><span class="comment"># 添加随机噪声 outliers</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(SIZE):</span><br><span class="line">    random_x.append(random.uniform(<span class="number">0</span>,<span class="number">10</span>))</span><br><span class="line">    random_y.append(random.uniform(<span class="number">10</span>,<span class="number">40</span>))</span><br><span class="line">RANDOM_X = np.array(random_x) <span class="comment"># 散点图的横轴。</span></span><br><span class="line">RANDOM_Y = np.array(random_y) <span class="comment"># 散点图的纵轴。</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 画散点图。</span></span><br><span class="line">ax1.scatter(RANDOM_X, RANDOM_Y)</span><br><span class="line"><span class="comment"># 横轴名称。</span></span><br><span class="line">ax1.set_xlabel(<span class="string">&quot;x&quot;</span>)</span><br><span class="line"><span class="comment"># 纵轴名称。</span></span><br><span class="line">ax1.set_ylabel(<span class="string">&quot;y&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用RANSAC算法估算模型</span></span><br><span class="line"><span class="comment"># 迭代最大次数，每次得到更好的估计会优化iters的数值</span></span><br><span class="line">iters = <span class="number">100000</span></span><br><span class="line"><span class="comment"># 数据和模型之间可接受的差值</span></span><br><span class="line">sigma = <span class="number">0.25</span></span><br><span class="line"><span class="comment"># 最好模型的参数估计和内点数目</span></span><br><span class="line">best_a = <span class="number">0</span></span><br><span class="line">best_b = <span class="number">0</span></span><br><span class="line">pretotal = <span class="number">0</span></span><br><span class="line"><span class="comment"># 希望的得到正确模型的概率</span></span><br><span class="line">P = <span class="number">0.99</span></span><br><span class="line"></span><br><span class="line">i = <span class="number">0</span></span><br><span class="line"><span class="keyword">while</span> i &lt; iters:</span><br><span class="line">    i += <span class="number">1</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 随机在数据中红选出两个点去求解模型</span></span><br><span class="line">    sample_index = random.sample(<span class="built_in">range</span>(SIZE * <span class="number">2</span>), <span class="number">2</span>)</span><br><span class="line">    x_1 = RANDOM_X[sample_index[<span class="number">0</span>]]</span><br><span class="line">    x_2 = RANDOM_X[sample_index[<span class="number">1</span>]]</span><br><span class="line">    y_1 = RANDOM_Y[sample_index[<span class="number">0</span>]]</span><br><span class="line">    y_2 = RANDOM_Y[sample_index[<span class="number">1</span>]]</span><br><span class="line"></span><br><span class="line">    <span class="comment"># y = ax + b 求解出a，b</span></span><br><span class="line">    a = (y_2 - y_1) / (x_2 - x_1)</span><br><span class="line">    b = y_1 - a * x_1</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 算出内点数目</span></span><br><span class="line">    total_inlier = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> index <span class="keyword">in</span> <span class="built_in">range</span>(SIZE * <span class="number">2</span>):</span><br><span class="line">        y_estimate = a * RANDOM_X[index] + b</span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">abs</span>(y_estimate - RANDOM_Y[index]) &lt; sigma:</span><br><span class="line">            total_inlier = total_inlier + <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 判断当前的模型是否比之前估算的模型好</span></span><br><span class="line">    <span class="keyword">if</span> total_inlier &gt; pretotal:</span><br><span class="line">        iters = <span class="built_in">int</span>(math.log(<span class="number">1</span> - P) / math.log(<span class="number">1</span> - <span class="built_in">pow</span>(total_inlier / (SIZE * <span class="number">2</span>), <span class="number">2</span>)))</span><br><span class="line">        pretotal = total_inlier</span><br><span class="line">        best_a = a</span><br><span class="line">        best_b = b</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 判断是否当前模型已经符合超过一半的点</span></span><br><span class="line">    <span class="comment"># 注意有 2 * SIZE 个点，一半为 outliers</span></span><br><span class="line">    <span class="keyword">if</span> total_inlier &gt; SIZE:</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 用我们得到的最佳估计画图</span></span><br><span class="line">Y = best_a * RANDOM_X + best_b</span><br><span class="line"></span><br><span class="line"><span class="comment"># 直线图</span></span><br><span class="line">ax1.plot(RANDOM_X, Y)</span><br><span class="line">text = <span class="string">&quot;best_a = &quot;</span> + <span class="built_in">str</span>(best_a) + <span class="string">&quot;\nbest_b = &quot;</span> + <span class="built_in">str</span>(best_b)</span><br><span class="line">plt.text(<span class="number">5</span>,<span class="number">10</span>, text,</span><br><span class="line">         fontdict=&#123;<span class="string">&#x27;size&#x27;</span>: <span class="number">8</span>, <span class="string">&#x27;color&#x27;</span>: <span class="string">&#x27;r&#x27;</span>&#125;)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<h1 id="6-orb-中的-ransac-调用"><a class="markdownIt-Anchor" href="#6-orb-中的-ransac-调用"></a> 6  ORB 中的 RANSAC 调用</h1>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;opencv2/opencv.hpp&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;opencv2/xfeatures2d.hpp&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;opencv2/features2d/features2d.hpp&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">extracte_orb</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">    cv::Mat                   input, </span></span></span><br><span class="line"><span class="params"><span class="function">    std::vector&lt;cv::KeyPoint&gt; &amp;keypoint, </span></span></span><br><span class="line"><span class="params"><span class="function">    cv::Mat                   &amp;descriptor)</span> </span>&#123;</span><br><span class="line">    cv::Ptr&lt;cv::ORB&gt; f2d = cv::ORB::<span class="built_in">create</span>(<span class="number">500</span>);</span><br><span class="line">    f2d-&gt;<span class="built_in">detect</span>(input, keypoint);</span><br><span class="line">    cv::Mat image_with_kp;</span><br><span class="line">    f2d-&gt;<span class="built_in">compute</span>(input, keypoint, descriptor);</span><br><span class="line">    cv::<span class="built_in">drawKeypoints</span>(input, keypoint, image_with_kp, cv::Scalar::<span class="built_in">all</span>(<span class="number">-1</span>), cv::DrawMatchesFlags::DRAW_RICH_KEYPOINTS);</span><br><span class="line">	cv::<span class="built_in">imwrite</span>(<span class="string">&quot;orb&quot;</span> + std::<span class="built_in">to_string</span>(<span class="built_in">random</span>()) + <span class="string">&quot;.png&quot;</span>, image_with_kp);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">match_two_image</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">    cv::Mat                   image1, </span></span></span><br><span class="line"><span class="params"><span class="function">    cv::Mat                   image2, </span></span></span><br><span class="line"><span class="params"><span class="function">    std::vector&lt;cv::KeyPoint&gt; keypoint1,</span></span></span><br><span class="line"><span class="params"><span class="function">    std::vector&lt;cv::KeyPoint&gt; keypoint2, </span></span></span><br><span class="line"><span class="params"><span class="function">    cv::Mat                   descriptor1, </span></span></span><br><span class="line"><span class="params"><span class="function">    cv::Mat                   descriptor2)</span> </span>&#123;</span><br><span class="line">    <span class="function">cv::BFMatcher <span class="title">matcher</span><span class="params">(cv::NORM_HAMMING)</span></span>;</span><br><span class="line">    std::vector&lt;cv::DMatch&gt; matches;</span><br><span class="line">    matcher.<span class="built_in">match</span>(descriptor1,descriptor2, matches);</span><br><span class="line">    cv::Mat good_matches_image;</span><br><span class="line">    cv::<span class="built_in">drawMatches</span>(image1, keypoint1, image2, keypoint2,</span><br><span class="line">                    matches, good_matches_image, cv::Scalar::<span class="built_in">all</span>(<span class="number">-1</span>), cv::Scalar::<span class="built_in">all</span>(<span class="number">-1</span>),</span><br><span class="line">                    std::<span class="built_in">vector</span>&lt;<span class="type">char</span>&gt;(), cv::DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS);</span><br><span class="line">    cv::<span class="built_in">imwrite</span>(<span class="string">&quot;good_matches_image.png&quot;</span>, good_matches_image);</span><br><span class="line">    &#123;</span><br><span class="line">        std::vector&lt;cv::KeyPoint&gt; RAN_KP1, RAN_KP2;</span><br><span class="line">        std::vector&lt;cv::Point2f&gt; keypoints1, keypoints2;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; matches.<span class="built_in">size</span>(); i++) &#123;</span><br><span class="line">            keypoints1.<span class="built_in">push_back</span>(keypoint1[matches[i].queryIdx].pt);</span><br><span class="line">            keypoints2.<span class="built_in">push_back</span>(keypoint2[matches[i].trainIdx].pt);</span><br><span class="line">            RAN_KP1.<span class="built_in">push_back</span>(keypoint1[matches[i].queryIdx]);</span><br><span class="line">            RAN_KP2.<span class="built_in">push_back</span>(keypoint2[matches[i].trainIdx]);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        std::vector&lt;uchar&gt; RansacStatus;</span><br><span class="line">        cv::<span class="built_in">findFundamentalMat</span>(keypoints1, keypoints2, RansacStatus, cv::FM_RANSAC);</span><br><span class="line">        std::vector&lt;cv::KeyPoint&gt; ransac_keypoints1, ransac_keypoints2;</span><br><span class="line">        std::vector&lt;cv::DMatch&gt; ransac_matches;</span><br><span class="line">        <span class="type">int</span> index = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">size_t</span> i = <span class="number">0</span>; i &lt; matches.<span class="built_in">size</span>(); i++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (RansacStatus[i] != <span class="number">0</span>) &#123;</span><br><span class="line">                ransac_keypoints1.<span class="built_in">push_back</span>(RAN_KP1[i]);</span><br><span class="line">                ransac_keypoints2.<span class="built_in">push_back</span>(RAN_KP2[i]);</span><br><span class="line">                matches[i].queryIdx = index;</span><br><span class="line">                matches[i].trainIdx = index;</span><br><span class="line">                ransac_matches.<span class="built_in">push_back</span>(matches[i]);</span><br><span class="line">                index++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        cv::Mat after_ransac_sift_match;</span><br><span class="line">        cv::<span class="built_in">drawMatches</span>(image1, ransac_keypoints1, image2, ransac_keypoints2,</span><br><span class="line">                        ransac_matches, after_ransac_sift_match, cv::Scalar::<span class="built_in">all</span>(<span class="number">-1</span>), cv::Scalar::<span class="built_in">all</span>(<span class="number">-1</span>),</span><br><span class="line">                        std::<span class="built_in">vector</span>&lt;<span class="type">char</span>&gt;(), cv::DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS);</span><br><span class="line">        cv::<span class="built_in">imwrite</span>(<span class="string">&quot;after_ransac_orb_match.png&quot;</span>, after_ransac_sift_match);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> *argv[])</span> </span>&#123;</span><br><span class="line">    cv::Mat image1 = cv::<span class="built_in">imread</span>(argv[<span class="number">1</span>]);</span><br><span class="line">    cv::Mat image2 = cv::<span class="built_in">imread</span>(argv[<span class="number">2</span>]);</span><br><span class="line">    std::vector&lt;cv::KeyPoint&gt; keypoint1,keypoint2;</span><br><span class="line">    cv::Mat descriptor1, descriptor2;</span><br><span class="line">    <span class="built_in">extracte_orb</span>(image1, keypoint1, descriptor1);</span><br><span class="line">    <span class="built_in">extracte_orb</span>(image2, keypoint2, descriptor2);</span><br><span class="line">    <span class="built_in">match_two_image</span>(image1, image2, keypoint1, keypoint2, descriptor1, descriptor2);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="7-opencv-对-ransac-的应用"><a class="markdownIt-Anchor" href="#7-opencv-对-ransac-的应用"></a> 7  OpenCV 对 RANSAC 的应用</h1>
+<h2 id="71-findhomography"><a class="markdownIt-Anchor" href="#71-findhomography"></a> 7.1  <code>findHomography()</code></h2>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">CV_EXPORTS_W </span></span><br><span class="line"><span class="function">Mat <span class="title">findHomography</span><span class="params">( </span></span></span><br><span class="line"><span class="params"><span class="function">    InputArray   srcPoints, </span></span></span><br><span class="line"><span class="params"><span class="function">    InputArray   dstPoints,</span></span></span><br><span class="line"><span class="params"><span class="function">    <span class="type">int</span>          method = <span class="number">0</span>, </span></span></span><br><span class="line"><span class="params"><span class="function">    <span class="type">double</span>       ransacReprojThreshold = <span class="number">3</span>,</span></span></span><br><span class="line"><span class="params"><span class="function">    OutputArray  mask = noArray(), </span></span></span><br><span class="line"><span class="params"><span class="function">    <span class="type">const</span> <span class="type">int</span>    maxIters = <span class="number">2000</span>,</span></span></span><br><span class="line"><span class="params"><span class="function">    <span class="type">const</span> <span class="type">double</span> confidence = <span class="number">0.995</span></span></span></span><br><span class="line"><span class="params"><span class="function">)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/** @overload */</span></span><br><span class="line"><span class="function">CV_EXPORTS </span></span><br><span class="line"><span class="function">Mat <span class="title">findHomography</span><span class="params">( </span></span></span><br><span class="line"><span class="params"><span class="function">    InputArray srcPoints, </span></span></span><br><span class="line"><span class="params"><span class="function">    InputArray dstPoints,</span></span></span><br><span class="line"><span class="params"><span class="function">    OutputArray mask, </span></span></span><br><span class="line"><span class="params"><span class="function">    <span class="type">int</span> method = <span class="number">0</span>, </span></span></span><br><span class="line"><span class="params"><span class="function">    <span class="type">double</span> ransacReprojThreshold = <span class="number">3</span> </span></span></span><br><span class="line"><span class="params"><span class="function">)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>参数说明：</p>
+<ul>
+<li>
+<p><code>srcPoints</code>：源平面的坐标矩阵，可以是 <code>CV_32FC2</code> 类型，也可以是  <code>vector&lt;Point2f&gt;</code> 类型。</p>
+</li>
+<li>
+<p><code>dstPoints</code>：目标平面的坐标矩阵，可以是 <code>CV_32FC2</code> 类型，也可以是 <code>vector&lt;Point2f&gt;</code> 类型。</p>
+</li>
+<li>
+<p><code>method</code>：计算单应矩阵所使用的方法。不同的方法对应不同的参数，具体如下：</p>
+<ul>
+<li>
+<p><code>0</code>：利用所有点的常规方法；</p>
+<p><code>RANSAC</code>：基于 RANSAC 的鲁棒算法；</p>
+<p><code>LMEDS</code>：最小中值鲁棒算法；</p>
+<p><code>RHO</code>：基于 PROSAC 的鲁棒算法。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>ransacReprojThreshold</code>：将点对视为内点的最大允许重投影错误阈值（仅用于 RANSAC 和 RHO 方法）。如果</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi mathvariant="normal">∥</mi><mi>d</mi><mi>s</mi><mi>t</mi><mi>P</mi><mi>o</mi><mi>i</mi><mi>n</mi><mi>t</mi><msub><mi>s</mi><mi>i</mi></msub><mo>−</mo><mi mathvariant="normal">convertPointsHomogeneous</mi><mo>⁡</mo><mo stretchy="false">(</mo><mi>H</mi><mo>∗</mo><mi>s</mi><mi>r</mi><mi>c</mi><mi>P</mi><mi>o</mi><mi>i</mi><mi>n</mi><mi>t</mi><msub><mi>s</mi><mi>i</mi></msub><mo stretchy="false">)</mo><mi mathvariant="normal">∥</mi><mspace linebreak="newline"></mspace><mo>&gt;</mo><mi>r</mi><mi>a</mi><mi>n</mi><mi>s</mi><mi>a</mi><mi>c</mi><mi>R</mi><mi>e</mi><mi>p</mi><mi>r</mi><mi>o</mi><mi>j</mi><mi>T</mi><mi>h</mi><mi>r</mi><mi>e</mi><mi>s</mi><mi>h</mi><mi>o</mi><mi>l</mi><mi>d</mi></mrow><annotation encoding="application/x-tex">\| dstPoints_i - \operatorname{convertPointsHomogeneous}(H * srcPoints_i) \| \\
+&gt; ransacReprojThreshold
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">∥</span><span class="mord mathdefault">d</span><span class="mord mathdefault">s</span><span class="mord mathdefault">t</span><span class="mord mathdefault" style="margin-right:0.13889em;">P</span><span class="mord mathdefault">o</span><span class="mord mathdefault">i</span><span class="mord mathdefault">n</span><span class="mord mathdefault">t</span><span class="mord"><span class="mord mathdefault">s</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mop"><span class="mord mathrm">c</span><span class="mord mathrm">o</span><span class="mord mathrm">n</span><span class="mord mathrm" style="margin-right:0.01389em;">v</span><span class="mord mathrm">e</span><span class="mord mathrm">r</span><span class="mord mathrm">t</span><span class="mord mathrm">P</span><span class="mord mathrm">o</span><span class="mord mathrm">i</span><span class="mord mathrm">n</span><span class="mord mathrm">t</span><span class="mord mathrm">s</span><span class="mord mathrm">H</span><span class="mord mathrm">o</span><span class="mord mathrm">m</span><span class="mord mathrm">o</span><span class="mord mathrm" style="margin-right:0.01389em;">g</span><span class="mord mathrm">e</span><span class="mord mathrm">n</span><span class="mord mathrm">e</span><span class="mord mathrm">o</span><span class="mord mathrm">u</span><span class="mord mathrm">s</span></span><span class="mopen">(</span><span class="mord mathdefault" style="margin-right:0.08125em;">H</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault">s</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mord mathdefault">c</span><span class="mord mathdefault" style="margin-right:0.13889em;">P</span><span class="mord mathdefault">o</span><span class="mord mathdefault">i</span><span class="mord mathdefault">n</span><span class="mord mathdefault">t</span><span class="mord"><span class="mord mathdefault">s</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mord">∥</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="mspace newline"></span><span class="base"><span class="strut" style="height:0.5782em;vertical-align:-0.0391em;"></span><span class="mrel">&gt;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mord mathdefault">a</span><span class="mord mathdefault">n</span><span class="mord mathdefault">s</span><span class="mord mathdefault">a</span><span class="mord mathdefault">c</span><span class="mord mathdefault" style="margin-right:0.00773em;">R</span><span class="mord mathdefault">e</span><span class="mord mathdefault">p</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mord mathdefault">o</span><span class="mord mathdefault" style="margin-right:0.05724em;">j</span><span class="mord mathdefault" style="margin-right:0.13889em;">T</span><span class="mord mathdefault">h</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mord mathdefault">e</span><span class="mord mathdefault">s</span><span class="mord mathdefault">h</span><span class="mord mathdefault">o</span><span class="mord mathdefault" style="margin-right:0.01968em;">l</span><span class="mord mathdefault">d</span></span></span></span></span></p>
+<p>则点被认为是个 outlier（即错误匹配点对）。若 <code>srcPoints</code> 和 <code>dstPoints</code> 是以像素为单位的，则该参数通常设置在 1 到 10 的范围内。</p>
+</li>
+<li>
+<p><code>mask</code>：可选输出掩码矩阵，通常由鲁棒算法（RANSAC 或 LMEDS）设置。注意，输入掩码矩阵是不需要设置的。</p>
+</li>
+<li>
+<p><code>maxIters</code>：RANSAC 算法的最大迭代次数，默认为 2000。</p>
+</li>
+<li>
+<p><code>confidence</code>：可信度，取值为 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo stretchy="false">[</mo><mn>0</mn><mo separator="true">,</mo><mn>1</mn><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">[0, 1]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord">0</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">1</span><span class="mclose">]</span></span></span></span>。</p>
+</li>
+</ul>
+<h2 id="72-findfundamental"><a class="markdownIt-Anchor" href="#72-findfundamental"></a> 7.2  <code>findFundamental()</code></h2>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">CV_EXPORTS_W </span></span><br><span class="line"><span class="function">Mat <span class="title">findFundamentalMat</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">    InputArray  points1, </span></span></span><br><span class="line"><span class="params"><span class="function">    InputArray  points2,</span></span></span><br><span class="line"><span class="params"><span class="function">    <span class="comment">// FM_7POINT, FM_8POINT, FM_LMEDS, FM_RANSAC</span></span></span></span><br><span class="line"><span class="params"><span class="function">    <span class="type">int</span>         method = FM_RANSAC,  </span></span></span><br><span class="line"><span class="params"><span class="function">    <span class="type">double</span>      param1 = <span class="number">3.</span>, </span></span></span><br><span class="line"><span class="params"><span class="function">    <span class="type">double</span>      param2 = <span class="number">0.99</span>,                              </span></span></span><br><span class="line"><span class="params"><span class="function">    OutputArray mask = noArray()</span></span></span><br><span class="line"><span class="params"><span class="function">)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>参数说明：</p>
+<ul>
+<li><code>points1</code>：第一张图像的点；</li>
+<li><code>points2</code>：第二章图像的点；</li>
+<li><code>param1</code>：该参数用于 RANSAC 算法，它是从点到对极线的最大距离（以像素为单位），超过该距离，该点被视为异常值，并且不用于计算最终的基础矩阵。 可以将其设置为 1-3 ，具体取决于点定位的精度，图像分辨率和图像噪声。</li>
+<li><code>param2</code>：该参数仅在 RANSAC 算法以及 LMedS 算法中， 它指定了估计矩阵正确的期望置信度（概率）。</li>
+</ul>
+<h2 id="73-solvepnpransac"><a class="markdownIt-Anchor" href="#73-solvepnpransac"></a> 7.3  <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>s</mi><mi>o</mi><mi>l</mi><mi>v</mi><mi>e</mi><mi>P</mi><mi>n</mi><mi>P</mi><mi>R</mi><mi>a</mi><mi>n</mi><mi>s</mi><mi>a</mi><mi>c</mi><mo stretchy="false">(</mo><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">solvePnPRansac()</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault">s</span><span class="mord mathdefault">o</span><span class="mord mathdefault" style="margin-right:0.01968em;">l</span><span class="mord mathdefault" style="margin-right:0.03588em;">v</span><span class="mord mathdefault">e</span><span class="mord mathdefault" style="margin-right:0.13889em;">P</span><span class="mord mathdefault">n</span><span class="mord mathdefault" style="margin-right:0.13889em;">P</span><span class="mord mathdefault" style="margin-right:0.00773em;">R</span><span class="mord mathdefault">a</span><span class="mord mathdefault">n</span><span class="mord mathdefault">s</span><span class="mord mathdefault">a</span><span class="mord mathdefault">c</span><span class="mopen">(</span><span class="mclose">)</span></span></span></span></h2>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">bool</span> <span class="title">cv::solvePnPRansac</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">    InputArray  objectPoints,</span></span></span><br><span class="line"><span class="params"><span class="function">    InputArray  imagePoints,</span></span></span><br><span class="line"><span class="params"><span class="function">    InputArray  cameraMatrix,</span></span></span><br><span class="line"><span class="params"><span class="function">    InputArray  distCoeffs,</span></span></span><br><span class="line"><span class="params"><span class="function">    OutputArray rvec,</span></span></span><br><span class="line"><span class="params"><span class="function">    OutputArray tvec,</span></span></span><br><span class="line"><span class="params"><span class="function">    <span class="type">bool</span>        useExtrinsicGauss = <span class="literal">false</span>,</span></span></span><br><span class="line"><span class="params"><span class="function">    <span class="type">int</span>         iterationsCount = <span class="number">100</span>,</span></span></span><br><span class="line"><span class="params"><span class="function">    <span class="type">float</span>       reprojectionError = <span class="number">8.0</span>,</span></span></span><br><span class="line"><span class="params"><span class="function">    <span class="type">double</span>      confidence = <span class="number">0.99</span>,</span></span></span><br><span class="line"><span class="params"><span class="function">    OutputArray inliers = noArray(),</span></span></span><br><span class="line"><span class="params"><span class="function">    <span class="type">int</span>         flags = SOLVEPNP_INTERATIVE</span></span></span><br><span class="line"><span class="params"><span class="function">)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>参数说明：</p>
+<ul>
+<li><code>objectPoints</code>：目标坐标系下的目标点，<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>3</mn><mo>×</mo><mi>N</mi><mi mathvariant="normal">/</mi><mi>N</mi><mo>×</mo><mn>3</mn><mo separator="true">,</mo><mn>1</mn><mtext> channel</mtext></mrow><annotation encoding="application/x-tex">3 \times N / N \times 3, 1\ \text{channel}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">3</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.10903em;">N</span><span class="mord">/</span><span class="mord mathdefault" style="margin-right:0.10903em;">N</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord">3</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">1</span><span class="mspace"> </span><span class="mord text"><span class="mord">channel</span></span></span></span></span> 或者 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>1</mn><mo>×</mo><mi>N</mi><mi mathvariant="normal">/</mi><mi>N</mi><mo>×</mo><mn>1</mn><mo separator="true">,</mo><mn>3</mn><mtext> channel</mtext></mrow><annotation encoding="application/x-tex">1 \times N / N \times 1, 3\ \text{channel}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.10903em;">N</span><span class="mord">/</span><span class="mord mathdefault" style="margin-right:0.10903em;">N</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord">1</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">3</span><span class="mspace"> </span><span class="mord text"><span class="mord">channel</span></span></span></span></span>，<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>N</mi></mrow><annotation encoding="application/x-tex">N</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.10903em;">N</span></span></span></span> 为点的数量，也可以是 <code>vector&lt;Point3f&gt;</code>。</li>
+<li><code>imagePoints</code>：目标对应的图像点，<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>2</mn><mo>×</mo><mi>N</mi><mi mathvariant="normal">/</mi><mi>N</mi><mo>×</mo><mn>2</mn><mo separator="true">,</mo><mn>1</mn><mtext> channel</mtext></mrow><annotation encoding="application/x-tex">2 \times N / N \times 2, 1\ \text{channel}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">2</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.10903em;">N</span><span class="mord">/</span><span class="mord mathdefault" style="margin-right:0.10903em;">N</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord">2</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">1</span><span class="mspace"> </span><span class="mord text"><span class="mord">channel</span></span></span></span></span> 或者 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>1</mn><mo>×</mo><mi>N</mi><mi mathvariant="normal">/</mi><mi>N</mi><mo>×</mo><mn>1</mn><mo separator="true">,</mo><mn>2</mn><mtext> channel</mtext></mrow><annotation encoding="application/x-tex">1 \times N / N \times 1, 2\ \text{channel}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.10903em;">N</span><span class="mord">/</span><span class="mord mathdefault" style="margin-right:0.10903em;">N</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord">1</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">2</span><span class="mspace"> </span><span class="mord text"><span class="mord">channel</span></span></span></span></span>，也可以是 <code>vector&lt;Point2f&gt;</code>。</li>
+<li><code>cameraMatrix</code>：相机内参矩阵。</li>
+<li><code>distCoeffs</code>：畸变参数向量，可以是 NULL 或 4、5、8、12 或 14 个变量组成的向量。</li>
+<li><code>rvec</code>：输出的旋转向量，结合 <code>tvec</code> 将点从模型坐标系转换到相机坐标系。</li>
+<li><code>tvec</code>：输出的位移向量。</li>
+<li><code>useExtrinsicGauss</code>：使用在 <code>SOLVEPNP_INTERATIVE</code> 的参数。若为 <code>true</code>，则函数使用提供的 <code>rvec</code> 和 <code>tvec</code> 作为旋转和平移的初始值。</li>
+<li><code>iterationsCount</code>：迭代次数。</li>
+<li><code>reprojectionError</code>：RANSAC 算法的 inlier 阈值，表示观测和估计点投影的最大距离阈值。</li>
+<li><code>confidence</code>：算法结果的置信度。</li>
+<li><code>inliers</code>：包含在 <code>objectPoints</code> 和 <code>imagePoints</code> 的 inlier 的索引。</li>
+<li><code>flags</code>：求解 PnP 的方法（见 <code>solvePnP()</code>）。</li>
+</ul>
+<h1 id="参考"><a class="markdownIt-Anchor" href="#参考"></a> 参考</h1>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/hzwwpgmwy/article/details/83578694%EF%BC%88RANSAC">https://blog.csdn.net/hzwwpgmwy/article/details/83578694（RANSAC</a> 计算单应矩阵）</li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/robinhjwy/article/details/79174914">https://blog.csdn.net/robinhjwy/article/details/79174914</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/45532306">https://zhuanlan.zhihu.com/p/45532306</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/62238520">https://zhuanlan.zhihu.com/p/62238520</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Summary/" rel="tag"># Summary</a>
+              <a href="/tags/Knowledge/" rel="tag"># Knowledge</a>
+              <a href="/tags/RANSAC/" rel="tag"># RANSAC</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/summary/M-Estimation/" rel="prev" title="M-Estimation">
+                  <i class="fa fa-chevron-left"></i> M-Estimation
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/summary/Bag-of-Words%20Model%20(BoW)/" rel="next" title="Bag-of-Words Model (BoW)">
+                  Bag-of-Words Model (BoW) <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Star Rain</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://lib.baomitu.com/canvas-nest.js/1.0.1/canvas-nest.js"></script>
+
+
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+  <script class="next-config" data-name="pdf" type="application/json">{"object_url":{"url":"https://cdn.jsdelivr.net/npm/pdfobject@2.2.7/pdfobject.min.js","integrity":"sha256-ph3Dk89VmuTVXG6x/RDzk53SU9LPdAh1tpv0UvnDZ2I="},"url":"/lib/pdf/web/viewer.html"}</script>
+  <script src="/js/third-party/tags/pdf.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha256-TThEtR+XalhWKkfF383YLOrI50NGNeIqrzS+q08afrY=" crossorigin="anonymous">
+
+
+<script class="next-config" data-name="waline" type="application/json">{"lang":"en","enable":true,"serverURL":"https://waline.vercel.app","cssUrl":"https://unpkg.com/@waline/client@v2/dist/waline.css","commentCount":true,"pageview":false,"libUrl":"https://unpkg.com/@waline/client@v2/dist/waline.js","emoji":["https://unpkg.com/@waline/emojis@1.0.1/weibo","https://unpkg.com/@waline/emojis@1.0.1/alus","https://unpkg.com/@waline/emojis@1.0.1/bilibili","https://unpkg.com/@waline/emojis@1.0.1/qq","https://unpkg.com/@waline/emojis@1.0.1/tieba","https://unpkg.com/@waline/emojis@1.0.1/tw-emoji"],"meta":["nick","mail"],"requiredMeta":["nick"],"pageSize":10,"el":"#waline","comment":true,"path":"/summary/RANSAC/"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/logo-32x32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/logo-16x16.ico">
+  <link rel="mask-icon" href="/images/logo.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"guoyongyu.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="关于 TX2 的初始使用整理。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Usage of TX2">
+<meta property="og:url" content="https://guoyongyu.github.io/summary/Usage%20of%20TX2/index.html">
+<meta property="og:site_name" content="The Blog of Star Rain">
+<meta property="og:description" content="关于 TX2 的初始使用整理。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-05-29T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-01-28T04:15:05.231Z">
+<meta property="article:author" content="Star Rain">
+<meta property="article:tag" content="Summary">
+<meta property="article:tag" content="TX2">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://guoyongyu.github.io/summary/Usage%20of%20TX2/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://guoyongyu.github.io/summary/Usage%20of%20TX2/","path":"summary/Usage of TX2/","title":"Usage of TX2"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Usage of TX2 | The Blog of Star Rain</title>
+  
+
+
+
+
+<link rel="dns-prefetch" href="https://waline.vercel.app">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">The Blog of Star Rain</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-papernote"><a href="/papernote/" rel="section"><i class="fa fa-bookmark fa-fw"></i>论文笔记</a></li><li class="menu-item menu-item-summary"><a href="/summary/" rel="section"><i class="fa fa-file-pen fa-fw"></i>知识总结</a></li><li class="menu-item menu-item-collection"><a href="/collection/" rel="section"><i class="fa fa-archive fa-fw"></i>收集</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-jetpack"><span class="nav-number">1.</span> <span class="nav-text"> 1  JetPack</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#11-%E5%AE%89%E8%A3%85"><span class="nav-number">1.1.</span> <span class="nav-text"> 1.1  安装</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-cuda"><span class="nav-number">2.</span> <span class="nav-text"> 2  CUDA</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#21-cuda-%E7%9A%84%E8%B7%AF%E5%BE%84"><span class="nav-number">2.1.</span> <span class="nav-text"> 2.1  CUDA 的路径</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#22-%E8%BF%90%E8%A1%8C-cuda-%E7%9A%84-sample"><span class="nav-number">2.2.</span> <span class="nav-text"> 2.2  运行 CUDA 的 Sample</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#23-%E6%9F%A5%E7%9C%8B-cuda-%E7%9A%84%E5%B1%9E%E6%80%A7"><span class="nav-number">2.3.</span> <span class="nav-text"> 2.3  查看 CUDA 的属性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#24-gpu-%E4%B8%8E-cpu-%E5%AF%B9%E6%AF%94"><span class="nav-number">2.4.</span> <span class="nav-text"> 2.4  GPU 与 CPU 对比</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-python-%E5%8C%85%E5%AE%89%E8%A3%85"><span class="nav-number">3.</span> <span class="nav-text"> 3  Python 包安装</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-caffe-%E5%AE%89%E8%A3%85"><span class="nav-number">4.</span> <span class="nav-text"> 4  caffe 安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#41-%E5%AE%89%E8%A3%85%E4%BE%9D%E8%B5%96"><span class="nav-number">4.1.</span> <span class="nav-text"> 4.1  安装依赖</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#42-%E4%B8%8B%E8%BD%BD-caffe-%E6%BA%90%E7%A0%81"><span class="nav-number">4.2.</span> <span class="nav-text"> 4.2  下载 caffe 源码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#43-%E4%BF%AE%E6%94%B9%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">4.3.</span> <span class="nav-text"> 4.3  修改配置文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#44-%E7%BC%96%E8%AF%91%E6%BA%90%E7%A0%81"><span class="nav-number">4.4.</span> <span class="nav-text"> 4.4  编译源码</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-tx2-%E5%BC%80%E5%8F%91"><span class="nav-number">5.</span> <span class="nav-text"> 5  TX2 开发</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#51-%E7%BC%96%E8%AF%91"><span class="nav-number">5.1.</span> <span class="nav-text"> 5.1  编译</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#52-tx2-%E5%92%8C-pc-linux-%E8%81%94%E6%9C%BA"><span class="nav-number">5.2.</span> <span class="nav-text"> 5.2  TX2 和 PC Linux 联机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#53-tx2-%E5%92%8C-windowswin7%E8%81%94%E6%9C%BA"><span class="nav-number">5.3.</span> <span class="nav-text"> 5.3  TX2 和 Windows（Win7）联机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#54-%E4%BF%AE%E6%94%B9%E8%BD%AF%E4%BB%B6%E6%BA%90"><span class="nav-number">5.4.</span> <span class="nav-text"> 5.4  修改软件源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#55-%E5%AE%89%E8%A3%85%E4%B8%AD%E6%96%87%E8%BE%93%E5%85%A5%E6%B3%95"><span class="nav-number">5.5.</span> <span class="nav-text"> 5.5  安装中文输入法</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Star Rain</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">93</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">101</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/GuoYongyu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;GuoYongyu" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://guoyongyu.github.io/summary/Usage%20of%20TX2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Star Rain">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="The Blog of Star Rain">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Usage of TX2 | The Blog of Star Rain">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Usage of TX2
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2022-05-30 00:00:00" itemprop="dateCreated datePublished" datetime="2022-05-30T00:00:00+08:00">2022-05-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-01-28 12:15:05" itemprop="dateModified" datetime="2023-01-28T12:15:05+08:00">2023-01-28</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Summary/" itemprop="url" rel="index"><span itemprop="name">Summary</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">Waline: </span>
+  
+    <a title="waline" href="/summary/Usage%20of%20TX2/#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/summary/Usage%20of%20TX2/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>关于 TX2 的初始使用整理。</p>
+<span id="more"></span>
+<center><font size="7">TX2 学习记录</font></center>
+<hr>
+<h1 id="1-jetpack"><a class="markdownIt-Anchor" href="#1-jetpack"></a> 1  JetPack</h1>
+<h2 id="11-安装"><a class="markdownIt-Anchor" href="#11-安装"></a> 1.1  安装</h2>
+<ul>
+<li>
+<p>从官网上下载 JetPack 安装文件（<a target="_blank" rel="noopener" href="https://developer.nvidia.com/embedded/jetpack%EF%BC%89%EF%BC%8C%E5%9C%A8%E5%AE%98%E7%BD%91%E7%AE%80%E5%8D%95%E6%B3%A8%E5%86%8C%E5%90%8E%E7%9B%B4%E6%8E%A5%E4%B8%8B%E8%BD%BD%EF%BC%8C%E4%B8%8B%E8%BD%BD%E5%AE%8C%E6%88%90%E5%90%8E%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E5%8D%95%E7%8B%AC%E7%9B%AE%E5%BD%95">https://developer.nvidia.com/embedded/jetpack），在官网简单注册后直接下载，下载完成后创建一个单独目录</a> <code>jetpack</code> 将之放置该目录下，使用命令 <code>sudo chmod +x 文件名</code> 修改文件的执行权限后运行该文件。</p>
+<ol>
+<li>打开链接 <a target="_blank" rel="noopener" href="https://developer.nvidia.com/embedded/jetpack%EF%BC%8C%E4%B8%8B%E8%BD%BD">https://developer.nvidia.com/embedded/jetpack，下载</a> JetPack。</li>
+<li>新建一个文件夹，并将下载的文件移动到这个文件夹下:</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir ~/JetPack</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>为文件添加可执行权限：</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo chmod +x JetPack-X.Y.run  # X 和 Y 为版本</span><br></pre></td></tr></table></figure>
+<ol start="4">
+<li>运行：</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./JetPack-X.Y.run</span><br></pre></td></tr></table></figure>
+<ol start="5">
+<li>在 JetPack L4T Component Manager 界面：如果第一次使用，建议选择【Full】，也可选择【Custom】进行自定义，选择想要安装的Package，不安装则选择【no action】。有的 Package 可能不会一次就下载成功，Progress 栏提示 Download error，这时可以点击【Pause】暂停，然后单击【Resume】继续下载，直到全部下载成功后，点击Next。</li>
+<li>在Terms and Conditions 界面：勾选【Accept All】，点击Accept。</li>
+<li>用网线将 TX2 连接到路由器上。</li>
+<li>Network Interface Selection 页中，若使用 WLAN 连接则选择 wlan0，网线连接则用 eth0。</li>
+<li>参考：<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/97711207437b">https://www.jianshu.com/p/97711207437b</a></li>
+</ol>
+</li>
+</ul>
+<h1 id="2-cuda"><a class="markdownIt-Anchor" href="#2-cuda"></a> 2  CUDA</h1>
+<h2 id="21-cuda-的路径"><a class="markdownIt-Anchor" href="#21-cuda-的路径"></a> 2.1  CUDA 的路径</h2>
+<ul>
+<li>/usr/local/cuda-x-y （X Y 是 CUDA 版本）</li>
+<li>图形界面下：文件管理器中 computer 进去找 usr 目录</li>
+</ul>
+<h2 id="22-运行-cuda-的-sample"><a class="markdownIt-Anchor" href="#22-运行-cuda-的-sample"></a> 2.2  运行 CUDA 的 Sample</h2>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd /usr/local/cuda-9.0/samples/5_Simulations/oceanFFT</span><br><span class="line">sudo make  # password: nvidia</span><br><span class="line">./oceanFFT</span><br></pre></td></tr></table></figure>
+<h2 id="23-查看-cuda-的属性"><a class="markdownIt-Anchor" href="#23-查看-cuda-的属性"></a> 2.3  查看 CUDA 的属性</h2>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd /usr/local/cuda/samples/1_Utilities/deviceQuery</span><br><span class="line">sudo make </span><br><span class="line">./deviceQuery</span><br></pre></td></tr></table></figure>
+<h2 id="24-gpu-与-cpu-对比"><a class="markdownIt-Anchor" href="#24-gpu-与-cpu-对比"></a> 2.4  GPU 与 CPU 对比</h2>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">cd /usr/local/cuda/samples/5_Simulations/nbody</span><br><span class="line">sudo make </span><br><span class="line">./nbody --help  # 显示参数选择</span><br><span class="line">./nbody  # 用 GPU 执行</span><br><span class="line">./nbody -cpu  # 用 CPU 执行</span><br></pre></td></tr></table></figure>
+<h1 id="3-python-包安装"><a class="markdownIt-Anchor" href="#3-python-包安装"></a> 3  Python 包安装</h1>
+<ul>
+<li>以安装 Python3 下 TesnsorFlow 为例（尝试加入 <code>--extra</code> 参数）</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip3 install --extra-index-url=https://developer.download.nvidia.com/compute/redist/jp33 tensorflow-gpu</span><br></pre></td></tr></table></figure>
+<h1 id="4-caffe-安装"><a class="markdownIt-Anchor" href="#4-caffe-安装"></a> 4  caffe 安装</h1>
+<ul>
+<li>caffe 用于运行深度学习算法</li>
+</ul>
+<h2 id="41-安装依赖"><a class="markdownIt-Anchor" href="#41-安装依赖"></a> 4.1  安装依赖</h2>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">general dependency</span></span><br><span class="line">sudo apt-get install libprotobuf-dev libleveldb-dev libsnappy-dev libopencv-dev libhdf5-serial-dev protobuf-compiler</span><br><span class="line">sudo apt-get install --no-install-recommends libboost-all-dev</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">BLAS dependency</span></span><br><span class="line">sudo apt-get install libatlas-base-dev</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">python dependency</span></span><br><span class="line">sudo apt-get install python</span><br><span class="line">sudo apt-get install python-dev</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">python dependency etc.</span></span><br><span class="line">sudo apt-get install python-numpy</span><br><span class="line">sudo apt-get install ipython</span><br><span class="line">sudo apt-get install ipython-notebook</span><br><span class="line">sudo apt-get install python-sklearn</span><br><span class="line">sudo apt-get install python-skimage</span><br><span class="line">sudo apt-get install python-protobuf</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">google dependency</span></span><br><span class="line">sudo apt-get install libgflags-dev libgoogle-glog-dev liblmdb-dev</span><br></pre></td></tr></table></figure>
+<h2 id="42-下载-caffe-源码"><a class="markdownIt-Anchor" href="#42-下载-caffe-源码"></a> 4.2  下载 caffe 源码</h2>
+<ul>
+<li>需要先安装 git</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install git</span><br></pre></td></tr></table></figure>
+<ul>
+<li>cd 到保存源码的目录下，运行下面指令下载源码</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/BVLC/caffe.git</span><br></pre></td></tr></table></figure>
+<h2 id="43-修改配置文件"><a class="markdownIt-Anchor" href="#43-修改配置文件"></a> 4.3  修改配置文件</h2>
+<ul>
+<li>需要进入 caffe 目录修改 <strong>Makefile.config</strong> 和 <strong>Makefile</strong> 两个配置文件</li>
+</ul>
+<ol>
+<li>使用 CuDNN（取消 <strong>USE_CUDNN ：= 1</strong> 前的 ‘#’）</li>
+<li>使用 OpenCV v3（取消 <strong>OPENCV_VERSION := 3</strong> 前的 ‘#’）</li>
+<li>使用 Python 接口（取消 <strong>WITH_PYTHON_LAYER := 1</strong> 变量前的 ’#’）</li>
+<li>修改 Python 路径如下（按照实际情况修改）：</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">INCLUDE_DIRS := $(PYTHON_INCLUDE) /usr/local/include /usr/include/hdf5/serial</span><br><span class="line">LIBRARY_DIRS := $(PYTHON_LIB) /usr/local/lib /usr/lib /usr/lib/x86_64-linux-gnu /usr/lib/x86_64-linux-gnu/hdf5/serial </span><br></pre></td></tr></table></figure>
+<ul>
+<li>Makefile 文件的修改</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">将：</span><br><span class="line">NVCCFLAGS +=-ccbin=$(CXX) -Xcompiler-fPIC $(COMMON_FLAGS)</span><br><span class="line">替换为：</span><br><span class="line">NVCCFLAGS += -D_FORCE_INLINES -ccbin=$(CXX) -Xcompiler -fPIC $(COMMON_FLAGS)</span><br><span class="line"></span><br><span class="line">将：</span><br><span class="line">LIBRARIES += glog gflags protobuf boost_system boost_filesystem m hdf5_hl hdf5</span><br><span class="line">改为：</span><br><span class="line">LIBRARIES += glog gflags protobuf boost_system boost_filesystem m hdf5_serial_hl hdf5_serial</span><br></pre></td></tr></table></figure>
+<h2 id="44-编译源码"><a class="markdownIt-Anchor" href="#44-编译源码"></a> 4.4  编译源码</h2>
+<ul>
+<li>编译指令</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make all -j8</span><br></pre></td></tr></table></figure>
+<ul>
+<li>测试指令</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo make test -j8</span><br><span class="line">sudo make runtest -j8</span><br></pre></td></tr></table></figure>
+<ul>
+<li>
+<p>如果没有异常，则 caffe 安装完成，但由于没安装 pycaffe 接口，依然无法在 Python 中导入 caffe。需要编译 caffe 的 Python 接口pycaffe，运行 <code>sudo make pycaffe</code> 命令。</p>
+<p>此时需要在 <strong>~/.bashrc</strong> 文件中写入 caffe 的路径，在文件下方写入（遗漏这步可能导致no module named caffe）</p>
+</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export PYTHONPATH=~/caffe/python:$PYTHONPATH</span><br></pre></td></tr></table></figure>
+<h1 id="5-tx2-开发"><a class="markdownIt-Anchor" href="#5-tx2-开发"></a> 5  TX2 开发</h1>
+<h2 id="51-编译"><a class="markdownIt-Anchor" href="#51-编译"></a> 5.1  编译</h2>
+<ul>
+<li>对于大的程序工程（比如几十兆及以上的），最好的办法是把程序拷贝到已经搭建好相应开发环境的 TX2 开发板下编译。因为开发板相比在PC机上编译较容易。也可以使用交叉编译，但是较为麻烦。（相关信息：在TX2开发板的终端里，用 <code>make -v</code> 命令可以看到 Build for aarch64-unknown-linux-gnu ，而在PC机上 Ubuntu 的终端里看到的是 Built for x86_64-pc-linux-gnu。）</li>
+</ul>
+<h2 id="52-tx2-和-pc-linux-联机"><a class="markdownIt-Anchor" href="#52-tx2-和-pc-linux-联机"></a> 5.2  TX2 和 PC Linux 联机</h2>
+<ol>
+<li>在PC主机下，点击 Ubuntu 的桌面的右上角的 “网络连接符号”–&gt;编辑连接–&gt;以太网–&gt;有线连接1–&gt;选中–&gt;编辑–&gt;IPV4-&gt;方法–&gt;与其他计算机共享–&gt;保存。</li>
+<li>再点击右上角那个 “网络连接符号”–&gt;选中 连接信息–&gt;查看 IPV4下的IP地址–&gt;“10.42.0.1”。</li>
+<li>再返回到终端里，安装工具 <strong>nmap</strong>，可以搜索该网段存在的设备，命令为 <code>sudo apt install nmap</code>。等待一下，然后出来结果。如果这个网段就只连了 PC 和终端设备，那此时显示是 2 个设备（2 hosts up），一个是你本机的 IP，那另一个就是终端设备的IP。</li>
+<li>在终端中输入 <code>ssh TX2_name@IP_address</code> （说明：TX2_name 是你TX2设备的用户名，IP_address 是你刚刚获得的对面的IP。）</li>
+<li>最后按照提示输入对面用户名的密码。</li>
+<li>参考：<a target="_blank" rel="noopener" href="https://blog.csdn.net/x_kh_2001/article/details/80487987">https://blog.csdn.net/x_kh_2001/article/details/80487987</a></li>
+</ol>
+<h2 id="53-tx2-和-windowswin7联机"><a class="markdownIt-Anchor" href="#53-tx2-和-windowswin7联机"></a> 5.3  TX2 和 Windows（Win7）联机</h2>
+<ol>
+<li>在 TX2 上设置静态 IP 之前，首先要确保 TX2 上安装 <strong>openssh-server</strong>（<code>sudo apt-get install openssh-server</code>），然后确认 sshserver 是否启动（<code>ps -e |grep ssh</code>），然后输入命令 <code>sudo gedit /etc/network/interfaces</code>，就可以编辑 TX2 的静态IP（注意：TX2 的 IP 段需要和 PC 机 Windows 里的本地连接的 IP 设置成一致，TX2 的网关设置成和 PC 机 Windows的一致）,如下所示：</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">TX2 开发板</span></span><br><span class="line">auto eth0</span><br><span class="line">iface etho inet static</span><br><span class="line">address 192.168.1.136</span><br><span class="line">netmask 255.255.255.0</span><br><span class="line">gateway 192.168.1.1</span><br><span class="line">dns-nameservers 8.8.8.8</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>设置完 TX2 的静态 IP 后，刷新 IP（<code>sudo ip addr flush eth0</code>）（有的是wlan0，按实际情况配置），然后重新启动网络服务 <code>sudo systemctl restart networking.service</code>。如果没有报错重启机器就可以生效了<code>sudo reboot</code>。</li>
+<li>设置完 TX2 的静态 IP，还要在 PC 机上的本地连接设置静态IP。</li>
+<li>在 PC 机和 TX2 之间连上网线，就可以尝试在 Windows 下打开 SSH 连接 TX2 开发板的终端。</li>
+</ol>
+<h2 id="54-修改软件源"><a class="markdownIt-Anchor" href="#54-修改软件源"></a> 5.4  修改软件源</h2>
+<ul>
+<li>备份 /etc/lib 路径下的 source.list 文件，然后在终端执行以下命令：</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gedit /etc/lib/apt/sources.list</span><br></pre></td></tr></table></figure>
+<ul>
+<li>将打开的文件的内容全部替换为（xenial 为系统 Ubuntu 版本）：</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/ xenial-updates main restricted universe multiverse</span><br><span class="line">deb-src http://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/ xenial-updates main restricted universe multiverse</span><br><span class="line">deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/ xenial-security main restricted universe multiverse </span><br><span class="line">deb-src http://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/ xenial-security main restricted universe multiverse </span><br><span class="line">deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/ xenial-backports main restricted universe multiverse </span><br><span class="line">deb-src http://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/ xenial-backports main restricted universe multiverse </span><br><span class="line">deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/ xenial main universe restricted</span><br><span class="line">deb-src http://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/ xenial main universe restricted</span><br></pre></td></tr></table></figure>
+<ul>
+<li>然后在终端执行以下命令：</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update</span><br></pre></td></tr></table></figure>
+<h2 id="55-安装中文输入法"><a class="markdownIt-Anchor" href="#55-安装中文输入法"></a> 5.5  安装中文输入法</h2>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install ibus-sunpinyin</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Summary/" rel="tag"># Summary</a>
+              <a href="/tags/TX2/" rel="tag"># TX2</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/papernote/DGS%20(Distributed%20Gauss-Siedel)/" rel="prev" title="DGS (Distributed Gauss-Siedel)">
+                  <i class="fa fa-chevron-left"></i> DGS (Distributed Gauss-Siedel)
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/summary/Non-Linear%20Programming/" rel="next" title="Non-Linear Programming">
+                  Non-Linear Programming <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Star Rain</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://lib.baomitu.com/canvas-nest.js/1.0.1/canvas-nest.js"></script>
+
+
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+  <script class="next-config" data-name="pdf" type="application/json">{"object_url":{"url":"https://cdn.jsdelivr.net/npm/pdfobject@2.2.7/pdfobject.min.js","integrity":"sha256-ph3Dk89VmuTVXG6x/RDzk53SU9LPdAh1tpv0UvnDZ2I="},"url":"/lib/pdf/web/viewer.html"}</script>
+  <script src="/js/third-party/tags/pdf.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha256-TThEtR+XalhWKkfF383YLOrI50NGNeIqrzS+q08afrY=" crossorigin="anonymous">
+
+
+<script class="next-config" data-name="waline" type="application/json">{"lang":"en","enable":true,"serverURL":"https://waline.vercel.app","cssUrl":"https://unpkg.com/@waline/client@v2/dist/waline.css","commentCount":true,"pageview":false,"libUrl":"https://unpkg.com/@waline/client@v2/dist/waline.js","emoji":["https://unpkg.com/@waline/emojis@1.0.1/weibo","https://unpkg.com/@waline/emojis@1.0.1/alus","https://unpkg.com/@waline/emojis@1.0.1/bilibili","https://unpkg.com/@waline/emojis@1.0.1/qq","https://unpkg.com/@waline/emojis@1.0.1/tieba","https://unpkg.com/@waline/emojis@1.0.1/tw-emoji"],"meta":["nick","mail"],"requiredMeta":["nick"],"pageSize":10,"el":"#waline","comment":true,"path":"/summary/Usage%20of%20TX2/"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>
