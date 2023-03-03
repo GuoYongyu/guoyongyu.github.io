@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/logo-32x32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/logo-16x16.ico">
+  <link rel="mask-icon" href="/images/logo.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"guoyongyu.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="关于 SLAM 的环境配置简介，从 Ubuntu 系统的安装讲解至系统环境安装，最后介绍了两个开源项目的配置方案。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Beginning of SLAM (SLAM 环境简单配置)">
+<meta property="og:url" content="https://guoyongyu.github.io/summary/SLAM-Tutorials/index.html">
+<meta property="og:site_name" content="The Blog of Star Rain">
+<meta property="og:description" content="关于 SLAM 的环境配置简介，从 Ubuntu 系统的安装讲解至系统环境安装，最后介绍了两个开源项目的配置方案。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2023-02-20T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-03-03T01:19:16.032Z">
+<meta property="article:author" content="Star Rain">
+<meta property="article:tag" content="Summary">
+<meta property="article:tag" content="SLAM">
+<meta property="article:tag" content="SLAM Tutorials">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://guoyongyu.github.io/summary/SLAM-Tutorials/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://guoyongyu.github.io/summary/SLAM-Tutorials/","path":"summary/SLAM-Tutorials/","title":"Beginning of SLAM (SLAM 环境简单配置)"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Beginning of SLAM (SLAM 环境简单配置) | The Blog of Star Rain</title>
+  
+
+
+
+
+<link rel="dns-prefetch" href="https://waline.vercel.app">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">The Blog of Star Rain</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-papernote"><a href="/papernote/" rel="section"><i class="fa fa-bookmark fa-fw"></i>论文笔记</a></li><li class="menu-item menu-item-summary"><a href="/summary/" rel="section"><i class="fa fa-file-pen fa-fw"></i>知识总结</a></li><li class="menu-item menu-item-collection"><a href="/collection/" rel="section"><i class="fa fa-archive fa-fw"></i>收集</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#0-%E7%AE%80%E4%BB%8B%E5%92%8C%E7%9B%B8%E5%85%B3%E5%B7%A5%E4%BD%9C"><span class="nav-number">1.</span> <span class="nav-text"> 0. 简介和相关工作</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-linux-%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85"><span class="nav-number">2.</span> <span class="nav-text"> 1. Linux 环境安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#11-%E5%8F%8C%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85-linux"><span class="nav-number">2.1.</span> <span class="nav-text"> 1.1. 双系统安装 Linux</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#12-%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AE%89%E8%A3%85-linux"><span class="nav-number">2.2.</span> <span class="nav-text"> 1.2. 虚拟机安装 Linux*</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-cmake-%E5%AE%89%E8%A3%85"><span class="nav-number">3.</span> <span class="nav-text"> 2. CMake 安装*</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#21-gcc-%E5%92%8C-g-%E7%9A%84%E5%AE%89%E8%A3%85"><span class="nav-number">3.1.</span> <span class="nav-text"> 2.1. gcc 和 g++ 的安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#22-cmake-%E5%AE%89%E8%A3%85"><span class="nav-number">3.2.</span> <span class="nav-text"> 2.2. CMake 安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#23-cmake-%E7%9A%84%E5%B8%B8%E8%A7%81%E4%BD%BF%E7%94%A8%E6%96%B9%E5%BC%8F"><span class="nav-number">3.3.</span> <span class="nav-text"> 2.3. CMake 的常见使用方式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-ros-%E5%AE%89%E8%A3%85"><span class="nav-number">4.</span> <span class="nav-text"> 3. ROS 安装</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-opencv-%E5%AE%89%E8%A3%85"><span class="nav-number">5.</span> <span class="nav-text"> 4. OpenCV 安装*</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-python-%E5%92%8C-anaconda"><span class="nav-number">6.</span> <span class="nav-text"> 5. Python 和 Anaconda</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#51-python-%E5%AE%89%E8%A3%85"><span class="nav-number">6.1.</span> <span class="nav-text"> 5.1. Python 安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#52-anaconda-%E5%AE%89%E8%A3%85"><span class="nav-number">6.2.</span> <span class="nav-text"> 5.2. Anaconda 安装*</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6-%E5%B8%B8%E7%94%A8%E7%9A%84%E7%AC%AC%E4%B8%89%E6%96%B9%E5%BA%93%E5%AE%89%E8%A3%85"><span class="nav-number">7.</span> <span class="nav-text"> 6. 常用的第三方库安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#61-boost-%E5%AE%89%E8%A3%85"><span class="nav-number">7.1.</span> <span class="nav-text"> 6.1. boost 安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#62-eigen-%E5%AE%89%E8%A3%85"><span class="nav-number">7.2.</span> <span class="nav-text"> 6.2. Eigen 安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#63-ceres-%E5%AE%89%E8%A3%85"><span class="nav-number">7.3.</span> <span class="nav-text"> 6.3. ceres 安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#64-pcl-vtk-%E5%AE%89%E8%A3%85"><span class="nav-number">7.4.</span> <span class="nav-text"> 6.4. pcl + vtk 安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#65-%E5%85%B6%E4%BB%96%E5%BA%93"><span class="nav-number">7.5.</span> <span class="nav-text"> 6.5. 其他库</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#7-%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2%E5%AE%9E%E6%88%98-orb-slam2"><span class="nav-number">8.</span> <span class="nav-text"> 7. 开源项目部署实战 —— ORB-SLAM2*</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#71-%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85"><span class="nav-number">8.1.</span> <span class="nav-text"> 7.1. 环境安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#72-%E9%A1%B9%E7%9B%AE%E7%BC%96%E8%AF%91"><span class="nav-number">8.2.</span> <span class="nav-text"> 7.2. 项目编译</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#73-%E5%AE%9E%E9%AA%8C%E7%BB%93%E6%9E%9C"><span class="nav-number">8.3.</span> <span class="nav-text"> 7.3. 实验结果</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#74-%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2%E5%8F%82%E8%80%83"><span class="nav-number">8.4.</span> <span class="nav-text"> 7.4. 项目部署参考</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#8-%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2%E5%AE%9E%E6%88%98-vins-mono"><span class="nav-number">9.</span> <span class="nav-text"> 8. 开源项目部署实战 —— VINS-Mono*</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#81-%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85"><span class="nav-number">9.1.</span> <span class="nav-text"> 8.1. 环境安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#82-%E9%A1%B9%E7%9B%AE%E7%BC%96%E8%AF%91"><span class="nav-number">9.2.</span> <span class="nav-text"> 8.2. 项目编译</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#83-%E5%AE%9E%E9%AA%8C%E7%BB%93%E6%9E%9C"><span class="nav-number">9.3.</span> <span class="nav-text"> 8.3. 实验结果</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#84-%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2%E5%8F%82%E8%80%83"><span class="nav-number">9.4.</span> <span class="nav-text"> 8.4. 项目部署参考</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#85-%E9%A1%B9%E7%9B%AE%E6%8B%93%E5%B1%95"><span class="nav-number">9.5.</span> <span class="nav-text"> 8.5. 项目拓展</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%96%87%E7%8C%AE"><span class="nav-number">10.</span> <span class="nav-text"> 文献</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Star Rain</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">97</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">103</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/GuoYongyu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;GuoYongyu" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://guoyongyu.github.io/summary/SLAM-Tutorials/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Star Rain">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="The Blog of Star Rain">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Beginning of SLAM (SLAM 环境简单配置) | The Blog of Star Rain">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Beginning of SLAM (SLAM 环境简单配置)
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2023-02-21 00:00:00" itemprop="dateCreated datePublished" datetime="2023-02-21T00:00:00+08:00">2023-02-21</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-03-03 09:19:16" itemprop="dateModified" datetime="2023-03-03T09:19:16+08:00">2023-03-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Summary/" itemprop="url" rel="index"><span itemprop="name">Summary</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">Waline: </span>
+  
+    <a title="waline" href="/summary/SLAM-Tutorials/#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/summary/SLAM-Tutorials/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>关于 SLAM 的环境配置简介，从 Ubuntu 系统的安装讲解至系统环境安装，最后介绍了两个开源项目的配置方案。</p>
+<span id="more"></span>
+<center><b><font size="9">SLAM 环境配置简单说明</font></b></center>
+<h1 id="0-简介和相关工作"><a class="markdownIt-Anchor" href="#0-简介和相关工作"></a> 0. 简介和相关工作</h1>
+<p>SLAM 为 Simultaneous Localization And Mapping 的缩写，中文译为同步定位与建图，主要用于机器人（包括工程机器人、汽车、无人机、智能小车、仓储机器人等大量能装载 SLAM 相关传感器的机械）在<strong>未知环境下的定位问题和环境地图构建问题</strong>。</p>
+<p>SLAM 主要对<strong>视觉数据</strong>（如单眼相机拍摄的图像、深度图、语义图等）、<strong>激光雷达数据</strong>（主要是点云）、<strong>运动传感器数据</strong>（从惯性测量单元 IMU 采集得到）、<strong>测距数据</strong>（点云包含的距离信息，UWB 测量得到的距离信息，GPS 数据等）等多种数据进行处理，完成对机器人的轨迹追踪、对未知环境的地图构建等。</p>
+<p>SLAM 前景广阔，可以运用于军事侦察、工地探测、矿洞检测、商业开发、社会建设等诸多方面，在无人驾驶、AR（增强现实）、VR（虚拟现实）、智能仓储、无人机等应用领域 SLAM 都发挥着重要甚至是决定性的作用。经过数年的发展和探索，SLAM 已经取得很大进展，但是在实际应用上仍然存在大量有待深度开发的空间。</p>
+<p>与传统的深度学习不同，SLAM 可以说是和深度学习一样是机器学习的子分支，但是却有着比深度学习更加明确的理论支撑。SLAM 涉及到包括几何算法、欧式空间、运动学方程等广为人知的基础理论知识，也会需要运用如因子图、优化算法、图算法等较为高深的学科理论，甚至还需要使用到深度学习得到的高效模型。SLAM 并不是一定需要所有的这些知识，但是不同理论的相互结合都能带给开发者或研究者意想不到的收获，这也是 SLAM 的一大魅力所在。</p>
+<p>就经典的 SLAM 算法来讲，从输入的视觉数据上来看主要分为三类：</p>
+<ul>
+<li>LiDAR SLAM：以激光雷达的点云作为主要的视觉特征输入，经典的算法主要有 LOAM [1]、LeGO-LOAM [2]、LIO-SAM [3]、FAST-LIO [4]。</li>
+<li>Camera SLAM：以相机拍摄的照片作为视觉输入，相机则包含了单眼相机、双目相机、RGB-D 相机、鱼眼相机等，经典的算法主要有 ORB-SLAM [5]、ORB-SLAM2 [6]、ORB-SLAM3 [7]、VINS-Mono [8] 等。</li>
+<li>LiDAR + Camera SLAM：以激光雷达和相机照片作为输入，包括 R2LIVE [9]、R3LIVE [10] 等。</li>
+</ul>
+<p>另外，今年来，研究者开始关注语义 SLAM，即在环境中存在动态物体（如车辆、人等）的前提下完成 SLAM 算法，包括 SuMa++ [11]、DS-SLAM [12]、DynaSLAM [13]、VDO-SLAM [14]、Kimera-Multi [15] 等。</p>
+<h1 id="1-linux-环境安装"><a class="markdownIt-Anchor" href="#1-linux-环境安装"></a> 1. Linux 环境安装</h1>
+<p>SLAM 的开发主要是在 Linux 环境下，当然也可以在 Windows、MacOS 环境下。但是，相比于后者，Linux 开源且对于大量的开发工具包都有着十分良好的支持，因此在程序开发方面，会常见到 Linux 的身影。本环境配置教程则以 Linux 为例进行说明，后续的所有配置都是基于 Linux 系统下。</p>
+<p>Linux 有诸多的发行版，包括 CentOS、Ubuntu、Debian、Linux Mint、Fedora 等。本说明则主要讲解 Ubuntu 18.04，是目前来说使用较多的一个 Ubuntu 发行版，读者也可以使用 Ubuntu 16.04、Ubuntu 20.04 等，前者 2016 年发行相对较老，后者则发行于 2020 年，目前已经较为稳定，大多数的开发工具包已经对齐进行了适配。目前 Ubuntu 最新的发行版是 22.10，但是新版本往往存在一些 bug，而且开发者工具可能无法适配新系统，因此一般不推荐使用最新的版本。</p>
+<h2 id="11-双系统安装-linux"><a class="markdownIt-Anchor" href="#11-双系统安装-linux"></a> 1.1. 双系统安装 Linux</h2>
+<p>如果你已经安装了 Windows，那么安装一个 Ubuntu 双系统并不困难，只需要将你的硬盘空间留出一部分即可。尽量选择在固态硬盘上安装系统，以保证系统的流畅运行；并预留至少 100GB 的空间给 Linux，以保证能给系统足够的工具安装空间。当然你可以直接在 Windows 下直接安装 Linux 子系统 WSL，尽管目前为其添加了 GUI，但是主要以命令行控制为主，不推荐新手或者需要进行图形界面操作的用户使用。</p>
+<p>轻量级 U 盘启动盘制作工具 Rufus：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/454872391">https://zhuanlan.zhihu.com/p/454872391</a></p>
+<p>Ubuntu 18.04 下载：<a target="_blank" rel="noopener" href="https://releases.ubuntu.com/18.04/%EF%BC%8C%E4%B8%8B%E8%BD%BD">https://releases.ubuntu.com/18.04/，下载</a> Desktop 镜像，对应 64-bit PC (AMD64)</p>
+<p>Windows 10 安装 Ubuntu 18.04 双系统教程：<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_43106321/article/details/105361644%EF%BC%8CWindows">https://blog.csdn.net/qq_43106321/article/details/105361644，Windows</a> 11 的操作类似，使用 Windows 主要是为 Ubuntu 分配（腾出）空间。</p>
+<p>Ubuntu 18.04 分区参考：<a target="_blank" rel="noopener" href="https://blog.csdn.net/dally2/article/details/118032708">https://blog.csdn.net/dally2/article/details/118032708</a></p>
+<p>由于 Ubuntu 下载某些工具时往往需要使用如下命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 环境更新命令</span></span><br><span class="line">sudo apt update</span><br><span class="line">sudo apt upgrade</span><br><span class="line"></span><br><span class="line"><span class="comment"># 环境下载命令</span></span><br><span class="line">sudo apt-get install PACKAGE_YOU_WANT_TO_DOWNLOAD</span><br></pre></td></tr></table></figure>
+<p>使用默认下载源可能速度缓慢，因此可以更换国内源，如清华源、阿里源、中科大源等，如果下载速度相对正常可以不更换。更换源的方式可以参考：<a target="_blank" rel="noopener" href="https://blog.csdn.net/Zander0/article/details/119698368">https://blog.csdn.net/Zander0/article/details/119698368</a></p>
+<p>如果使用的是搭载 M 系列芯片的 MacOS，那么安装 Linux 双系统可能较为困难，请读者另行寻找相关资料。</p>
+<h2 id="12-虚拟机安装-linux"><a class="markdownIt-Anchor" href="#12-虚拟机安装-linux"></a> 1.2. 虚拟机安装 Linux*</h2>
+<p>双系统对于新手来说可能不太友好，尤其对于习惯了使用 Windows 的用户，因此可以选择在虚拟机上安装 Ubuntu。常用的虚拟机软件有 VMware Workstation、Oracle VirtualBox 等。</p>
+<p>此处提供 VMware Workstation Pro 的一个 Windows 绿色版本（官网版需要收费），链接：<a target="_blank" rel="noopener" href="https://pan.baidu.com/s/198hQace0Ha_nvjh4ALSXsA?pwd=99in%EF%BC%88%E6%8F%90%E5%8F%96%E7%A0%81%EF%BC%9A99in%EF%BC%89">https://pan.baidu.com/s/198hQace0Ha_nvjh4ALSXsA?pwd=99in（提取码：99in）</a></p>
+<p>安装参考教程：<a target="_blank" rel="noopener" href="https://blog.csdn.net/m0_47958289/article/details/117361027">https://blog.csdn.net/m0_47958289/article/details/117361027</a></p>
+<p>Ubuntu 18.04 下载：参考前述 1.1 部分，或者上面的安装教程</p>
+<p>如果使用搭载 M 系列芯片的 MacOS，则虚拟机安装 Ubuntu 较为麻烦（主要原因是 M 系列芯片采用的是 ARM 架构，多数搭载 Windows 系统的电脑的 CPU 为 x86 或 x64 架构），推荐参考如下的教程：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/QQ670663/article/details/122988328">https://blog.csdn.net/QQ670663/article/details/122988328</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_24950043/article/details/123764210">https://blog.csdn.net/qq_24950043/article/details/123764210</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_24950043/article/details/125774990">https://blog.csdn.net/qq_24950043/article/details/125774990</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV17r4y1A7wD/">https://www.bilibili.com/video/BV17r4y1A7wD/</a></li>
+</ul>
+<h1 id="2-cmake-安装"><a class="markdownIt-Anchor" href="#2-cmake-安装"></a> 2. CMake 安装*</h1>
+<h2 id="21-gcc-和-g-的安装"><a class="markdownIt-Anchor" href="#21-gcc-和-g-的安装"></a> 2.1. gcc 和 g++ 的安装</h2>
+<p>C/C++ 是常用于 SLAM 开发的编程语言，因此需要为其配置基本的编译环境。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">sudo apt update</span><br><span class="line">sudo apt install build-essential</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看 C/C++ 版本</span></span><br><span class="line">gcc --version  <span class="comment"># C 版本</span></span><br><span class="line">g++ --version  <span class="comment"># C++ 版本</span></span><br></pre></td></tr></table></figure>
+<p>若出现版本号，证明安装成功。</p>
+<p>参考：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/gu-qiu/p/13735992.html">https://www.cnblogs.com/gu-qiu/p/13735992.html</a></p>
+<h2 id="22-cmake-安装"><a class="markdownIt-Anchor" href="#22-cmake-安装"></a> 2.2. CMake 安装</h2>
+<p>CMake 是一个用于协助 C/C++ 进行编译的工具，使用过 Qt 的应该知道 QMake，其与 CMake 具有类似的功能，都是用于协调 C/C++ 工程进行编译，控制编译方式和编译顺序等。CMake 目前最新版为 3.26，但是同理不推荐安装最新版，推荐可以安装 3.24 版。SLAM 项目通常由多个 C/C++ 代码文件构成，使用 CMake 可以为程序编译提供良好的环境。</p>
+<p>安装参考教程：<a target="_blank" rel="noopener" href="https://blog.csdn.net/KIK9973/article/details/118796510">https://blog.csdn.net/KIK9973/article/details/118796510</a></p>
+<p>注意教程最后作者讲解了将 CMake 加入系统环境变量，一定要使用作者的推荐方法（软连接法），否则可能会影响到后续对 CMake 的使用（如果安装了 ROS，则会自动安装 CMake 3.10，对于使用 3.10 以上版本 CMake 进行编译的项目，低版本则无法完成编译，并且 ROS 安装的 CMake 通常会放在有较高优先级的环境变量中，如果不手动变更自主安装的 CMake 的环境优先级，系统在编译时就会优先使用 ROS 安装的 CMake）。</p>
+<p>CMake 官网下载地址：<a target="_blank" rel="noopener" href="https://cmake.org/download/">https://cmake.org/download/</a></p>
+<h2 id="23-cmake-的常见使用方式"><a class="markdownIt-Anchor" href="#23-cmake-的常见使用方式"></a> 2.3. CMake 的常见使用方式</h2>
+<p>CMake 常用于编译项目级的 C/C++ 程序，常见的编译格式如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> PROJECT_DIR     <span class="comment"># 进入工程目录下</span></span><br><span class="line"><span class="built_in">mkdir</span> build        <span class="comment"># 创建编译结果存放目录</span></span><br><span class="line"><span class="built_in">cd</span> build</span><br><span class="line">cmake ..           <span class="comment"># 产生编译配置文件等，如果有特殊编译需求，还要添加相应参数</span></span><br><span class="line">make -j4           <span class="comment"># 编译代码，-j4 表示使用 4 个线程编译，也可以不加此参数直接使用 make 指令</span></span><br><span class="line">                   <span class="comment"># 数字的大小可以根据 CPU 的内核数进行调整，过大也可能导致编译时线程冲突而出错</span></span><br><span class="line">sudo make install  <span class="comment"># 如果是编译安装第三方库到系统环境，则需要使用此命令</span></span><br></pre></td></tr></table></figure>
+<h1 id="3-ros-安装"><a class="markdownIt-Anchor" href="#3-ros-安装"></a> 3. ROS 安装</h1>
+<p>ROS 全称为 Robot Operating System，顾名思义是用于机器人的操作系统。也可以把它理解为一个子系统或者开发工具，我们需要借助其提供的开发包进行数据发布/订阅、数据可视化等。ROS 常用于 SLAM 系统的开发，已经推出至 ROS2，但是目前使用较少，此处为第一版的 ROS。</p>
+<p>安装参考教程：<a target="_blank" rel="noopener" href="https://blog.csdn.net/KIK9973/article/details/118755045?spm=1001.2014.3001.5502">https://blog.csdn.net/KIK9973/article/details/118755045?spm=1001.2014.3001.5502</a></p>
+<p>ROS 基础功能介绍和基础教程：<a target="_blank" rel="noopener" href="http://wiki.ros.org/cn">http://wiki.ros.org/cn</a></p>
+<p>ROS 和 Ubuntu 的版本对应关系：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Ubuntu</th>
+<th style="text-align:center">ROS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">14.04 LTS</td>
+<td style="text-align:center">indigo Igloo</td>
+</tr>
+<tr>
+<td style="text-align:center">16.04 LTS</td>
+<td style="text-align:center">Kinetic Kame</td>
+</tr>
+<tr>
+<td style="text-align:center">18.04 LTS</td>
+<td style="text-align:center">Melodic Morenia</td>
+</tr>
+<tr>
+<td style="text-align:center">20.04 LTS</td>
+<td style="text-align:center">Noetic Ninjemys</td>
+</tr>
+</tbody>
+</table>
+<p>从 22.04 LTS 以后，将停止 ROS1 的支持，之后将转为 ROS2 提供相关服务和支持：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Ubuntu</th>
+<th style="text-align:center">ROS2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">20.04 LTS</td>
+<td style="text-align:center">Foxy Fitzroy</td>
+</tr>
+<tr>
+<td style="text-align:center">20.04 LTS</td>
+<td style="text-align:center">Galactic Geochelone</td>
+</tr>
+<tr>
+<td style="text-align:center">20.04 LTS/22.04 LTS</td>
+<td style="text-align:center">Humble Hawksbill (Recommended)</td>
+</tr>
+</tbody>
+</table>
+<p>注意本说明主要围绕 Ubuntu 18.04 进行讲解，因此后续安装相关 ROS 环境配置库时，通常使用包含 melodic 字样的库名称，例如安装 qt 相关库：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install ros-melodic-qt</span><br></pre></td></tr></table></figure>
+<p>ROS-Melodic 会为用户自动安装一些第三方库，包括 Eigen（一个矩阵处理库，一般为 3.3.4 版本）等，以便于 ROS 能正常运行。3.3.4 版本的 Eigen 基本已经能满足大多数项目的需求</p>
+<h1 id="4-opencv-安装"><a class="markdownIt-Anchor" href="#4-opencv-安装"></a> 4. OpenCV 安装*</h1>
+<p>OpenCV 是一个开源的视觉处理库，常用于图像、视频处理，目前官网已经更新至 4.7.0 版本。OpenCV 提供了 C++、Python、Java、Android、iOS 的 API 接口，可以运行在 Linux、Windows、MacOS 等主流操作系统上。</p>
+<p>OpenCV 目前发行版众多，每一版会增加一些新功能并做一些优化，但是就开发上来说，一般使用较多的为 3.4.X 版本。考虑到视觉处理算法的多样性，推荐结合 OpenCV-contrib 安装，丰富 OpenCV 的功能，方便后期使用，但是并不代表一定需要安装。</p>
+<p>OpenCV 3.4.3 + OpenCV-contrib 3.4.3 安装教程：<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_25738937/article/details/122284073">https://blog.csdn.net/qq_25738937/article/details/122284073</a></p>
+<p>OpenCV 3.4.3 安装教程：<a target="_blank" rel="noopener" href="https://blog.csdn.net/hhz_999/article/details/120441809">https://blog.csdn.net/hhz_999/article/details/120441809</a></p>
+<p>OpenCV 3.4.X + OpenCV-contrib 3.4.X 安装教程：<a target="_blank" rel="noopener" href="https://blog.csdn.net/bj233/article/details/113351023">https://blog.csdn.net/bj233/article/details/113351023</a></p>
+<h1 id="5-python-和-anaconda"><a class="markdownIt-Anchor" href="#5-python-和-anaconda"></a> 5. Python 和 Anaconda</h1>
+<h2 id="51-python-安装"><a class="markdownIt-Anchor" href="#51-python-安装"></a> 5.1. Python 安装</h2>
+<p>除 C/C++ 外，Python 也是常用于 SLAM 开发的编程语言。通常 Ubuntu 自带 Python 解释器，包括 Python 2.7 和 Python 3.6。但是考虑到开发者的诉求，新的 Ubuntu 发行版去除了 Python 解释器的捆绑安装，需要用户自行安装。如果已经安装了 ROS，那么在安装 ROS 的过程中将已经安装好 Python 2.7 和 Python 3.6。如果没有安装 ROS，则可以手动安装 Python 解释器。目前 Python 2 基本已经少有使用并已经停止更新维护；而 Python 3 版本更新迭代速度非常快，至少已经更新至 3.11 版本，推荐使用 3.6 和 3.7 版本，尽管是数年前的版本，但是目前两个版本在大多数 Python 项目中都能给予良好的支持。</p>
+<p>安装教程：<a target="_blank" rel="noopener" href="https://blog.csdn.net/Mantana/article/details/107893182">https://blog.csdn.net/Mantana/article/details/107893182</a></p>
+<h2 id="52-anaconda-安装"><a class="markdownIt-Anchor" href="#52-anaconda-安装"></a> 5.2. Anaconda 安装*</h2>
+<p>如果熟悉使用 Python，会发现，Python 大量依赖于第三方库进行科学分析，包括 numpy、opencv-python、pandas、matplotlib、requests、scipy、scikit-learn 等，以及用于深度学习的库 PyTorch、TensorFlow 等，这也成为 Python 的一大魅力所在。然而这些第三方库的版本之间往往存在依赖关系甚至冲突关系，例如一些库可能需要另外一个特定版本的第三方库甚至只支持特定版本的 Python，这就会导致需要卸载已安装的版本后重新安装，十分麻烦且容易造成之前的项目在版本变更后无法正常运行。因此，通常会使用到 Python 虚拟环境，通过虚拟环境管理便于我们在各个环境中自由配置想要的 Python 版本以及所需的某些特定版本的第三方库，而各个虚拟环境之间并不冲突，极大地为项目管理提供了友好的支持。</p>
+<p>对于虚拟环境，尽管有相应的库（virtualenv）可以为我们提供相应功能的管理和支撑，然而其不便于管理 Python 版本，例如无法同时存在解释器为 Python 3.6 和 Python 3.7 的两个环境，此时我们就可以使用 Anaconda 或者 Miniconda 进行虚拟环境管理，此处主要围绕 Anaconda。</p>
+<p>conda 的优势：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/379321816">https://zhuanlan.zhihu.com/p/379321816</a></p>
+<p>**不管有没有安装 Python，安装 Anaconda 都不会对环境带来冲突。所以，建议在需要安装 Python 环境时，可以直接安装 Anaconda。**目前 Anaconda 自带 Python 3.9 的基本虚拟环境，我们可以使用 Anaconda 创建更多的不同版本的虚拟环境。</p>
+<p>官网：<a target="_blank" rel="noopener" href="https://www.anaconda.com/">https://www.anaconda.com/</a></p>
+<p>安装教程：<a target="_blank" rel="noopener" href="https://blog.csdn.net/KIK9973/article/details/118772450">https://blog.csdn.net/KIK9973/article/details/118772450</a></p>
+<p>安装教程 + 常用命令：<a target="_blank" rel="noopener" href="https://blog.csdn.net/m0_50181189/article/details/120005978">https://blog.csdn.net/m0_50181189/article/details/120005978</a></p>
+<p>使用教程：<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_44657714/article/details/120036158%EF%BC%8C%E5%B0%BD%E7%AE%A1%E9%87%8C%E9%9D%A2%E6%8F%90%E5%88%B0%E7%9A%84%E6%98%AF">https://blog.csdn.net/weixin_44657714/article/details/120036158，尽管里面提到的是</a> Windows，但是与 Anaconda 在 Linux 下的操作方法基本相同。</p>
+<p>常用的 conda 指令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 创建名为 env_name，解释器为 Python 3.x 的虚拟环境</span></span><br><span class="line">conda create -n env_name python=3.x</span><br><span class="line"></span><br><span class="line"><span class="comment"># 克隆已有的虚拟环境 old_env 至 new_env</span></span><br><span class="line">conda create -n new_env --<span class="built_in">clone</span> old_env</span><br><span class="line"></span><br><span class="line"><span class="comment"># 移除已有的虚拟环境 env_name</span></span><br><span class="line">conda remove -n env_name --all</span><br><span class="line"></span><br><span class="line"><span class="comment"># 激活虚拟环境 env_name</span></span><br><span class="line">conda activate env_name</span><br><span class="line"></span><br><span class="line"><span class="comment"># 在激活的虚拟环境下安装第三方库</span></span><br><span class="line">conda install package</span><br><span class="line"><span class="comment"># 或者</span></span><br><span class="line">pip install package</span><br><span class="line"></span><br><span class="line"><span class="comment"># 退出当前虚拟环境</span></span><br><span class="line">conda deactivate</span><br></pre></td></tr></table></figure>
+<p>所有在虚拟环境下运行的 Python 程序，其所调用的第三方库和解释器都只与当前虚拟环境有关。例如有 py36torch17（安装 Python 3.6 + PyTorch 1.7）和 py37torch110（安装 Python 3.7 + PyTorch 1.10）两个环境，如果激活 py36torch17，并运行调用 torch 相关库的代码时，其并不会使用任何 py37torch110 中的配置，即不会使用 Python 3.7 运行代码，也无法使用 PyTorch 1.10 提供的相关算法。</p>
+<h1 id="6-常用的第三方库安装"><a class="markdownIt-Anchor" href="#6-常用的第三方库安装"></a> 6. 常用的第三方库安装</h1>
+<p>安装环境或者下载代码时，常常需要使用 git 指令，如果发现找不到 git 指令，则可以通过以下命令安装：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install git</span><br></pre></td></tr></table></figure>
+<h2 id="61-boost-安装"><a class="markdownIt-Anchor" href="#61-boost-安装"></a> 6.1. boost 安装</h2>
+<p>boost 主要用于一些代码加速处理，大多数的项目都需要 boost 库的支持。</p>
+<p>安装教程：<a target="_blank" rel="noopener" href="https://blog.csdn.net/bin_bujiangjiu/article/details/120859240">https://blog.csdn.net/bin_bujiangjiu/article/details/120859240</a></p>
+<h2 id="62-eigen-安装"><a class="markdownIt-Anchor" href="#62-eigen-安装"></a> 6.2. Eigen 安装</h2>
+<p>Eigen 是一个矩阵计算库，主要用于矩阵的处理。如果安装 ROS-Melodic，会自带安装 Eigen 库，通常版本为 3.3.4，能适用于大多数开源项目。如果没有安装 ROS，则需要手动安装，参考教程如下，推荐安装版本尽量在 3.3.3 及以上。</p>
+<p>安装教程-1：<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_45589062/article/details/112622023">https://blog.csdn.net/weixin_45589062/article/details/112622023</a></p>
+<p>安装教程-2：<a target="_blank" rel="noopener" href="https://blog.csdn.net/reasonyuanrobot/article/details/114372363">https://blog.csdn.net/reasonyuanrobot/article/details/114372363</a></p>
+<h2 id="63-ceres-安装"><a class="markdownIt-Anchor" href="#63-ceres-安装"></a> 6.3. ceres 安装</h2>
+<p>ceres-solver 用于 SLAM 中的图优化算法，推荐安装 1.14.0 版本。</p>
+<p>官方 GitHub：<a target="_blank" rel="noopener" href="https://github.com/ceres-solver/ceres-solver">https://github.com/ceres-solver/ceres-solver</a></p>
+<p>安装教程-1：<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_42257666/article/details/124600564">https://blog.csdn.net/qq_42257666/article/details/124600564</a></p>
+<p>安装教程-2：<a target="_blank" rel="noopener" href="https://blog.csdn.net/m0_49441146/article/details/124145156">https://blog.csdn.net/m0_49441146/article/details/124145156</a></p>
+<h2 id="64-pcl-vtk-安装"><a class="markdownIt-Anchor" href="#64-pcl-vtk-安装"></a> 6.4. pcl + vtk 安装</h2>
+<p>pcl 和 vtk 通常用于点云可视化等。一般使用 pcl 1.8 + vtk 7.1，pcl 较新版本存在一些问题，因此尽量安装低版本，较为稳定。pcl 可以支持与 ROS 的数据转换，具有较多的优势。</p>
+<p>pcl 官方 GitHub：<a target="_blank" rel="noopener" href="https://github.com/PointCloudLibrary/pcl">https://github.com/PointCloudLibrary/pcl</a></p>
+<p>vtk 官方：<a target="_blank" rel="noopener" href="https://vtk.org/">https://vtk.org/</a></p>
+<p>安装教程：<a target="_blank" rel="noopener" href="https://blog.csdn.net/handily_1/article/details/122181399">https://blog.csdn.net/handily_1/article/details/122181399</a></p>
+<h2 id="65-其他库"><a class="markdownIt-Anchor" href="#65-其他库"></a> 6.5. 其他库</h2>
+<p>其他用于 SLAM 的库还有：</p>
+<ul>
+<li>用于图优化算法的 g2o、GTSAM 等；</li>
+<li>用于李代数处理的 Sophus 等；</li>
+<li>用于地图存储的 octomap 等；</li>
+<li>用于绘图的 Pangolin 等。</li>
+</ul>
+<p>这些库的安装方式较为简单，网络上有较为丰富的安装教程。</p>
+<h1 id="7-开源项目部署实战-orb-slam2"><a class="markdownIt-Anchor" href="#7-开源项目部署实战-orb-slam2"></a> 7. 开源项目部署实战 —— ORB-SLAM2*</h1>
+<p>ORB-SLAM2 是一个十分经典的相机视觉 SLAM 算法，常作为 baseline 出现，并且被后续大量的研究者作为新算法的实验代码基础进行修改。开源地址：<a target="_blank" rel="noopener" href="https://github.com/raulmur/ORB_SLAM2">https://github.com/raulmur/ORB_SLAM2</a></p>
+<h2 id="71-环境安装"><a class="markdownIt-Anchor" href="#71-环境安装"></a> 7.1. 环境安装</h2>
+<p>ORB-SLAM2 依赖于 g2o、DBoW2、Pangolin、OpenCV、Eigen 等第三方库，其中 g2o 和 DBoW2 在作者给的源代码中已经包含，且在部署 ORB-SLAM2 时会自动编译调用（注意不会安装到本地，只是临时供于项目调用），因此不需要安装；OpenCV 可以使用 3.4.X 版本正常编译，不必重新安装其他版本；其他的库则需正常手动安装。</p>
+<p>注意，ORB-SLAM2 也可以在 ROS 中运行，如果需要在 ROS 中使用，则需要安装 ROS，编译项目时使用对应的编译脚本即可。</p>
+<p>其他相关依赖：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install libglew-dev</span><br></pre></td></tr></table></figure>
+<h2 id="72-项目编译"><a class="markdownIt-Anchor" href="#72-项目编译"></a> 7.2. 项目编译</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 进入代码保存目录</span></span><br><span class="line"><span class="built_in">cd</span> YOUR_PROJECT_DIR</span><br><span class="line"><span class="comment"># 从 GitHub 下载代码至 ORB_SLAM2 目录</span></span><br><span class="line">git <span class="built_in">clone</span> https://github.com/raulmur/ORB_SLAM2.git ORB_SLAM2</span><br><span class="line"><span class="comment"># 进入项目目录</span></span><br><span class="line"><span class="built_in">cd</span> ORB_SLAM2</span><br><span class="line"><span class="comment"># 修改项目编译脚本权限</span></span><br><span class="line">sudo <span class="built_in">chmod</span> +x build.sh</span><br><span class="line"><span class="comment"># 运行编译脚本</span></span><br><span class="line">./build.sh</span><br></pre></td></tr></table></figure>
+<h2 id="73-实验结果"><a class="markdownIt-Anchor" href="#73-实验结果"></a> 7.3. 实验结果</h2>
+<p>从 TUM 或 EuRoC 或 KITTI 下载相关数据集，并运行如下指令启动 ORB-SLAM2（以 TUM 数据集为例）：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./Examples/Monocular/mono_tum Vocabulary/ORBvoc.txt Examples/Monocular/TUMX.yaml </span><br></pre></td></tr></table></figure>
+<p><code>PATH_TO_SEQUENCE_FOLDER</code> 为保存了 TUM 数据的目录路径，并将 <code>tumx.yaml</code> 与下载的数据集对应，如 TUM1.yaml、TUM2.yaml 和 TUM3.yaml 分别对应 freiburg1、freiburg2 和 freiburg3。</p>
+<p>TUM 数据集下载地址：<a target="_blank" rel="noopener" href="https://vision.in.tum.de/data/datasets/rgbd-dataset/download">https://vision.in.tum.de/data/datasets/rgbd-dataset/download</a></p>
+<h2 id="74-项目部署参考"><a class="markdownIt-Anchor" href="#74-项目部署参考"></a> 7.4. 项目部署参考</h2>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/learning_tortosie/article/details/79881165">https://blog.csdn.net/learning_tortosie/article/details/79881165</a></li>
+</ul>
+<h1 id="8-开源项目部署实战-vins-mono"><a class="markdownIt-Anchor" href="#8-开源项目部署实战-vins-mono"></a> 8. 开源项目部署实战 —— VINS-Mono*</h1>
+<p>VINS-Mono 也是一个经典的视觉 SLAM 项目，作为 baseline 被大量文献对比使用，其所使用的数据主要是单眼相机拍摄的图片和 IMU 惯性数据，因此得名 VINS-Mono。开发团队也开发了应用于 iOS 端的 VINS-Mobile，其他开发者则以此进行改变，开发了基于 Android 的 VINS-Mobile，感兴趣的可以搜索相关资料进行安装尝试。</p>
+<h2 id="81-环境安装"><a class="markdownIt-Anchor" href="#81-环境安装"></a> 8.1. 环境安装</h2>
+<p>VINS-Mono 运行在 ROS 下，因此需要提前安装好 ROS 环境。VINS-Mono 的作者实验系统为 Ubuntu 18.04，但是经过测试，其在 Ubuntu 18.04 上同样能够准确运行。</p>
+<p>除 ROS 外，还有一些其他依赖库，例如 OpenCV 3.3.1、Eigen 3.3.3、Ceres、Pangolin 等，这些都是作者的实验环境，我们并不需要完全照搬这些环境，一般可以用版本略高一点的库进行实验。实际部署时，如果是在 Ubuntu 18.04 + ROS-Melodic 上，则可以使用 OpenCV 3.4.X（OpenCV 4.X.X 暂未测试）、Eigen 3.3.4、Ceres-Solver 1.14.0。在安装这些库时，如果遇到报错，我们可以根据报错信息安装相关缺失的内容；也可以在网络上搜索相关教程。</p>
+<h2 id="82-项目编译"><a class="markdownIt-Anchor" href="#82-项目编译"></a> 8.2. 项目编译</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 创建 ROS 工作空间</span></span><br><span class="line"><span class="built_in">cd</span> YOUR_PROJECT_DIR</span><br><span class="line"><span class="built_in">mkdir</span> vins_mono_ws    <span class="comment"># 创建 ROS 工作目录</span></span><br><span class="line"><span class="built_in">cd</span> vins_mono_ws</span><br><span class="line"><span class="built_in">mkdir</span> src             <span class="comment"># 创建代码保存目录</span></span><br><span class="line"><span class="built_in">cd</span> src</span><br><span class="line"></span><br><span class="line"><span class="comment"># 下载代码</span></span><br><span class="line">git <span class="built_in">clone</span> https://github.com/HKUST-Aerial-Robotics/VINS-Mono.git  <span class="comment"># 注意此时所在位置为 vins_mono_ws/src</span></span><br><span class="line"><span class="built_in">cd</span> ..        <span class="comment"># 回到 vins_mono_ws 下</span></span><br><span class="line">catkin_make  <span class="comment"># 用 ROS 进行编译，catkin_make 会自动调用 cmake 和 make 的相关指令</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 编译完成后，将编译后的相关配置引入到终端</span></span><br><span class="line"><span class="built_in">source</span> YOUR_PROJECT_DIR/vins_mono_ws/devel/setup.bash</span><br></pre></td></tr></table></figure>
+<h2 id="83-实验结果"><a class="markdownIt-Anchor" href="#83-实验结果"></a> 8.3. 实验结果</h2>
+<p>下载 EuRoC MH_01_easy 数据包（.bag）文件：<a target="_blank" rel="noopener" href="https://projects.asl.ethz.ch/datasets/doku.php?id=kmavvisualinertialdatasets">https://projects.asl.ethz.ch/datasets/doku.php?id=kmavvisualinertialdatasets</a></p>
+<p>代码运行：</p>
+<ol>
+<li>
+<p>打开终端，运行如下指令启动 ROS：</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">roscore</span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p>打开第二个终端，进入项目工作空间，并运行主程序：</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> YOUR_PROJECT_DIR/vins_mono_ws</span><br><span class="line"><span class="built_in">source</span> devel/setup.bash</span><br><span class="line">roslaunch vins_estimator euroc.launch</span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p>打开第三个终端，进入项目工作空间，运行可视化窗口的程序：</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> YOUR_PROJECT_DIR/vins_mono_ws</span><br><span class="line"><span class="built_in">source</span> devel/setup.bash</span><br><span class="line">roslaunch vins_estimator vins_rviz.launch</span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p>打开第四个终端，进入项目工作空间，播放数据集：</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> YOUR_PROJECT_DIR/vins_mono_ws</span><br><span class="line"><span class="built_in">source</span> devel/setup.bash</span><br><span class="line"><span class="built_in">cd</span> YOUR_DATASET_DIR</span><br><span class="line">rosbag play MH_01_easy.bag</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>终端打开快捷键：Shift + Ctrl + T</p>
+<h2 id="84-项目部署参考"><a class="markdownIt-Anchor" href="#84-项目部署参考"></a> 8.4. 项目部署参考</h2>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_38364548/article/details/123526774">https://blog.csdn.net/qq_38364548/article/details/123526774</a></li>
+</ul>
+<h2 id="85-项目拓展"><a class="markdownIt-Anchor" href="#85-项目拓展"></a> 8.5. 项目拓展</h2>
+<p>以上是 PC 版的 VINS-Mono 部署，感兴趣的可以深入尝试在 iOS 和 Android 上面的部署。</p>
+<p>经过测试 iOS 在 iPhone 8P 上能正确运行，但在后续版本上由于缺乏相关参数，因此需要读者自行探索调整。iOS 版 VINS-Mobile：<a target="_blank" rel="noopener" href="https://github.com/HKUST-Aerial-Robotics/VINS-Mobile%EF%BC%88%E6%B3%A8%E6%84%8F">https://github.com/HKUST-Aerial-Robotics/VINS-Mobile（注意</a> iOS 开发目前只能使用 Xcode，因此需要使用 Mac 进行实验）</p>
+<p>Android 版的 VINS-Mobile 原作者团队并没有开发，但是有开发者自行改造，推出了能运行于 Android 手机的 VINS-Mobile，此处给出一个配置参考教程：<a target="_blank" rel="noopener" href="https://blog.csdn.net/baidu_31956557/article/details/127478374%EF%BC%88%E6%B3%A8%E6%84%8F">https://blog.csdn.net/baidu_31956557/article/details/127478374（注意</a> Android 的开发需要用到 Android Studio）</p>
+<h1 id="文献"><a class="markdownIt-Anchor" href="#文献"></a> 文献</h1>
+<ul>
+<li>[1] Zhang J, Singh S. LOAM: Lidar odometry and mapping in real-time[C]//Robotics: Science and Systems. 2014, 2(9): 1-9.</li>
+<li>[2] Shan T, Englot B. Lego-loam: Lightweight and ground-optimized lidar odometry and mapping on variable terrain[C]//2018 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS). IEEE, 2018: 4758-4765.</li>
+<li>[3] Shan T, Englot B, Meyers D, et al. Lio-sam: Tightly-coupled lidar inertial odometry via smoothing and mapping[C]//2020 IEEE/RSJ international conference on intelligent robots and systems (IROS). IEEE, 2020: 5135-5142.</li>
+<li>[4] Xu W, Zhang F. Fast-lio: A fast, robust lidar-inertial odometry package by tightly-coupled iterated kalman filter[J]. IEEE Robotics and Automation Letters, 2021, 6(2): 3317-3324.</li>
+<li>[5] Mur-Artal R, Montiel J M M, Tardos J D. ORB-SLAM: a versatile and accurate monocular SLAM system[J]. IEEE transactions on robotics, 2015, 31(5): 1147-1163.</li>
+<li>[6] Mur-Artal R, Tardós J D. Orb-slam2: An open-source slam system for monocular, stereo, and rgb-d cameras[J]. IEEE transactions on robotics, 2017, 33(5): 1255-1262.</li>
+<li>[7] Campos C, Elvira R, Rodríguez J J G, et al. Orb-slam3: An accurate open-source library for visual, visual–inertial, and multimap slam[J]. IEEE Transactions on Robotics, 2021, 37(6): 1874-1890.</li>
+<li>[8] Qin T, Li P, Shen S. Vins-mono: A robust and versatile monocular visual-inertial state estimator[J]. IEEE Transactions on Robotics, 2018, 34(4): 1004-1020.</li>
+<li>[9] Lin J, Zheng C, Xu W, et al. R<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msup><mrow></mrow><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">^ 2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141079999999999em;vertical-align:0em;"></span><span class="mord"><span></span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span>LIVE: A Robust, Real-Time, LiDAR-Inertial-Visual Tightly-Coupled State Estimator and Mapping[J]. IEEE Robotics and Automation Letters, 2021, 6(4): 7469-7476.</li>
+<li>[10] Lin J, Zhang F. R<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msup><mrow></mrow><mn>3</mn></msup></mrow><annotation encoding="application/x-tex">^3</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141079999999999em;vertical-align:0em;"></span><span class="mord"><span></span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span></span></span></span></span></span></span></span>LIVE: A Robust, Real-time, RGB-colored, LiDAR-Inertial-Visual tightly-coupled state Estimation and mapping package[C]//2022 International Conference on Robotics and Automation (ICRA). IEEE, 2022: 10672-10678.</li>
+<li>[11] Chen X, Milioto A, Palazzolo E, et al. Suma++: Efficient lidar-based semantic slam[C]//2019 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS). IEEE, 2019: 4530-4537.</li>
+<li>[12] Yu C, Liu Z, Liu X J, et al. DS-SLAM: A semantic visual SLAM towards dynamic environments[C]//2018 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS). IEEE, 2018: 1168-1174.</li>
+<li>[13] Bescos B, Fácil J M, Civera J, et al. DynaSLAM: Tracking, mapping, and inpainting in dynamic scenes[J]. IEEE Robotics and Automation Letters, 2018, 3(4): 4076-4083.</li>
+<li>[14] Zhang J, Henein M, Mahony R, et al. VDO-SLAM: a visual dynamic object-aware SLAM system[J]. arXiv preprint arXiv:2005.11052, 2020.</li>
+<li>[15] Tian Y, Chang Y, Arias F H, et al. Kimera-multi: Robust, distributed, dense metric-semantic slam for multi-robot systems[J]. IEEE Transactions on Robotics, 2022, 38(4).</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Summary/" rel="tag"># Summary</a>
+              <a href="/tags/SLAM/" rel="tag"># SLAM</a>
+              <a href="/tags/SLAM-Tutorials/" rel="tag"># SLAM Tutorials</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/papernote/Semantic%20Histogram%20Based%20MR-SLAM/" rel="prev" title="Semantic Histogram Based MR-SLAM">
+                  <i class="fa fa-chevron-left"></i> Semantic Histogram Based MR-SLAM
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Star Rain</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://lib.baomitu.com/canvas-nest.js/1.0.1/canvas-nest.js"></script>
+
+
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+  <script class="next-config" data-name="pdf" type="application/json">{"object_url":{"url":"https://cdn.jsdelivr.net/npm/pdfobject@2.2.7/pdfobject.min.js","integrity":"sha256-ph3Dk89VmuTVXG6x/RDzk53SU9LPdAh1tpv0UvnDZ2I="},"url":"/lib/pdf/web/viewer.html"}</script>
+  <script src="/js/third-party/tags/pdf.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha256-TThEtR+XalhWKkfF383YLOrI50NGNeIqrzS+q08afrY=" crossorigin="anonymous">
+
+
+<script class="next-config" data-name="waline" type="application/json">{"lang":"en","enable":true,"serverURL":"https://waline.vercel.app","cssUrl":"https://unpkg.com/@waline/client@v2/dist/waline.css","commentCount":true,"pageview":false,"libUrl":"https://unpkg.com/@waline/client@v2/dist/waline.js","emoji":["https://unpkg.com/@waline/emojis@1.0.1/weibo","https://unpkg.com/@waline/emojis@1.0.1/alus","https://unpkg.com/@waline/emojis@1.0.1/bilibili","https://unpkg.com/@waline/emojis@1.0.1/qq","https://unpkg.com/@waline/emojis@1.0.1/tieba","https://unpkg.com/@waline/emojis@1.0.1/tw-emoji"],"meta":["nick","mail"],"requiredMeta":["nick"],"pageSize":10,"el":"#waline","comment":true,"path":"/summary/SLAM-Tutorials/"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>
